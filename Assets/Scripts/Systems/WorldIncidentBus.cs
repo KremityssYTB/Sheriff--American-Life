@@ -37,7 +37,7 @@ namespace SheriffAmericanLife
         {
             var incident = new WorldIncident
             {
-                incidentId = "INC-" + nextIncidentNumber++.ToString("0000"),
+                incidentId = "INC-" + (nextIncidentNumber++).ToString("0000"),
                 type = type,
                 description = description,
                 subjectDescription = subjectDescription,
