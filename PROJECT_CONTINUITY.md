@@ -234,3 +234,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Once stopped, the mobile HUD shows the driver's disposition and offers a calm or firm approach. The selected response is written to the session incident report.
 - Ending the stop resets the behavior state. No real-world databases or external services are used.
 - Source inspection only: Unity compilation, vehicle physics, UI layout, and iPhone runtime tests remain outstanding.
+
+
+## Traffic citation ledger and MDT update (2026-11-26)
+
+- Added `TrafficCitationBook` as a session-only ledger for fictional traffic citations. Records include unique citation number, driver name, license number, plate, issue timestamp, grid-based county location, officer unit, violation descriptions, fine total, and payment status.
+- Citation issuance is triggered only after all three document checks are complete and the deputy chooses CITATION for a profile with a document violation. A warning does not create a ticket.
+- Fictional violation categories currently include suspended/expired/missing license, expired/missing registration, and missing/expired insurance. Prototype fine amounts are gameplay placeholders, not statements of real Florida law or court schedules.
+- The mobile MDT now has a TICKETS tab showing ticket details and outstanding/paid state. MARK PAID changes the in-game session record to Paid; no real payment is processed.
+- Citation creation also adds a traffic-stop report entry. The ledger and payment state are session-only and are not persisted between game sessions.
+- Source checks confirmed the new data fields, ticket issuance path, MDT wiring, and balanced braces. Unity compilation, Play Mode, UI layout, and iPhone tests remain outstanding.
