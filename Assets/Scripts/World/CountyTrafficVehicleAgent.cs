@@ -57,7 +57,6 @@ namespace SheriffAmericanLife
 
             Vector3 direction = flatDirection.normalized;
             float angle = Vector3.SignedAngle(transform.forward, direction, Vector3.up);
-            float steer = Mathf.Clamp(angle / 45f, -1f, 1f);
             Quaternion desired = Quaternion.LookRotation(direction, Vector3.up);
             body.MoveRotation(Quaternion.RotateTowards(body.rotation, desired,
                 steeringRate * Time.fixedDeltaTime));
