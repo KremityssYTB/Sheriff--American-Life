@@ -43,7 +43,8 @@ Build a compact district around an Ocala-style downtown and adjoining residentia
 ### D. Dispatch and incident lifecycle
 - Calls have type, priority, location, involved entities, and status.
 - Status sequence: Available → Accepted → En Route → On Scene → Resolved / Cancelled.
-- Calls are generated from world events (collision, disturbance, shop alarm, welfare check) as well as scripted tutorial events.
+- `DispatchCallManager` listens to the world incident event channel and creates one CAD call per published incident, assigning a prototype priority and tracking the call lifecycle.
+- Calls are generated from gameplay event producers (collision, disturbance, shop alarm, welfare check) as well as scripted tutorial events. Event producers are still to be implemented.
 - Completing a call creates an incident record with actions, people, evidence, and result.
 - Avoid random call spam. Use cooldowns, district weights, and active-unit counts.
 
@@ -102,5 +103,6 @@ The first playable milestone is complete when:
 - `Assets/Scripts/Systems/WorldIncidentBus.cs` defines incident types and a shared event channel; `WorldIncidentReporter` is the scene entry point for gameplay systems to publish events.
 - `Assets/Scripts/World/CivilianWitnessAgent.cs` checks nearby incidents against a hearing radius and forward visual cone, then records a witness statement.
 - `Assets/Scripts/Systems/WitnessStatementBook.cs` stores session-only statements and raises an event for a future MDT UI.
-- This is not yet an autonomous crime/dispatch system: nothing currently publishes incidents on its own. The current visual check does not perform raycast occlusion, and witness statements are not saved between sessions.
+- `Assets/Scripts/Systems/DispatchCallManager.cs` converts each published world incident into a session-only CAD call, assigns a prototype priority, and enforces Available → Accepted → En Route → On Scene → Resolved (or Cancelled).
+- The dispatch manager is connected in the Ocala bootstrap. No simulated crime/accident producer currently publishes incidents automatically; a gameplay system must call `WorldIncidentReporter.Report`. The current visual check does not perform raycast occlusion, and statements/calls are not saved between sessions.
 - These scripts are foundations only. They do not yet provide NavMesh pathfinding, animation, traffic AI, rain VFX, or incident persistence.
