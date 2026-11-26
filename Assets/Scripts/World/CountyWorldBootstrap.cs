@@ -41,6 +41,14 @@ namespace SheriffAmericanLife
                     new Color(Random.Range(.35f,.72f),Random.Range(.35f,.65f),Random.Range(.3f,.58f)));
             }
             Make("Sheriff Office", PrimitiveType.Cube, new Vector3(-75,5,-15), new Vector3(42,10,28), new Color(.72f,.74f,.76f));
+            Make("Marion County Jail Intake", PrimitiveType.Cube, new Vector3(-125,5,-15),
+                new Vector3(32,10,28), new Color(.48f,.52f,.58f));
+            Make("Jail Intake Loading Bay", PrimitiveType.Cube, new Vector3(-102,.08f,-15),
+                new Vector3(15,.12f,14), new Color(.22f,.25f,.28f));
+            Make("Jail Intake Bay Divider", PrimitiveType.Cube, new Vector3(-102,.22f,-22),
+                new Vector3(15,.25f,.35f), new Color(.9f,.82f,.18f));
+            Make("Jail Intake Sign", PrimitiveType.Cube, new Vector3(-125,9.5f,0),
+                new Vector3(12,1.2f,.3f), new Color(.12f,.18f,.24f));
             Make("Gas Station", PrimitiveType.Cube, new Vector3(55,3,120), new Vector3(28,6,22), new Color(.78f,.72f,.48f));
             Make("Rural Barn", PrimitiveType.Cube, new Vector3(210,5,210), new Vector3(30,10,24), new Color(.42f,.16f,.12f));
 
