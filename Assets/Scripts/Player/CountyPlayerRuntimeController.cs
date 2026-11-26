@@ -23,6 +23,8 @@ namespace SheriffAmericanLife
         private CivilianCharacter escortedPrisoner;
         private string escortedBookingId;
         private Vector3 escortedPrisonerOriginalScale;
+        private Collider escortedPrisonerCollider;
+        private bool escortedColliderWasEnabled;
         private bool prisonerSeated;
         private readonly Vector3 jailIntakePosition = new Vector3(-102f, 0f, -15f);
         private bool trafficStopDecisionRecorded;
@@ -340,6 +342,8 @@ namespace SheriffAmericanLife
             escortedPrisoner = civilian;
             escortedBookingId = booking.bookingId;
             escortedPrisonerOriginalScale = civilian.transform.localScale;
+            escortedPrisonerCollider = civilian.GetComponent<Collider>();
+            escortedColliderWasEnabled = escortedPrisonerCollider != null && escortedPrisonerCollider.enabled;
             CivilianRoutineAgent routine = civilian.GetComponent<CivilianRoutineAgent>();
             if (routine != null) routine.enabled = false;
             prisonerSeated = false;
@@ -380,6 +384,7 @@ namespace SheriffAmericanLife
             escortedPrisoner.transform.localPosition = new Vector3(.58f, .88f, .12f);
             escortedPrisoner.transform.localRotation = Quaternion.identity;
             escortedPrisoner.transform.localScale = escortedPrisonerOriginalScale * .68f;
+            if (escortedPrisonerCollider != null) escortedPrisonerCollider.enabled = false;
             prisonerSeated = true;
         }
 
@@ -390,6 +395,7 @@ namespace SheriffAmericanLife
             escortedPrisoner.transform.position = player.transform.position +
                 player.transform.right * 1.1f;
             escortedPrisoner.transform.localScale = escortedPrisonerOriginalScale;
+            if (escortedPrisonerCollider != null) escortedPrisonerCollider.enabled = escortedColliderWasEnabled;
             prisonerSeated = false;
         }
 
@@ -443,7 +449,9 @@ namespace SheriffAmericanLife
                 escortedPrisoner.transform.SetParent(worldRoot, true);
                 escortedPrisoner.transform.position = jailIntakePosition + new Vector3(0f, 1f, 5f);
                 escortedPrisoner.transform.localScale = escortedPrisonerOriginalScale;
+                if (escortedPrisonerCollider != null) escortedPrisonerCollider.enabled = escortedColliderWasEnabled;
                 escortedPrisoner = null;
+                escortedPrisonerCollider = null;
                 escortedBookingId = null;
                 prisonerSeated = false;
             }
