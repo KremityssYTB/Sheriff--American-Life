@@ -10,6 +10,10 @@ namespace SheriffAmericanLife
     {
         private ThirdPersonWalker walker;
         private PatrolVehicleController vehicle;
+        private CountyEmergencyLightbar lightbar;
+        private CountyTrafficVehicleAgent nearbyTrafficVehicle;
+        private CountyTrafficVehicleAgent activeTrafficStop;
+        private readonly Collider[] trafficBuffer = new Collider[48];
         private CameraModeController cameraModes;
         private CharacterController characterController;
         private GameObject player;
@@ -55,6 +59,13 @@ namespace SheriffAmericanLife
             vehicle = patrolVehicle.AddComponent<PatrolVehicleController>();
             vehicle.SetControlsEnabled(false);
 
+            Renderer redLight = CreateLightbarSegment("Red Emergency Light", new Vector3(-.42f,.79f,0f),
+                new Vector3(.62f,.13f,.34f), new Color(.95f,.04f,.04f));
+            Renderer blueLight = CreateLightbarSegment("Blue Emergency Light", new Vector3(.42f,.79f,0f),
+                new Vector3(.62f,.13f,.34f), new Color(.04f,.18f,1f));
+            lightbar = patrolVehicle.AddComponent<CountyEmergencyLightbar>();
+            lightbar.Configure(redLight, blueLight, 3f);
+
             footThird = MakeAnchor(player.transform, "Third Person Camera", new Vector3(0,2.7f,-5.2f));
             footFirst = MakeAnchor(player.transform, "First Person Camera", new Vector3(0,1.55f,.12f));
             vehicleThird = MakeAnchor(patrolVehicle.transform, "Vehicle Third Person Camera", new Vector3(0,3.2f,-7f));
@@ -82,6 +93,7 @@ namespace SheriffAmericanLife
         private void Update()
         {
             RefreshCivilianFocus();
+            RefreshTrafficTarget();
             if (walker && !inVehicle) walker.SetMoveInput(moveInput);
             if (vehicle)
             {
@@ -108,6 +120,7 @@ namespace SheriffAmericanLife
                 cameraModes.ToggleCameraMode();
 
             DrawCivilianInteractionHud(s, pad);
+            DrawTrafficStopHud(s, pad);
 
             if (!inVehicle)
             {
@@ -131,6 +144,105 @@ namespace SheriffAmericanLife
                 else if (GUI.RepeatButton(new Rect(Screen.width-w-pad,Screen.height-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
                 else throttle = 0;
             }
+        }
+
+        private Renderer CreateLightbarSegment(string segmentName, Vector3 localPosition,
+            Vector3 localScale, Color color)
+        {
+            GameObject segment = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            segment.name = segmentName;
+            segment.transform.SetParent(patrolVehicle.transform, false);
+            segment.transform.localPosition = localPosition;
+            segment.transform.localScale = localScale;
+            Collider segmentCollider = segment.GetComponent<Collider>();
+            if (segmentCollider != null) Destroy(segmentCollider);
+
+            Renderer segmentRenderer = segment.GetComponent<Renderer>();
+            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null) shader = Shader.Find("Standard");
+            Material material = new Material(shader);
+            material.color = color;
+            segmentRenderer.sharedMaterial = material;
+            return segmentRenderer;
+        }
+
+        private void RefreshTrafficTarget()
+        {
+            if (!inVehicle || patrolVehicle == null || activeTrafficStop != null ||
+                dutyState == null || !dutyState.IsOnDuty)
+            {
+                nearbyTrafficVehicle = null;
+                return;
+            }
+
+            int count = Physics.OverlapSphereNonAlloc(
+                patrolVehicle.transform.position,
+                24f,
+                trafficBuffer,
+                Physics.DefaultRaycastLayers,
+                QueryTriggerInteraction.Ignore);
+
+            CountyTrafficVehicleAgent nearest = null;
+            float nearestDistance = float.MaxValue;
+            for (int i = 0; i < count; i++)
+            {
+                Collider candidateCollider = trafficBuffer[i];
+                if (candidateCollider == null) continue;
+                CountyTrafficVehicleAgent candidate =
+                    candidateCollider.GetComponentInParent<CountyTrafficVehicleAgent>();
+                if (candidate == null || candidate.HasActiveTrafficStop) continue;
+
+                float distance = Vector3.Distance(
+                    patrolVehicle.transform.position, candidate.transform.position);
+                if (distance < nearestDistance)
+                {
+                    nearest = candidate;
+                    nearestDistance = distance;
+                }
+            }
+
+            nearbyTrafficVehicle = nearest;
+        }
+
+        private void DrawTrafficStopHud(float scale, float padding)
+        {
+            if (!inVehicle) return;
+
+            float x = Screen.width - 112f * scale;
+            float y = padding + 150f * scale;
+            if (activeTrafficStop != null)
+            {
+                GUI.Label(new Rect(padding, padding + 64f * scale, 250f * scale, 28f * scale),
+                    activeTrafficStop.IsPulledOver ? "VEHICLE STOPPED" : "VEHICLE PULLING OVER",
+                    statusStyle);
+                if (GUI.Button(new Rect(x, y, 100f * scale, 42f * scale),
+                    activeTrafficStop.IsPulledOver ? "END STOP" : "CANCEL STOP", buttonStyle))
+                    EndTrafficStop();
+            }
+            else if (nearbyTrafficVehicle != null && dutyState != null && dutyState.IsOnDuty)
+            {
+                if (GUI.Button(new Rect(x, y, 100f * scale, 42f * scale), "PULL OVER", buttonStyle))
+                    BeginTrafficStop();
+            }
+        }
+
+        private void BeginTrafficStop()
+        {
+            if (!inVehicle || nearbyTrafficVehicle == null || lightbar == null) return;
+            Vector3 shoulder = nearbyTrafficVehicle.transform.position +
+                nearbyTrafficVehicle.transform.right * 4.5f;
+            if (!nearbyTrafficVehicle.RequestTrafficStop(shoulder)) return;
+
+            activeTrafficStop = nearbyTrafficVehicle;
+            nearbyTrafficVehicle = null;
+            lightbar.SetLightbarEnabled(true);
+        }
+
+        private void EndTrafficStop()
+        {
+            if (activeTrafficStop != null) activeTrafficStop.ResumeTraffic();
+            activeTrafficStop = null;
+            if (lightbar != null) lightbar.SetLightbarEnabled(false);
         }
 
         private void RefreshCivilianFocus()
