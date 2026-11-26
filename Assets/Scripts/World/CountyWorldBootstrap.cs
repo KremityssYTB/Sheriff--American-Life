@@ -39,6 +39,8 @@ namespace SheriffAmericanLife
             var sun = new GameObject("County Sun").AddComponent<Light>();
             sun.type=LightType.Directional; sun.intensity=1.15f;
             sun.transform.rotation=Quaternion.Euler(48,-32,0); sun.transform.SetParent(root,true);
+            var clock = root.gameObject.AddComponent<WorldClockSystem>();
+            clock.SetSun(sun);
         }
 
         private GameObject Make(string n, PrimitiveType t, Vector3 p, Vector3 s, Color c)
