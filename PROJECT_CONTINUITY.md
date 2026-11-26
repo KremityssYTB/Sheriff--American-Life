@@ -254,7 +254,7 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Empty, unsupported-version, malformed, or unreadable save data is handled without crashing the ledger; load failure starts an empty in-memory list. Save failure is logged while current-session records remain accessible.
 - The save is local to the device; there is no cloud sync or cross-device sharing.
 - Source inspection only. No Unity compile, JSON round-trip test, iOS storage test, Play Mode test, or iPhone runtime test has been run.
-- Next: add a driver history keyed by fictional license/plate values, with prior warnings and citations surfaced in the MDT. Keep the history local and fictional, and avoid treating it as a real DMV record.
+- Next: extend the arrest flow with transport and a usable jail facility, then verify the full civilian-to-booking loop in Unity when an editor/build environment is available. Keep records fictional and local.
 
 
 ## Persistent repeat-driver history update (2026-11-26)
@@ -265,3 +265,14 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The MDT now exposes a HISTORY tab showing driver identifiers, prior stop totals, warning/citation counts, last outcome, and up to five recent events per driver. Ticket text now correctly describes locally saved records.
 - History is fictional and local to the device; it is not connected to DMV, court, insurance, or police databases. Records are capped at 500 drivers and 20 recent events per driver.
 - Source-level verification only. Unity compilation, JSON round-trip, save migration, UI layout, and iPhone runtime tests remain outstanding.
+
+
+## Arrest booking workflow update (2026-11-26)
+
+- Added `Assets/Scripts/Systems/ArrestBookingBook.cs`, a versioned local JSON register saved at `Application.persistentDataPath/arrest-bookings.json`.
+- A booking is created only when the existing civilian arrest action succeeds after detention. Failed arrest attempts and detentions alone do not create booking records.
+- Each fictional booking stores a unique MCB number, civilian name and game ID, arrest reason, timestamp, placeholder property-custody inventory, and custody status (AwaitingTransport, Booked, Released).
+- The MDT now has a BOOKINGS tab. A deputy can mark an awaiting booking as booked, then mark a booked person released. Invalid state transitions are rejected by the ledger.
+- The current arrest reason is generated from the existing fictional warrant flag or the completed-detention path. Property entries are generic placeholders; this is not a real search, evidence chain, jail connection, or legal workflow.
+- Booking records are local to the device, capped at 500, and are not synced. Load/save errors are caught and logged.
+- Source inspection only. Unity compilation, JSON round-trip, UI layout, transport gameplay, and iPhone runtime tests have not been performed.
