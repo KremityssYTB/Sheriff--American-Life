@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26 (traffic obstacle/emergency priority pass)
+Last updated: 2026-11-26 (dispatch-linked emergency response pass)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -27,7 +27,7 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 - Separate four-way-stop test junction with Florida arrival-order/right-side priority policy, exclusive intersection reservation, pedestrian occupancy gate, full-stop dwell, and queue cleanup.
 - Four-way-stop junction has left-turn, through, and right-turn inbound movement lanes on each approach, individual stop bars/signs, cubic Bézier movement paths, lane markings, and two queued vehicles per lane (24 test vehicles).
 - Traffic agents use forward sphere-cast speed limiting for vehicle following and raised static obstacles. This is braking-only; no steering around obstacles or lane changes.
-- One north-approach through-lane lead sedan is marked as the emergency test vehicle, with a dark-blue body and alternating red/blue roof lightbar controlled by a renderer-only script. It receives priority over ordinary waiting traffic at the four-way stop, but cannot pre-empt an occupying vehicle or bypass pedestrian occupancy. Siren/audio, dispatch activation, full emergency fleet, and emergency pull-over behavior remain unimplemented.
+- One north-approach through-lane lead sedan is marked as the emergency test vehicle, with a dark-blue body, dispatch-controlled alternating red/blue lightbar, and generated two-tone siren. The unit is named `OCALA-1`: MDT ACCEPT assigns it, EN ROUTE activates lights and siren, ON SCENE stops the siren while keeping lights active, and RESOLVED/CANCELLED turns both off. It receives priority over ordinary waiting traffic at the four-way stop, but cannot pre-empt an occupying vehicle or bypass pedestrian occupancy. This is a single-unit prototype; full CAD assignment, emergency pull-over behavior, and fleet support remain unimplemented.
 - Vehicle collisions can publish incident reports into dispatch.
 
 ## Recent traffic commits (2026-11-26)
@@ -60,6 +60,9 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 ## Key source and documentation files
 
 - `Assets/Scripts/World/CountyTrafficVehicleAgent.cs`
+- `Assets/Scripts/World/CountyEmergencyLightbar.cs`
+- `Assets/Scripts/World/CountyEmergencySiren.cs`
+- `Assets/Scripts/World/CountyEmergencyResponseUnit.cs`
 - `Assets/Scripts/World/CountyFourWayStopTestSpawner.cs`
 - `Assets/Scripts/World/CountyFourWayStopController.cs`
 - `Assets/Scripts/World/CountyIntersectionRules.cs`
@@ -85,11 +88,11 @@ The manual validation matrix is a checklist, not a test report. Do not claim any
 
 ## Next development steps
 
-1. Inspect the current traffic source before changing it. Validate obstacle detection against road colliders, stop signs, vehicle colliders, and objects on adjacent lanes; tune detection height/radius and avoid false braking.
-2. Add siren/audio and dispatch-triggered activation for the existing marked emergency test sedan.
-3. Add safe emergency pull-over behavior and intersection handling. Never allow emergency vehicles to enter an occupied conflict area or drive through an active pedestrian crossing.
+1. Validate the OCALA-1 MDT sequence: ACCEPT, EN ROUTE, ON SCENE, RESOLVED/CANCELLED; verify lightbar and siren transitions and ensure unrelated unit assignments do not activate this vehicle.
+2. Add safe emergency pull-over behavior and intersection handling. Never allow emergency vehicles to enter an occupied conflict area or drive through an active pedestrian crossing.
+3. Inspect and tune obstacle detection against road colliders, stop signs, vehicle colliders, and objects on adjacent lanes; avoid false braking.
 4. Implement obstacle steering/lane changes only after braking-only detection is stable.
-5. Validate the 24-car setup, emergency priority, static-obstacle detection, and roadside stop-sign clearance in Unity.
+5. Validate the 24-car setup, emergency priority, static-obstacle detection, roadside stop-sign clearance, and dispatch audio in Unity.
 6. Update this file, README, relevant design docs, and manual validation matrix after each significant implementation.
 
 ## Working protocol
