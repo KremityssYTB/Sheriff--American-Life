@@ -53,10 +53,11 @@ namespace SheriffAmericanLife
             reportBook = root.gameObject.AddComponent<IncidentReportBook>();
             TrafficCitationBook citationBook = root.gameObject.AddComponent<TrafficCitationBook>();
             TrafficDriverHistoryBook driverHistoryBook = root.gameObject.AddComponent<TrafficDriverHistoryBook>();
+            ArrestBookingBook arrestBookingBook = root.gameObject.AddComponent<ArrestBookingBook>();
             witnessStatementBook = root.gameObject.AddComponent<WitnessStatementBook>();
             dispatchCallManager = root.gameObject.AddComponent<DispatchCallManager>();
             dispatchCallManager.Configure(reportBook);
-            root.gameObject.AddComponent<MobileMdtController>().Configure(dispatchCallManager, reportBook, witnessStatementBook, citationBook, driverHistoryBook);
+            root.gameObject.AddComponent<MobileMdtController>().Configure(dispatchCallManager, reportBook, witnessStatementBook, citationBook, driverHistoryBook, arrestBookingBook);
             root.gameObject.AddComponent<MobileMdtScreen>();
             var actorSpawner = root.gameObject.AddComponent<CountyIncidentActorSpawner>();
             actorSpawner.Configure(root);
@@ -112,6 +113,7 @@ namespace SheriffAmericanLife
             });
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
             interactionController.Configure(reportBook);
+            interactionController.ConfigureBookingBook(arrestBookingBook);
             SpawnTestCivilians(clock, witnessStatementBook, incidentReporter);
             root.gameObject.AddComponent<CountyPlayerRuntimeController>().Initialize(root);
         }
