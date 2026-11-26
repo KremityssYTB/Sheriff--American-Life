@@ -93,7 +93,8 @@ namespace SheriffAmericanLife
             Transform right = window.transform.Find("Case Panel");
             MakeButton("DETAILS", right, new Vector2(.025f,.91f), new Vector2(.25f,.99f), () => SetTab("DETAILS"));
             MakeButton("WITNESSES", right, new Vector2(.27f,.91f), new Vector2(.51f,.99f), () => SetTab("WITNESSES"));
-            MakeButton("REPORTS", right, new Vector2(.53f,.91f), new Vector2(.75f,.99f), () => SetTab("REPORTS"));
+            MakeButton("REPORTS", right, new Vector2(.49f,.91f), new Vector2(.70f,.99f), () => SetTab("REPORTS"));
+            MakeButton("TICKETS", right, new Vector2(.73f,.91f), new Vector2(.97f,.99f), () => SetTab("TICKETS"));
             ScrollArea detail = CreateScrollArea(right, new Vector2(.025f,.16f), new Vector2(.975f,.89f));
             detailsContent = detail.content;
             CreateActionButtons(right);
@@ -163,6 +164,23 @@ namespace SheriffAmericanLife
         {
             if (detailsContent == null) return;
             ClearChildren(detailsContent);
+            if (activeTab == "TICKETS")
+            {
+                AddContentText("TRAFFIC CITATION LEDGER", 28);
+                IReadOnlyList<TrafficCitation> tickets = mdt.Citations;
+                if (tickets.Count == 0) AddContentText("No traffic citations have been issued this session.", 22);
+                foreach (TrafficCitation ticket in tickets)
+                    AddContentText(ticket.citationNumber + "  |  $" + ticket.fineAmount +
+                        "  |  " + ticket.paymentStatus + "\\n" +
+                        ticket.driverName + "  |  " + ticket.plateNumber + "\\n" +
+                        "LICENSE: " + ticket.licenseNumber + "\\n" +
+                        "ISSUED: " + ticket.issuedAt + "  |  UNIT: " + ticket.officerUnit + "\\n" +
+                        "LOCATION: " + ticket.location + "\\n" +
+                        "VIOLATIONS: " + ticket.violations, 22);
+                AddContentText("Ticket records are session-only fictional gameplay data. Fines do not represent real Florida court amounts.", 18);
+                return;
+            }
+
             DispatchCall call = mdt.SelectedCall;
             if (call == null)
             {
