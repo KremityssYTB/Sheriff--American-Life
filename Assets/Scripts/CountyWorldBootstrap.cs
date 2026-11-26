@@ -40,15 +40,15 @@ namespace SheriffAmericanLife
             var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player";
             player.transform.position = new Vector3(0, 1, -8);
-            player.AddComponent<ThirdPersonWalker>();
+            player.AddComponent<Legacy.ThirdPersonWalker>();
             var cameraObject = new GameObject("Main Camera");
             cameraObject.tag = "MainCamera";
             cameraObject.transform.position = new Vector3(0, 4, -14);
             cameraObject.AddComponent<Camera>();
             cameraObject.AddComponent<AudioListener>();
-            var follow = cameraObject.AddComponent<CameraModeController>();
+            var follow = cameraObject.AddComponent<Legacy.CameraModeController>();
             follow.SetTarget(player.transform);
-            var dispatch = gameObject.AddComponent<DispatchCallSystem>();
+            var dispatch = gameObject.AddComponent<Legacy.DispatchCallSystem>();
             dispatch.SetPlayer(player.transform);
 
             CreatePatrolVehicle(new Vector3(5, 0.8f, -12));
@@ -66,7 +66,7 @@ namespace SheriffAmericanLife
             var car = CreatePrimitive("Sheriff Patrol SUV", PrimitiveType.Cube, position,
                 new Vector3(2.2f, 1.3f, 4.2f), null);
             car.GetComponent<Renderer>().material.color = new Color(0.08f, 0.1f, 0.13f);
-            car.AddComponent<PatrolVehicleController>();
+            car.AddComponent<Legacy.PatrolVehicleController>();
         }
 
         private GameObject CreatePrimitive(string objectName, PrimitiveType type, Vector3 position,
