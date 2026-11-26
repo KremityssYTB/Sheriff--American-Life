@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26 (player vertical-slice source audit and duplicate-type isolation)
+Last updated: 2026-11-26 (first runtime player/vehicle/touch prototype integrated)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -46,17 +46,24 @@ The detailed scope and staged build order are in `DESIGN/CORE_GAMEPLAY_SCOPE.md`
 - One north-approach through-lane lead sedan is marked as the emergency test vehicle, with a dark-blue body, dispatch-controlled alternating red/blue lightbar, and generated two-tone siren. The unit is named `OCALA-1`: MDT ACCEPT assigns it, EN ROUTE activates lights and siren, ON SCENE stops the siren while keeping lights active, and RESOLVED/CANCELLED turns both off. It receives priority over ordinary waiting traffic at the four-way stop, but cannot pre-empt an occupying vehicle or bypass pedestrian occupancy. This is a single-unit prototype; full CAD assignment, emergency pull-over behavior, and fleet support remain unimplemented.
 - Vehicle collisions can publish incident reports into dispatch.
 
-## Player and mobile-control source audit (2026-11-26)
+## Player vertical-slice integration (2026-11-26)
 
-- `Assets/Scripts/Player/ThirdPersonWalker.cs`: camera-relative movement, sprint, and public movement/sprint input methods.
-- `Assets/Scripts/Vehicle/PatrolVehicleController.cs`: public throttle and steering inputs, basic transform-based vehicle movement.
-- `Assets/Scripts/Systems/CameraModeController.cs`: first/third-person camera anchors and mode toggle API.
-- `Assets/Scripts/UI/MobileControls.cs`: bridge methods for movement, sprint, vehicle inputs, camera toggle, and test dispatch.
-- `Assets/Scripts/Systems/OfficerInteractionController.cs`: focused-civilian interaction/report actions.
-- These newer components are not yet wired into `CountyWorldBootstrap`. The bootstrap still spawns the old keyboard-only greybox player, camera, dispatch placeholder, and vehicle.
-- Four duplicate root-level class declarations (`CameraModeController`, `DispatchCallSystem`, `PatrolVehicleController`, `ThirdPersonWalker`) conflicted with newer folder-organized classes in the same namespace. The root-level scripts were moved into `SheriffAmericanLife.Legacy`, and `CountyWorldBootstrap` now explicitly uses those legacy types. This isolates the duplicates while preserving the old greybox path.
-- The source audit and namespace changes are not a Unity compilation. Additional duplicate types or unrelated compile errors may remain.
-- Detailed source inventory and acceptance checks: `DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md`.
+New source committed on `main`:
+- `Assets/Scripts/Player/CountyPlayerRuntimeController.cs` creates a player deputy, a patrol SUV, camera anchors, simple runtime touch-oriented IMGUI controls, on-foot movement/sprint, driving throttle/steering, vehicle enter/exit, camera switching, and a duty toggle.
+- `Assets/Scripts/Systems/CountyDutyState.cs` provides a session-level on/off duty state and an `OnDutyChanged` event.
+- `Assets/Scripts/Player/ThirdPersonWalker.cs` now exposes camera assignment and movement enable/disable methods.
+- `Assets/Scripts/Vehicle/PatrolVehicleController.cs` now exposes control enable/disable and immediate stop methods.
+- `Assets/Scripts/Systems/CameraModeController.cs` now exposes runtime camera/anchor configuration.
+- `Assets/Scripts/World/CountyWorldBootstrap.cs` now spawns the player runtime controller after the Ocala world and civilian/incident setup.
+
+Important limitations:
+- The touch controls are temporary IMGUI buttons, not a polished joystick/HUD. Touch interaction behavior still needs Unity/iPhone verification.
+- Vehicle motion remains simple transform-based movement, not Rigidbody vehicle physics.
+- The duty state is session-only and currently changes the state/event; dispatch, MDT, equipment, uniform, and role gating are not yet connected.
+- Enter/exit uses a distance check, hides the player while seated, and places the player beside the SUV on exit; safe exit collision/obstacle checks are not yet implemented.
+- The player slice is source-integrated into the runtime county bootstrap, but has not been compiled or run in Unity.
+
+The earlier duplicate root-level controller isolation remains in place. The legacy keyboard path is preserved for compatibility but the new runtime player controller is now additionally spawned by the world bootstrap. Do not treat source integration as a playable/tested build.
 
 ## Recent traffic commits (2026-11-26)
 
@@ -123,13 +130,14 @@ The manual validation matrix is a checklist, not a test report. Do not claim any
 
 ## Next development steps
 
-1. Integrate `Player.ThirdPersonWalker`, the newer camera controller, and mobile controls into `CountyWorldBootstrap`; ensure the spawned capsule has only the intended movement collider.
-2. Implement safe patrol-vehicle enter/exit, camera target handoff, and exclusive on-foot/vehicle input routing.
-3. Add explicit on-duty/off-duty state; duty state gates department tools and dispatch, not ordinary free-roam, stores, homes, or personal driving.
-4. Connect civilian focus/interaction to the player interaction loop.
-5. Build one complete traffic stop, then detain/cuff/search/arrest/prisoner transport.
-6. Add one usable store/gas station and one home/interior to prove off-duty civilian gameplay.
-7. Resume traffic simulation expansion after the touch-controlled player loop is functional.
+1. Run Unity compilation/Play Mode for the newly integrated player slice and fix errors.
+2. Replace temporary IMGUI controls with a polished mobile joystick and hold-based buttons; verify portrait and landscape safe areas.
+3. Improve patrol SUV movement, collision/physics, camera transitions, and safe exit placement.
+4. Connect `CountyDutyState` to dispatch, MDT, uniforms/equipment, and duty-only actions while keeping off-duty free roam active.
+5. Add player focus/raycast interaction with civilians and connect the existing officer interaction/report systems.
+6. Build one traffic stop, suspect response, detain/cuff/search/arrest, and prisoner transport loop.
+7. Add one usable store/gas station and one home/interior.
+8. Expand Ocala only after the first loop is stable; traffic simulation expansion remains secondary.
 
 ## Working protocol
 
