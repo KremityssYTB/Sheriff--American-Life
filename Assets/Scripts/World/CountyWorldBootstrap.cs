@@ -185,6 +185,14 @@ namespace SheriffAmericanLife
             body.mass = 1150f;
             CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, speed, signals, eastWest, stopLine);
+            TrafficStopDriverBehavior behavior = vehicle.AddComponent<TrafficStopDriverBehavior>();
+            int behaviorRoll = Random.Range(0, 100);
+            TrafficDriverDisposition disposition = behaviorRoll < 50
+                ? TrafficDriverDisposition.Cooperative
+                : behaviorRoll < 75 ? TrafficDriverDisposition.Nervous
+                : behaviorRoll < 92 ? TrafficDriverDisposition.Argumentative
+                : TrafficDriverDisposition.Fleeing;
+            behavior.Configure(disposition);
 
             TrafficStopDriverProfile driver = vehicle.AddComponent<TrafficStopDriverProfile>();
             string[] firstNames = { "Jordan", "Avery", "Morgan", "Taylor", "Casey", "Riley", "Cameron", "Drew" };
