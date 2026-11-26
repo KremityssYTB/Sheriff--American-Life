@@ -2,6 +2,16 @@
 
 A Florida open-world law-enforcement and civilian life simulator. Target device: iPhone 16e. Engine: Unity 6.3 (6000.3.25f1) with URP 17.3.0.
 
+## Core game identity and gameplay
+
+SHERIFF: AMERICAN LIFE is an LSPDFR-inspired open-world roleplaying game, not merely a traffic or dispatch simulator. The player should be able to live in the Florida-inspired world: go on duty or off duty, walk and explore, enter and exit vehicles, patrol, conduct traffic stops, investigate incidents, interact with NPCs, issue citations, arrest and transport suspects, shop, visit businesses, and use homes and public services. First- and third-person play are planned.
+
+Off-duty gameplay is explicitly part of the design. Players should be able to leave duty and freely explore, shop at stores, visit gas stations, banks, homes/apartments and other businesses, drive personal vehicles, and take part in civilian life. On-duty state governs department equipment, patrol assignment, radio/MDT, dispatch and duty-specific interactions.
+
+The intended world includes gas stations, convenience stores, grocery/retail stores, banks, houses, apartments, businesses, sheriff/police facilities, fire stations, hospitals, jails, courthouses, parking areas, neighborhoods, highways, rural areas, farms, forests and lakes. NPCs should have routines and believable reactions, shop and drive, obey traffic laws, call 911, witness incidents, cooperate, flee or surrender according to scenario context. The initial game is single-player-first, with sheriff deputy gameplay as the first playable role; police, highway patrol, SWAT, detective, fire, EMS and civilian roles are longer-term targets.
+
+See [Core Gameplay Scope](DESIGN/CORE_GAMEPLAY_SCOPE.md) for the complete requirements and vertical-slice order. These are design targets; they are not all implemented yet.
+
 ## Current prototype foundation
 
 - Unity 6 project and mobile URP setup
