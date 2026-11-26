@@ -49,7 +49,9 @@ Build a compact district around an Ocala-style downtown and adjoining residentia
 
 ### E. Civilian interaction and consequences
 - Interaction options depend on context: greet, ask questions, request identification, warn, cite, detain, arrest, assist.
-- Witnesses can report incidents and provide observations.
+- Nearby civilians can register an incident as seen and heard or heard nearby, with a confidence estimate and basic subject description.
+- Witness observations are stored separately from officer incident reports and can later feed an MDT interview/investigation workflow.
+- Witnesses should report incidents only when they are within hearing range; visual identification requires a forward field-of-view check. Production needs obstruction checks and more detailed perception.
 - NPC reactions depend on threat, trust, stress, prior interactions, and nearby police presence.
 - Consequences must be proportionate and recorded; no arbitrary instant wanted-level changes.
 
@@ -96,5 +98,9 @@ The first playable milestone is complete when:
 
 - `Assets/Scripts/World/WorldClockSystem.cs` provides the first clock/weather foundation.
 - `Assets/Scripts/World/CivilianRoutineAgent.cs` provides schedule selection and simple waypoint movement for greybox testing.
-- `Assets/Scripts/World/CountyWorldBootstrap.cs` now creates two placeholder residents with different home/work/shop/park schedules and connects the world clock to the generated directional sun.
+- `Assets/Scripts/World/CountyWorldBootstrap.cs` now creates two placeholder residents with different home/work/shop/park schedules, connects the world clock to the generated directional sun, and attaches witness agents.
+- `Assets/Scripts/Systems/WorldIncidentBus.cs` defines incident types and a shared event channel; `WorldIncidentReporter` is the scene entry point for gameplay systems to publish events.
+- `Assets/Scripts/World/CivilianWitnessAgent.cs` checks nearby incidents against a hearing radius and forward visual cone, then records a witness statement.
+- `Assets/Scripts/Systems/WitnessStatementBook.cs` stores session-only statements and raises an event for a future MDT UI.
+- This is not yet an autonomous crime/dispatch system: nothing currently publishes incidents on its own. The current visual check does not perform raycast occlusion, and witness statements are not saved between sessions.
 - These scripts are foundations only. They do not yet provide NavMesh pathfinding, animation, traffic AI, rain VFX, or incident persistence.
