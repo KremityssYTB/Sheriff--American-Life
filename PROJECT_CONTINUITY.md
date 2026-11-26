@@ -224,3 +224,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The player can end the stop to resume traffic and disable the emergency lightbar.
 - This is a closed fictional gameplay loop; it does not query real Florida DMV, insurance, or police systems. No Unity compile, simulator, or device test has been run.
 - Next: add driver response dialogue and escalation behavior, then connect citations to a ticket record and the MDT case view.
+
+
+## Driver disposition and traffic-stop dialogue update (2026-11-26)
+
+- Added `TrafficStopDriverBehavior` with four fictional dispositions: cooperative, nervous, argumentative, and fleeing.
+- County traffic spawns receive weighted randomized dispositions: 50% cooperative, 25% nervous, 17% argumentative, and 8% fleeing.
+- Fleeing drivers make a brief 1.8-second forward escape attempt before the existing pull-over steering/braking behavior resumes. This is a bounded prototype, not a pursuit system.
+- Once stopped, the mobile HUD shows the driver's disposition and offers a calm or firm approach. The selected response is written to the session incident report.
+- Ending the stop resets the behavior state. No real-world databases or external services are used.
+- Source inspection only: Unity compilation, vehicle physics, UI layout, and iPhone runtime tests remain outstanding.
