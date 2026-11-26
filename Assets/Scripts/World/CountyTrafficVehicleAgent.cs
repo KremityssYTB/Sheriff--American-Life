@@ -81,7 +81,8 @@ namespace SheriffAmericanLife
 
             Vector3 flatDirection = target.position - transform.position;
             flatDirection.y = 0f;
-            if (flatDirection.sqrMagnitude <= waypointRadius * waypointRadius)
+            bool waitingAtFourWayStopLine = fourWayStop != null && !hasStopReservation && waypointIndex == 0;
+            if (flatDirection.sqrMagnitude <= waypointRadius * waypointRadius && !waitingAtFourWayStopLine)
             {
                 AdvanceWaypoint();
                 return;
