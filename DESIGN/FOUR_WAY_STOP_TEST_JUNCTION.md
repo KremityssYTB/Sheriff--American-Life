@@ -6,7 +6,7 @@
 
 - A separate north-south and east-west road crossing
 - Four stop bars and four visible STOP sign assemblies
-- One test sedan on each approach, with representative straight-through, left-turn, and right-turn movement assignments
+- Two adjacent-lane test sedans on each approach (eight total), arriving together with representative straight-through, left-turn, and right-turn movement assignments
 - Four marked zebra crosswalks with trigger volumes and a shared `CountyFourWayStopController`
 - One looping pedestrian test actor per crosswalk, walking between opposite sidewalks
 - Pedestrian actors wait at the curb while a vehicle already occupies the junction; crosswalk triggers keep new intersection reservations closed while pedestrians are crossing
@@ -20,12 +20,13 @@ Each sedan receives its own approach enum, movement type, stop-line coordinate, 
 This provides a scene-level integration target for observing:
 - Full-stop approach and stop-line braking
 - Registration of stopped vehicles
-- Exclusive intersection reservations
+- Exclusive intersection reservations, including two same-approach vehicles attempting entry together
+- A short arbitration window that allows arrivals from other approaches to register before right-of-way is decided
 - Vehicle release after clearing the conflict area
 - Cleanup when an agent is disabled
 
 ## Current limitations
 
-This is still a greybox test, not a complete traffic simulation. Only one sample vehicle per approach is spawned, so this is not yet a balanced traffic-flow test. The four sample routes cover straight, left, and right movement types, but do not test every movement from every approach. Pedestrian crossing geometry and occupancy sensors are now present, and the controller tracks multiple pedestrian actors without releasing the gate until all tracked actors leave. The scene now spawns four simple looping capsule pedestrians. Their movement, curb waiting, trigger occupancy, and vehicle yielding are implemented at source level but remain unverified in Unity. There is no stop-sign dwell timer, no obstacle avoidance, and no automated test harness. The controller serializes all traffic to one vehicle at a time.
+This is still a greybox test, not a complete traffic simulation. Two sample vehicles per approach are spawned side by side to exercise same-approach simultaneous registration and exclusive reservation. This is still not a realistic queue model; the vehicles share a movement route and do not yet model lane-specific turn permissions or following distances. The four sample routes cover straight, left, and right movement types, but do not test every movement from every approach. Pedestrian crossing geometry and occupancy sensors are now present, and the controller tracks multiple pedestrian actors without releasing the gate until all tracked actors leave. The scene now spawns four simple looping capsule pedestrians. Their movement, curb waiting, trigger occupancy, and vehicle yielding are implemented at source level but remain unverified in Unity. There is no stop-sign dwell timer, no obstacle avoidance, and no automated test harness. The controller serializes all traffic to one vehicle at a time. A 0.25-second arbitration delay is used to collect near-simultaneous arrivals before applying arrival-time and right-side priority.
 
 The route loops are simple waypoint paths intended for prototype observation. The stop-line waypoint now remains active until the vehicle obtains its reservation, preventing the previous waypoint-radius shortcut from skipping the stop request. Each approach also has a separate pedestrian yield line before its crosswalk; vehicles apply braking while a crossing is occupied. No Unity compilation, play-mode verification, collision/traffic-flow test, or iPhone profiling has been completed.
