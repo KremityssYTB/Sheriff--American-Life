@@ -199,15 +199,15 @@ namespace SheriffAmericanLife
                 if (bookings.Count == 0) AddContentText("No arrest bookings have been created.", 22);
                 foreach (ArrestBookingRecord booking in bookings)
                 {
-                    AddContentText(booking.bookingId + "  |  " + booking.status + "\\n" +
-                        booking.personName + "  |  " + booking.identificationNumber + "\\n" +
-                        "REASON: " + booking.arrestReason + "\\nARRESTED: " + booking.arrestedAt +
-                        (string.IsNullOrEmpty(booking.bookedAt) ? "" : "\\nBOOKED: " + booking.bookedAt) +
-                        (string.IsNullOrEmpty(booking.releasedAt) ? "" : "\\nRELEASED: " + booking.releasedAt), 22);
-                    AddContentText("PROPERTY INVENTORY\\n" +
+                    AddContentText(booking.bookingId + "  |  " + booking.status + "\n" +
+                        booking.personName + "  |  " + booking.identificationNumber + "\n" +
+                        "REASON: " + booking.arrestReason + "\nARRESTED: " + booking.arrestedAt +
+                        (string.IsNullOrEmpty(booking.bookedAt) ? "" : "\nBOOKED: " + booking.bookedAt) +
+                        (string.IsNullOrEmpty(booking.releasedAt) ? "" : "\nRELEASED: " + booking.releasedAt), 22);
+                    AddContentText("PROPERTY INVENTORY\n" +
                         (booking.propertyInventory == null || booking.propertyInventory.Count == 0
                             ? "No property listed"
-                            : string.Join("\\n", booking.propertyInventory)), 19);
+                            : string.Join("\n", booking.propertyInventory)), 19);
                     if (booking.status == BookingStatus.AwaitingTransport)
                     {
                         GameObject processButton = MakeButtonObject("MARK " + booking.bookingId + " BOOKED",
