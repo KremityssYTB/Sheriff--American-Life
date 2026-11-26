@@ -3,8 +3,7 @@ using System;
 namespace SheriffAmericanLife
 {
     /// <summary>
-    /// Pure Florida-style intersection priority rules. This policy helper is not yet
-    /// wired into the traffic agents; it provides deterministic rules for that integration.
+    /// Pure Florida-style intersection priority rules used by the four-way-stop controller.
     /// </summary>
     public static class CountyIntersectionRules
     {
