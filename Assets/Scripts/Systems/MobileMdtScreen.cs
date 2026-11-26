@@ -91,10 +91,11 @@ namespace SheriffAmericanLife
             callList = list.content;
 
             Transform right = window.transform.Find("Case Panel");
-            MakeButton("DETAILS", right, new Vector2(.025f,.91f), new Vector2(.25f,.99f), () => SetTab("DETAILS"));
-            MakeButton("WITNESSES", right, new Vector2(.27f,.91f), new Vector2(.47f,.99f), () => SetTab("WITNESSES"));
-            MakeButton("REPORTS", right, new Vector2(.49f,.91f), new Vector2(.70f,.99f), () => SetTab("REPORTS"));
-            MakeButton("TICKETS", right, new Vector2(.73f,.91f), new Vector2(.97f,.99f), () => SetTab("TICKETS"));
+            MakeButton("DETAILS", right, new Vector2(.015f,.91f), new Vector2(.205f,.99f), () => SetTab("DETAILS"));
+            MakeButton("WITNESSES", right, new Vector2(.21f,.91f), new Vector2(.405f,.99f), () => SetTab("WITNESSES"));
+            MakeButton("REPORTS", right, new Vector2(.41f,.91f), new Vector2(.595f,.99f), () => SetTab("REPORTS"));
+            MakeButton("TICKETS", right, new Vector2(.60f,.91f), new Vector2(.785f,.99f), () => SetTab("TICKETS"));
+            MakeButton("HISTORY", right, new Vector2(.79f,.91f), new Vector2(.985f,.99f), () => SetTab("HISTORY"));
             ScrollArea detail = CreateScrollArea(right, new Vector2(.025f,.16f), new Vector2(.975f,.89f));
             detailsContent = detail.content;
             CreateActionButtons(right);
@@ -164,11 +165,37 @@ namespace SheriffAmericanLife
         {
             if (detailsContent == null) return;
             ClearChildren(detailsContent);
+            if (activeTab == "HISTORY")
+            {
+                AddContentText("REPEAT DRIVER HISTORY", 28);
+                IReadOnlyList<DriverHistoryRecord> history = mdt.DriverHistory;
+                if (history.Count == 0)
+                    AddContentText("No prior warnings or citations are recorded. Driver history is created after a warning or citation.", 22);
+                foreach (DriverHistoryRecord record in history)
+                {
+                    AddContentText(record.driverName + "  |  " + record.licenseNumber + "  |  " + record.plateNumber +
+                        "\nSTOPS: " + record.totalStops + "  |  WARNINGS: " + record.warningCount +
+                        "  |  CITATIONS: " + record.citationCount +
+                        "\nLAST CONTACT: " + record.lastEncounterAt + "  |  " + record.lastOutcome, 22);
+                    int eventCount = record.events != null ? record.events.Count : 0;
+                    int firstEvent = Mathf.Max(0, eventCount - 5);
+                    for (int i = eventCount - 1; i >= firstEvent; i--)
+                    {
+                        DriverHistoryEvent item = record.events[i];
+                        AddContentText(item.recordedAt + "  |  " + item.action +
+                            (string.IsNullOrEmpty(item.citationNumber) ? "" : " " + item.citationNumber) +
+                            "\n" + item.details, 19);
+                    }
+                }
+                AddContentText("History is local fictional gameplay data. It is not a real DMV, court, or law-enforcement record.", 18);
+                return;
+            }
+
             if (activeTab == "TICKETS")
             {
                 AddContentText("TRAFFIC CITATION LEDGER", 28);
                 IReadOnlyList<TrafficCitation> tickets = mdt.Citations;
-                if (tickets.Count == 0) AddContentText("No traffic citations have been issued this session.", 22);
+                if (tickets.Count == 0) AddContentText("No saved traffic citations.", 22);
                 foreach (TrafficCitation ticket in tickets)
                 {
                     AddContentText(ticket.citationNumber + "  |  $" + ticket.fineAmount +
@@ -188,7 +215,7 @@ namespace SheriffAmericanLife
                         paidButton.AddComponent<LayoutElement>().preferredHeight = 58f;
                     }
                 }
-                AddContentText("Ticket records are session-only fictional gameplay data. Fines do not represent real Florida court amounts.", 18);
+                AddContentText("Ticket records are saved locally as fictional gameplay data. Fines do not represent real Florida court amounts.", 18);
                 return;
             }
 
