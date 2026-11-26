@@ -37,20 +37,22 @@ namespace SheriffAmericanLife
                 new Color(.14f, .14f, .14f));
 
             controller = junctionRoot.gameObject.AddComponent<CountyFourWayStopController>();
-            AddStopApproach(junctionRoot, center, Vector3.forward, Vector3.right,
+            AddStopApproach(junctionRoot, center, Vector3.back,
                 CountyIntersectionRules.Approach.North, "North", CountyIntersectionRules.Movement.Straight);
-            AddStopApproach(junctionRoot, center, Vector3.left, Vector3.back,
+            AddStopApproach(junctionRoot, center, Vector3.left,
                 CountyIntersectionRules.Approach.East, "East", CountyIntersectionRules.Movement.Left);
-            AddStopApproach(junctionRoot, center, Vector3.back, Vector3.left,
+            AddStopApproach(junctionRoot, center, Vector3.forward,
                 CountyIntersectionRules.Approach.South, "South", CountyIntersectionRules.Movement.Right);
-            AddStopApproach(junctionRoot, center, Vector3.right, Vector3.forward,
+            AddStopApproach(junctionRoot, center, Vector3.right,
                 CountyIntersectionRules.Approach.West, "West", CountyIntersectionRules.Movement.Straight);
         }
 
         private void AddStopApproach(Transform parent, Vector3 center, Vector3 forward,
-            Vector3 side, CountyIntersectionRules.Approach approach, string label,
+            CountyIntersectionRules.Approach approach, string label,
             CountyIntersectionRules.Movement movement)
         {
+            // Derive the vehicle's right-hand side from its travel direction.
+            Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
             Vector3 stop = center - forward * 10f;
             Vector3 start = center - forward * 62f;
             Vector3 turnDirection = movement == CountyIntersectionRules.Movement.Left ? -side : side;
