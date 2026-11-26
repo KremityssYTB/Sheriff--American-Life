@@ -32,6 +32,7 @@ namespace SheriffAmericanLife
         [SerializeField] private float stopPositionTolerance = 2.8f;
         [SerializeField] private float frontBumperOffset = 2.1f;
         [SerializeField] private float stoppedSpeedThreshold = 0.25f;
+        [SerializeField] private float minimumStopDwellSeconds = 1.25f;
         [Header("Traffic Following")]
         [SerializeField] private float minimumFollowingDistance = 2.5f;
         [SerializeField] private float followingTimeHeadway = 1.35f;
@@ -40,6 +41,7 @@ namespace SheriffAmericanLife
         private static readonly RaycastHit[] FollowingHits = new RaycastHit[16];
         private bool stopRegistered;
         private bool hasStopReservation;
+        private float stopDwellStartedAt;
 
         private Rigidbody body;
         private int waypointIndex;
@@ -80,6 +82,7 @@ namespace SheriffAmericanLife
             pedestrianStopLinePosition = crosswalkStopLine;
             stopRegistered = false;
             hasStopReservation = false;
+            stopDwellStartedAt = 0f;
         }
 
         private void FixedUpdate()
@@ -130,6 +133,15 @@ namespace SheriffAmericanLife
             if (fourWayStop != null && !hasStopReservation)
             {
                 float stopDistance = Vector3.Dot(stopLinePosition - transform.position, transform.forward);
+                if (stopRegistered && !hasStopReservation &&
+                    (stopDistance < -0.5f || Mathf.Abs(currentSpeed) > stoppedSpeedThreshold * 2f))
+                {
+                    // A vehicle that rolls forward again must lose its queued arrival.
+                    fourWayStop.RemoveVehicle(GetInstanceID());
+                    stopRegistered = false;
+                    stopDwellStartedAt = 0f;
+                }
+
                 if (stopDistance > 0f && stopDistance <= stopDetectionDistance)
                 {
                     float safeApproachSpeed = Mathf.Sqrt(2f * braking * Mathf.Max(0f, stopDistance - stopPositionTolerance));
@@ -140,8 +152,13 @@ namespace SheriffAmericanLife
                         {
                             fourWayStop.RegisterStoppedVehicle(GetInstanceID(), stopApproach, stopMovement, Time.time);
                             stopRegistered = true;
+                            stopDwellStartedAt = Time.time;
                         }
-                        hasStopReservation = fourWayStop.TryAcquireIntersection(GetInstanceID());
+
+                        bool completedStopDwell = Time.time - stopDwellStartedAt >= minimumStopDwellSeconds;
+                        if (completedStopDwell)
+                            hasStopReservation = fourWayStop.TryAcquireIntersection(GetInstanceID());
+
                         if (!hasStopReservation) speedError = -Mathf.Max(0f, currentSpeed);
                     }
                 }
