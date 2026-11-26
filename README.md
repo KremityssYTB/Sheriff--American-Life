@@ -1,33 +1,47 @@
 # SHERIFF: AMERICAN LIFE
 
-A Florida-inspired open-world law-enforcement and civilian roleplay simulator. Target: iPhone 16e. Engine: Unity 6 with Universal Render Pipeline (URP).
+A Florida open-world law-enforcement and civilian life simulator. Target device: iPhone 16e. Engine: Unity 6.3 (6000.3.25f1) with URP 17.3.0.
 
 ## Current prototype foundation
 
-- Unity 6 project pinned to 6000.3.25f1
-- URP 17.3.0 package
-- Editor setup command that creates a mobile URP asset, Universal Renderer, Main scene, and iOS player settings
-- Cypress County runtime blockout
+- Unity 6 project and mobile URP setup
+- Runtime greybox county blockout
 - Third-person movement and camera-mode toggle
-- Basic patrol SUV movement prototype
-- Dispatch call acceptance and arrival trigger
-- GitHub Actions workflow that exports an Xcode project, compiles it on macOS, and packages an unsigned IPA
+- Basic patrol vehicle controller
+- Dispatch call prototype
+- **World clock and weather foundation** (clear, cloudy, rain, fog lighting states)
+- **Schedule-driven civilian prototype** with configurable daily destinations
+- Ocala first-playable system plan
 
-This is an early greybox foundation, not a finished open-world game. Models, animation, mobile touch HUD, traffic AI, interiors, audio, and full police/civilian systems remain to be developed.
+The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the new clock/civilian scripts have not yet been profiled on an iPhone. The civilian routine currently uses direct waypoint movement; production pathfinding, animation, and obstacle avoidance remain future work.
+
+## World direction
+
+The long-term world is based on real Florida geography and developed county-by-county:
+
+1. Marion County — Ocala, Silver Springs, Belleview, Dunnellon and surrounding rural areas
+2. Hillsborough County — Tampa, including Ybor City
+3. Orange County — Orlando
+4. Miami-Dade County — Miami
+5. Lee County — Fort Myers
+6. Volusia County — Daytona Beach
+7. Duval County — Jacksonville
+8. Leon County — Tallahassee
+
+The 30 × 30 km multi-county world is a long-term target. Development starts with a compact, streamed Ocala district rather than loading the full world at once.
 
 ## Project setup
 
-1. Open the repository with Unity 6.3 / Editor 6000.3.25f1 and allow packages to resolve.
-2. In Unity, run **SHERIFF → Setup Mobile URP Project**.
-3. The setup command creates the mobile URP asset, its Universal Renderer, and Assets/Scenes/Main.unity.
-4. Press Play to run the Cypress County blockout.
-5. Keyboard prototype controls: WASD / arrow keys to move, V to toggle camera mode, hold E plus movement keys to drive the patrol SUV, and J to accept/clear the dispatch call.
+1. Open with Unity Editor 6000.3.25f1 and allow packages to resolve.
+2. Run **SHERIFF → Setup Mobile URP Project**.
+3. Open Assets/Scenes/Main.unity and press Play.
+4. Current keyboard prototype controls are documented in the relevant controller scripts; touch-first HUD work remains in progress.
 
 ## iOS build
 
-The GitHub Actions workflow requires a valid Unity license in the repository secret UNITY_LICENSE. It exports the Unity iOS Xcode project on Linux, then uses a macOS runner with Xcode to compile and package an unsigned IPA. No Apple signing certificate or provisioning profile is added to this artifact.
+The repository includes a GitHub Actions workflow for an unsigned iOS export. A valid Unity license is required for Unity batchmode. The iOS Xcode build stage requires a macOS runner with Xcode. The workflow has not yet been verified by a successful end-to-end build.
 
-An unsigned IPA is not directly installable on an iPhone. It must be signed with a compatible certificate and provisioning profile before installation.
+An unsigned IPA is not directly installable. It must be signed with a compatible certificate and provisioning profile before installation.
 
 ## iOS configuration
 
@@ -37,15 +51,13 @@ An unsigned IPA is not directly installable on an iPhone. It must be signed with
 - Scripting backend: IL2CPP
 - Render pipeline: URP
 
-## Planned counties
+## Development priorities
 
-- Cypress County — Palmetto Crossing
-- Bayshore County — Bayshore
-- Pine Ridge County — Pine Ridge
-- Suncoast County — Suncoast
-
-## Roadmap
-
-Greybox world → touch controls and mobile HUD → traffic/pedestrian AI → dispatch and police workflows → civilian jobs/economy/interiors → additional counties → mobile performance and visual polish.
+1. Accurate Ocala district blockout and roads
+2. Connected world clock, civilian routines, and traffic
+3. Dispatch lifecycle and incident reports
+4. Civilian interactions and consequences
+5. Mobile controls, animation, audio, and performance profiling
+6. Expand county-by-county
 
 All art, audio, and models must be original or properly licensed.
