@@ -106,3 +106,13 @@ The older GitHub Actions/GameCI workflow remains an alternative, but it requires
 7. Return to traffic simulation validation and expansion after the player vertical slice is stable.
 
 All art, audio, and models must be original or properly licensed.
+
+
+## Driver disposition and traffic-stop dialogue update (2026-11-26)
+
+- Added `TrafficStopDriverBehavior` with four fictional dispositions: cooperative, nervous, argumentative, and fleeing.
+- County traffic spawns receive weighted randomized dispositions: 50% cooperative, 25% nervous, 17% argumentative, and 8% fleeing.
+- Fleeing drivers make a brief 1.8-second forward escape attempt before the existing pull-over steering/braking behavior resumes. This is a bounded prototype, not a pursuit system.
+- Once stopped, the mobile HUD shows the driver's disposition and offers a calm or firm approach. The selected response is written to the session incident report.
+- Ending the stop resets the behavior state. No real-world databases or external services are used.
+- Source inspection only: Unity compilation, vehicle physics, UI layout, and iPhone runtime tests remain outstanding.
