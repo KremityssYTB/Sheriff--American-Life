@@ -41,6 +41,10 @@ The long-term world is based on real Florida geography and developed county-by-c
 
 The 30 × 30 km multi-county world is a long-term target. Development starts with a compact, streamed Ocala district rather than loading the full world at once.
 
+## Project continuity
+
+- [Project continuity handoff](PROJECT_CONTINUITY.md) — current implemented systems, recent commits, verification limits, and next development steps for resuming work across conversations.
+
 ## Traffic prototype documentation
 
 - [Four-way-stop controller](DESIGN/FOUR_WAY_STOP_CONTROLLER.md)
