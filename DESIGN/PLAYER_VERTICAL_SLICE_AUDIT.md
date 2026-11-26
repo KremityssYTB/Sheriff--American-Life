@@ -108,3 +108,13 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - The mobile MDT now has a TICKETS tab showing ticket details and outstanding/paid state. MARK PAID changes the in-game session record to Paid; no real payment is processed.
 - Citation creation also adds a traffic-stop report entry. The ledger and payment state are session-only and are not persisted between game sessions.
 - Source checks confirmed the new data fields, ticket issuance path, MDT wiring, and balanced braces. Unity compilation, Play Mode, UI layout, and iPhone tests remain outstanding.
+
+
+## Persistent citation ledger source update (2026-11-26)
+
+- `TrafficCitationBook` now serializes citation records and the next ticket sequence into versioned JSON at `Application.persistentDataPath/traffic-citations.json`.
+- The ledger loads during component initialization and saves after citation issuance or payment-state changes.
+- Loaded ticket numbers are checked when restoring the next sequence, reducing the chance of duplicate ticket IDs if the sequence counter is stale.
+- File and JSON exceptions are caught and logged. Load errors leave an empty in-memory ledger; save errors do not remove records from the current session.
+- Persistence is local-only. There is no account sync, server storage, or real-world records integration.
+- Verification is source inspection only. Unity compilation, JSON serialization round-trip, iOS sandbox storage, Play Mode, and iPhone testing remain outstanding.
