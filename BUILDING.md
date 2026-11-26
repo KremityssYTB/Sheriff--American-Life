@@ -29,6 +29,6 @@ GitHub Actions can run cloud builds, but a Unity Personal license still has to b
 
 ## Browser preview
 
-The repository includes a separate 2D mobile browser preview in `web-demo/index.html`. It does not require Unity or a Unity license to serve as a static website. The GitHub Pages workflow is `.github/workflows/deploy-web-demo.yml`. The repository owner may need to enable Pages with “GitHub Actions” as the deployment source. A successful Actions deployment is required before the preview can be called live or tested on the iPhone.
+The repository includes a separate 2D mobile browser preview in `web-demo/index.html`. It does not require Unity or a Unity license to serve as a static website. The GitHub Pages workflow is `.github/workflows/deploy-web-demo.yml`. The initial deployment attempts confirmed that Pages is not enabled and the connected GitHub integration cannot create the Pages site. The repository owner must open Settings → Pages → Build and deployment and select “GitHub Actions” as the source, then rerun the workflow. A successful Actions deployment is required before the preview can be called live or tested on the iPhone.
 
 The browser preview is not an iOS IPA, is not the Unity game, and does not validate Unity runtime code.
