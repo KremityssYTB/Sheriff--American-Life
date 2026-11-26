@@ -55,6 +55,7 @@ namespace SheriffAmericanLife
             actorSpawner.Configure(root);
             var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
             incidentReporter.Configure(clock, actorSpawner);
+            SpawnCountyTraffic(incidentReporter);
             var incidentDirector = root.gameObject.AddComponent<CountyIncidentDirector>();
             incidentDirector.Configure(incidentReporter, new CountyIncidentDirector.Scenario[] {
                 new CountyIncidentDirector.Scenario {
@@ -127,6 +128,35 @@ namespace SheriffAmericanLife
                     Stop(18, 0, homeB, "At home")
                 });
             interactionController.SetFocusedCivilian(firstResident);
+        }
+
+
+        private void SpawnCountyTraffic(WorldIncidentReporter reporter)
+        {
+            Transform[] eastbound = new Transform[] {
+                CreateWaypoint("Traffic Eastbound Start", new Vector3(-132,.1f,-83)),
+                CreateWaypoint("Traffic Eastbound End", new Vector3(132,.1f,-83))
+            };
+            Transform[] westbound = new Transform[] {
+                CreateWaypoint("Traffic Westbound Start", new Vector3(132,.1f,-77)),
+                CreateWaypoint("Traffic Westbound End", new Vector3(-132,.1f,-77))
+            };
+
+            SpawnTrafficVehicle("Civilian Sedan East 1", new Vector3(-108,.8f,-83), eastbound, reporter, 7.5f, new Color(.2f,.3f,.42f));
+            SpawnTrafficVehicle("Civilian Sedan East 2", new Vector3(-55,.8f,-83), eastbound, reporter, 6.5f, new Color(.55f,.55f,.58f));
+            SpawnTrafficVehicle("Civilian Sedan West 1", new Vector3(108,.8f,-77), westbound, reporter, 7f, new Color(.42f,.25f,.18f));
+            SpawnTrafficVehicle("Civilian Sedan West 2", new Vector3(55,.8f,-77), westbound, reporter, 6f, new Color(.18f,.38f,.28f));
+        }
+
+        private void SpawnTrafficVehicle(string vehicleName, Vector3 position, Transform[] route,
+            WorldIncidentReporter reporter, float speed, Color color)
+        {
+            GameObject vehicle = Make(vehicleName, PrimitiveType.Cube, position,
+                new Vector3(4.2f,1.25f,1.9f), color);
+            Rigidbody body = vehicle.AddComponent<Rigidbody>();
+            body.mass = 1150f;
+            CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
+            agent.Configure(route, reporter, speed);
         }
 
         private Transform CreateWaypoint(string waypointName, Vector3 position)
