@@ -42,8 +42,7 @@ namespace SheriffAmericanLife.Editor
             pipeline.name = "SHERIFF_Mobile_URP";
             string pipelinePath = SettingsFolder + "/SHERIFF_Mobile_URP.asset";
 
-            var factory = typeof(UniversalRenderPipelineAsset).GetMethod(
-                "CreateRendererAsset", BindingFlags.Static | BindingFlags.NonPublic);
+            var factory = FindRendererFactory();
             if (factory == null)
             {
                 Debug.LogError("Could not find URP renderer factory. Create Assets > Create > Rendering > URP Asset (with Universal Renderer) manually.");
@@ -75,6 +74,25 @@ namespace SheriffAmericanLife.Editor
             AssetDatabase.CreateAsset(pipeline, pipelinePath);
             GraphicsSettings.defaultRenderPipeline = pipeline;
             QualitySettings.renderPipeline = pipeline;
+        }
+
+        private static MethodInfo FindRendererFactory()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type[] types;
+                try { types = assembly.GetTypes(); }
+                catch (ReflectionTypeLoadException ex) { types = ex.Types; }
+
+                foreach (var type in types)
+                {
+                    if (type == null) continue;
+                    var method = type.GetMethod("CreateRendererAsset",
+                        BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    if (method != null && method.GetParameters().Length == 4) return method;
+                }
+            }
+            return null;
         }
 
         private static void CreateMainScene()
