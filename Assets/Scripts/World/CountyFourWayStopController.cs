@@ -15,6 +15,7 @@ namespace SheriffAmericanLife
             public CountyIntersectionRules.Approach approach;
             public CountyIntersectionRules.Movement movement;
             public float stoppedAt;
+            public bool emergencyVehicle;
         }
 
         [SerializeField] private float simultaneousArrivalTolerance = 0.15f;
@@ -29,7 +30,7 @@ namespace SheriffAmericanLife
         public bool IsOccupied => occupyingVehicleId != 0;
         public bool IsPedestrianConflictActive => pedestrianConflict;
 
-        public void RegisterStoppedVehicle(int vehicleId, CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement, float stoppedAt)
+        public void RegisterStoppedVehicle(int vehicleId, CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement, float stoppedAt, bool emergencyVehicle = false)
         {
             if (vehicleId == 0 || vehicleId == occupyingVehicleId) return;
             Arrival existing;
@@ -37,9 +38,10 @@ namespace SheriffAmericanLife
             {
                 existing.approach = approach;
                 existing.movement = movement;
+                existing.emergencyVehicle = emergencyVehicle;
                 return;
             }
-            waiting.Add(vehicleId, new Arrival { vehicleId = vehicleId, approach = approach, movement = movement, stoppedAt = stoppedAt });
+            waiting.Add(vehicleId, new Arrival { vehicleId = vehicleId, approach = approach, movement = movement, stoppedAt = stoppedAt, emergencyVehicle = emergencyVehicle });
         }
 
         public bool TryAcquireIntersection(int vehicleId)
@@ -56,6 +58,8 @@ namespace SheriffAmericanLife
             foreach (Arrival other in waiting.Values)
             {
                 if (other.vehicleId == vehicleId) continue;
+                if (mine.emergencyVehicle && !other.emergencyVehicle) continue;
+                if (!mine.emergencyVehicle && other.emergencyVehicle) return false;
                 if (other.stoppedAt < mine.stoppedAt - simultaneousArrivalTolerance) return false;
                 bool simultaneousArrival = Mathf.Abs(mine.stoppedAt - other.stoppedAt) <= simultaneousArrivalTolerance;
                 if (simultaneousArrival && CountyIntersectionRules.MustYieldForOncomingTraffic(
@@ -78,10 +82,18 @@ namespace SheriffAmericanLife
                     bool candidateHasPriorityConflict = false;
                     bool candidateHasEarlierArrival = false;
                     bool candidateHasOncomingConflict = false;
+                    bool candidateHasEmergencyConflict = false;
 
                     foreach (Arrival other in waiting.Values)
                     {
                         if (other.vehicleId == candidate.vehicleId) continue;
+                        if (candidate.emergencyVehicle && !other.emergencyVehicle) continue;
+                        if (!candidate.emergencyVehicle && other.emergencyVehicle)
+                        {
+                            candidateHasPriorityConflict = true;
+                            candidateHasEmergencyConflict = true;
+                            continue;
+                        }
                         if (other.stoppedAt < candidate.stoppedAt - simultaneousArrivalTolerance)
                             candidateHasEarlierArrival = true;
                         if (CountyIntersectionRules.MustYieldAtFourWayStop(candidate.approach,
@@ -100,7 +112,7 @@ namespace SheriffAmericanLife
                     if (!candidateHasPriorityConflict && !candidateHasEarlierArrival)
                         everyArrivalHasPriorityConflict = false;
 
-                    if (!candidateHasEarlierArrival && !candidateHasOncomingConflict &&
+                    if (!candidateHasEarlierArrival && !candidateHasOncomingConflict && !candidateHasEmergencyConflict &&
                         (int)candidate.approach < fallbackWinnerApproach)
                     {
                         fallbackWinnerApproach = (int)candidate.approach;
