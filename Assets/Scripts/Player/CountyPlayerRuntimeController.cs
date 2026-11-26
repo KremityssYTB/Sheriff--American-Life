@@ -112,6 +112,11 @@ namespace SheriffAmericanLife
             return anchor;
         }
 
+        private void OnDestroy()
+        {
+            if (interactions != null) interactions.ArrestCompleted -= HandleArrestCompleted;
+        }
+
         private void Update()
         {
             RefreshCivilianFocus();
@@ -390,13 +395,16 @@ namespace SheriffAmericanLife
 
         private void DrawPrisonerTransportHud(float scale, float padding)
         {
-            if (!inVehicle || arrestBookingBook == null || dutyState == null || !dutyState.IsOnDuty)
+            if (!inVehicle || arrestBookingBook == null || dutyState == null ||
+                !dutyState.IsOnDuty || escortedPrisoner == null ||
+                string.IsNullOrEmpty(escortedBookingId))
                 return;
 
             ArrestBookingRecord pending = null;
             foreach (ArrestBookingRecord record in arrestBookingBook.Records)
             {
-                if (record != null && record.status == BookingStatus.AwaitingTransport)
+                if (record != null && record.bookingId == escortedBookingId &&
+                    record.status == BookingStatus.AwaitingTransport)
                 {
                     pending = record;
                     break;
@@ -423,7 +431,8 @@ namespace SheriffAmericanLife
 
         private void CompletePrisonerTransport(ArrestBookingRecord booking)
         {
-            if (!inVehicle || booking == null || arrestBookingBook == null ||
+            if (!inVehicle || booking == null || escortedPrisoner == null ||
+                booking.bookingId != escortedBookingId || arrestBookingBook == null ||
                 dutyState == null || !dutyState.IsOnDuty ||
                 Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition) > 18f)
                 return;
