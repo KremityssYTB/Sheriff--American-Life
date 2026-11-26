@@ -91,7 +91,10 @@ namespace SheriffAmericanLife
         {
             DispatchCall call = SelectedCall;
             if (call == null || reports == null) return new List<IncidentReport>();
-            return reports.Reports.FindAll(r => r.relatedIncidentId == call.sourceIncidentId);
+            var linked = new List<IncidentReport>();
+            foreach (IncidentReport report in reports.Reports)
+                if (report.relatedIncidentId == call.sourceIncidentId) linked.Add(report);
+            return linked;
         }
 
         public bool AcceptSelectedCall(string unitName)
