@@ -53,12 +53,57 @@ namespace SheriffAmericanLife
             root.gameObject.AddComponent<MobileMdtScreen>();
             var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
             incidentReporter.Configure(clock);
+            var incidentDirector = root.gameObject.AddComponent<CountyIncidentDirector>();
+            incidentDirector.Configure(incidentReporter, new CountyIncidentDirector.Scenario[] {
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.VehicleCollision,
+                    description = "Two-vehicle collision reported near the main road. Injuries unknown.",
+                    subjectDescription = "Two passenger vehicles; driver details not confirmed.",
+                    location = new Vector3(12, 0, -80), weight = 2f
+                },
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.Theft,
+                    description = "Resident reports a vehicle break-in at a local parking area.",
+                    subjectDescription = "Unknown suspect; property details pending.",
+                    location = new Vector3(58, 0, -108), weight = 1.5f
+                },
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.Disturbance,
+                    description = "911 caller reports a loud argument outside a residence.",
+                    subjectDescription = "Two people reportedly involved; identities unknown.",
+                    location = new Vector3(72, 0, -30), weight = 2f
+                },
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.Fire,
+                    description = "Smoke reported coming from a small outbuilding. Fire size unknown.",
+                    subjectDescription = "No confirmed occupants.",
+                    location = new Vector3(210, 0, 210), weight = .7f
+                },
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.MedicalEmergency,
+                    description = "Caller requests medical assistance for an unresponsive person.",
+                    subjectDescription = "Patient identity and condition not confirmed.",
+                    location = new Vector3(20, 0, -170), weight = 1f
+                },
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.SuspiciousActivity,
+                    description = "Caller reports a person checking vehicle door handles.",
+                    subjectDescription = "Unknown person wearing dark clothing.",
+                    location = new Vector3(55, 0, 120), weight = 1.2f
+                },
+                new CountyIncidentDirector.Scenario {
+                    type = WorldIncidentType.Assault,
+                    description = "911 caller reports a physical altercation near a business.",
+                    subjectDescription = "Suspect description unavailable; scene safety unknown.",
+                    location = new Vector3(-75, 0, -15), weight = .6f
+                }
+            });
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
             interactionController.Configure(reportBook);
-            SpawnTestCivilians(clock, witnessStatementBook);
+            SpawnTestCivilians(clock, witnessStatementBook, incidentReporter);
         }
 
-        private void SpawnTestCivilians(WorldClockSystem clock, WitnessStatementBook statements)
+        private void SpawnTestCivilians(WorldClockSystem clock, WitnessStatementBook statements, WorldIncidentReporter reporter)
         {
             Transform homeA = CreateWaypoint("Civilian A Home", new Vector3(-28, 0, -112));
             Transform workA = CreateWaypoint("Civilian A Work", new Vector3(18, 0, -72));
@@ -67,7 +112,7 @@ namespace SheriffAmericanLife
             Transform workB = CreateWaypoint("Civilian B Work", new Vector3(-22, 0, -72));
             Transform parkB = CreateWaypoint("Civilian B Park", new Vector3(20, 0, -170));
 
-            CivilianCharacter firstResident = CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock, statements,
+            CivilianCharacter firstResident = CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock, statements, reporter,
                 new CivilianRoutineAgent.RoutineStop[] {
                     Stop(7, 0, workA, "Commuting to work"),
                     Stop(17, 0, shopA, "Shopping after work"),
@@ -91,12 +136,13 @@ namespace SheriffAmericanLife
         }
 
         private CivilianCharacter CreateCivilian(string civilianName, Vector3 position, Color color, WorldClockSystem clock,
-            WitnessStatementBook statements, CivilianRoutineAgent.RoutineStop[] schedule)
+            WitnessStatementBook statements, WorldIncidentReporter reporter, CivilianRoutineAgent.RoutineStop[] schedule)
         {
             GameObject civilian = Make(civilianName, PrimitiveType.Capsule, position, new Vector3(.8f, 1f, .8f), color);
             civilian.AddComponent<CivilianRoutineAgent>().Configure(clock, schedule);
             CivilianCharacter character = civilian.AddComponent<CivilianCharacter>();
             civilian.AddComponent<CivilianWitnessAgent>().Configure(statements);
+            civilian.AddComponent<Civilian911CallSource>().Configure(reporter, character);
             return character;
         }
 
