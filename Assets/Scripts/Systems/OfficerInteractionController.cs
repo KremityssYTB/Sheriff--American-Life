@@ -14,6 +14,7 @@ namespace SheriffAmericanLife
         private ArrestBookingBook bookingBook;
 
         public CivilianCharacter FocusedCivilian => focusedCivilian;
+        public event System.Action<CivilianCharacter> ArrestCompleted;
 
         public void Configure(IncidentReportBook reports) => reportBook = reports;
         public void ConfigureDutyState(CountyDutyState state) => dutyState = state;
@@ -79,6 +80,7 @@ namespace SheriffAmericanLife
                 Record("Arrest", "Arrest", booking != null
                     ? "Arrest completed; booking " + booking.bookingId + " created"
                     : "Arrest completed; booking ledger unavailable");
+                if (booking != null) ArrestCompleted?.Invoke(focusedCivilian);
             }
             else
             {
