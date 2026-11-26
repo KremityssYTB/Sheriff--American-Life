@@ -142,6 +142,11 @@ namespace SheriffAmericanLife
             return call != null && dispatch.Cancel(call.callId, reason);
         }
 
+        public bool SetCitationPaymentStatus(string citationNumber, CitationPaymentStatus status)
+        {
+            return citations != null && citations.SetPaymentStatus(citationNumber, status);
+        }
+
         private void HandleCallChanged(DispatchCall call) => MdtChanged?.Invoke();
         private void HandleReportAdded(IncidentReport report) => MdtChanged?.Invoke();
         private void HandleWitnessAdded(WitnessStatement statement) => MdtChanged?.Invoke();
