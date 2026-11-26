@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The isolated four-way-stop test junction now uses one inbound lane per approach with two vehicles arranged longitudinally. This replaces the earlier side-by-side arrangement, which did not represent a normal single-lane queue.
+The isolated four-way-stop test junction now uses three inbound movement lanes per approach: a left-turn lane, a through lane, and a right-turn lane. Each lane has two vehicles arranged longitudinally, for 24 test vehicles total. The road is widened to 22 m to accommodate the six-lane cross-section in this isolated test scene.
 
 ## Spawn arrangement
 
@@ -11,6 +11,12 @@ The isolated four-way-stop test junction now uses one inbound lane per approach 
 - Both vehicles follow the same approach and stop-line route.
 - Both request the same intersection controller reservation; only one can occupy the junction.
 - The queue is a test arrangement, not final road lane geometry.
+
+## Lane assignment and turn geometry
+
+Each approach assigns the leftmost inbound lane to left turns, the middle lane to straight-through traffic, and the rightmost inbound lane to right turns. Lane offsets are measured from the approaching vehicle's right vector. Each movement receives a separate cubic Bezier path with control points aligned to the inbound and outbound directions. Straight movements preserve their lane offset; turning movements target the near-side outbound lane on the destination road. Each lane has its own stop bar and STOP sign. The 24-vehicle setup preserves two-car longitudinal queues in all movement lanes.
+
+This is a test-junction layout, not a final Florida road cross-section. The paths require visual and physics validation for curb clearance, turning radius, lane alignment, and conflicts at the center of the junction.
 
 ## Following controller
 
@@ -60,5 +66,5 @@ Use `DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md` for the queue, following-distance, and
 - Sphere-cast following is a lightweight prototype, not a production car-following model.
 - It does not yet handle lane changes, overtaking, multiple lanes, vehicle classes, cut-ins, reverse movement, or obstacle avoidance.
 - A fixed minimum gap and time headway are not yet adapted to weather, tire grip, road grade, or vehicle mass.
-- The test vehicles still share identical movement paths; turn-specific lane selection and queue branching are future work.
+- The test vehicles now use lane-specific left/straight/right paths, but the cubic curves and outbound lane alignment remain unverified. Lane changes, queue branching, and multi-lane merge behavior are future work.
 - No Unity compilation, Play Mode test, physics test, or iPhone profiling has been completed.
