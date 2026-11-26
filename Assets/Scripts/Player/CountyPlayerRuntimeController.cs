@@ -13,6 +13,9 @@ namespace SheriffAmericanLife
         private CountyEmergencyLightbar lightbar;
         private CountyTrafficVehicleAgent nearbyTrafficVehicle;
         private CountyTrafficVehicleAgent activeTrafficStop;
+        private TrafficStopDriverProfile activeDriverProfile;
+        private IncidentReportBook reportBook;
+        private bool trafficStopDecisionRecorded;
         private readonly Collider[] trafficBuffer = new Collider[48];
         private CameraModeController cameraModes;
         private CharacterController characterController;
@@ -36,6 +39,7 @@ namespace SheriffAmericanLife
         public void Initialize(Transform worldRoot)
         {
             dutyState = gameObject.AddComponent<CountyDutyState>();
+            reportBook = worldRoot.GetComponent<IncidentReportBook>();
             interactions = worldRoot.GetComponent<OfficerInteractionController>();
             if (interactions != null) interactions.ConfigureDutyState(dutyState);
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -212,10 +216,56 @@ namespace SheriffAmericanLife
             float y = padding + 150f * scale;
             if (activeTrafficStop != null)
             {
-                GUI.Label(new Rect(padding, padding + 64f * scale, 250f * scale, 28f * scale),
+                GUI.Label(new Rect(padding, padding + 64f * scale, 280f * scale, 28f * scale),
                     activeTrafficStop.IsPulledOver ? "VEHICLE STOPPED" : "VEHICLE PULLING OVER",
                     statusStyle);
-                if (GUI.Button(new Rect(x, y, 100f * scale, 42f * scale),
+
+                if (activeTrafficStop.IsPulledOver && activeDriverProfile != null)
+                {
+                    GUI.Label(new Rect(padding, padding + 92f * scale, 300f * scale, 24f * scale),
+                        "DRIVER: " + activeDriverProfile.DriverName, statusStyle);
+                    GUI.Label(new Rect(padding, padding + 116f * scale, 300f * scale, 24f * scale),
+                        "PLATE: " + activeDriverProfile.PlateNumber, statusStyle);
+
+                    float checkY = padding + 198f * scale;
+                    if (!activeDriverProfile.LicenseChecked &&
+                        GUI.Button(new Rect(x, checkY, 112f * scale, 38f * scale), "CHECK LICENSE", buttonStyle))
+                        CheckTrafficLicense();
+                    checkY += 43f * scale;
+                    if (!activeDriverProfile.RegistrationChecked &&
+                        GUI.Button(new Rect(x, checkY, 112f * scale, 38f * scale), "CHECK REG", buttonStyle))
+                        CheckTrafficRegistration();
+                    checkY += 43f * scale;
+                    if (!activeDriverProfile.InsuranceChecked &&
+                        GUI.Button(new Rect(x, checkY, 112f * scale, 38f * scale), "CHECK INSURANCE", buttonStyle))
+                        CheckTrafficInsurance();
+
+                    if (activeDriverProfile.AllDocumentsChecked)
+                    {
+                        string result = activeDriverProfile.HasViolation ? "DOCUMENT ISSUE FOUND" : "ALL DOCUMENTS VALID";
+                        GUI.Label(new Rect(padding, padding + 144f * scale, 300f * scale, 26f * scale),
+                            result, statusStyle);
+                        if (!trafficStopDecisionRecorded && activeDriverProfile.HasViolation)
+                        {
+                            if (GUI.Button(new Rect(x, padding + 332f * scale, 112f * scale, 38f * scale),
+                                "WARNING", buttonStyle)) ResolveTrafficStop(false);
+                            if (GUI.Button(new Rect(x, padding + 375f * scale, 112f * scale, 38f * scale),
+                                "CITATION", buttonStyle)) ResolveTrafficStop(true);
+                        }
+                        else if (!trafficStopDecisionRecorded)
+                        {
+                            GUI.Label(new Rect(padding, padding + 170f * scale, 300f * scale, 24f * scale),
+                                "No document violation found.", statusStyle);
+                        }
+                        else
+                        {
+                            GUI.Label(new Rect(padding, padding + 170f * scale, 300f * scale, 24f * scale),
+                                "STOP DECISION RECORDED", statusStyle);
+                        }
+                    }
+                }
+
+                if (GUI.Button(new Rect(x, Screen.height - 112f * scale, 112f * scale, 42f * scale),
                     activeTrafficStop.IsPulledOver ? "END STOP" : "CANCEL STOP", buttonStyle))
                     EndTrafficStop();
             }
@@ -234,14 +284,72 @@ namespace SheriffAmericanLife
             if (!nearbyTrafficVehicle.RequestTrafficStop(shoulder)) return;
 
             activeTrafficStop = nearbyTrafficVehicle;
+            activeDriverProfile = activeTrafficStop.GetComponent<TrafficStopDriverProfile>();
+            if (activeDriverProfile != null) activeDriverProfile.ResetChecks();
+            trafficStopDecisionRecorded = false;
             nearbyTrafficVehicle = null;
             lightbar.SetLightbarEnabled(true);
+        }
+
+        private void CheckTrafficLicense()
+        {
+            if (!CanProcessTrafficStop()) return;
+            string result = activeDriverProfile.CheckLicense();
+            RecordTrafficStopAction("License check", result);
+            Debug.Log(result);
+        }
+
+        private void CheckTrafficRegistration()
+        {
+            if (!CanProcessTrafficStop()) return;
+            string result = activeDriverProfile.CheckRegistration();
+            RecordTrafficStopAction("Registration check", result);
+            Debug.Log(result);
+        }
+
+        private void CheckTrafficInsurance()
+        {
+            if (!CanProcessTrafficStop()) return;
+            string result = activeDriverProfile.CheckInsurance();
+            RecordTrafficStopAction("Insurance check", result);
+            Debug.Log(result);
+        }
+
+        private bool CanProcessTrafficStop()
+        {
+            return activeTrafficStop != null && activeTrafficStop.IsPulledOver &&
+                activeDriverProfile != null && dutyState != null && dutyState.IsOnDuty;
+        }
+
+        private void ResolveTrafficStop(bool issueCitation)
+        {
+            if (!CanProcessTrafficStop() || !activeDriverProfile.AllDocumentsChecked ||
+                !activeDriverProfile.HasViolation || trafficStopDecisionRecorded) return;
+
+            string action = issueCitation ? "Citation issued" : "Verbal warning";
+            string outcome = issueCitation
+                ? "Citation issued after document discrepancy review."
+                : "Verbal warning issued; driver advised to correct document issue.";
+            RecordTrafficStopAction(action, outcome);
+            trafficStopDecisionRecorded = true;
+        }
+
+        private void RecordTrafficStopAction(string action, string outcome)
+        {
+            if (reportBook == null || activeDriverProfile == null) return;
+            reportBook.AddReport("Traffic stop", activeDriverProfile.DriverName, action, outcome,
+                "Vehicle plate " + activeDriverProfile.PlateNumber +
+                ". Driver license: " + activeDriverProfile.LicenseStatus +
+                ". Registration: " + activeDriverProfile.RegistrationStatus +
+                ". Insurance: " + activeDriverProfile.InsuranceStatus + ".");
         }
 
         private void EndTrafficStop()
         {
             if (activeTrafficStop != null) activeTrafficStop.ResumeTraffic();
             activeTrafficStop = null;
+            activeDriverProfile = null;
+            trafficStopDecisionRecorded = false;
             if (lightbar != null) lightbar.SetLightbarEnabled(false);
         }
 
