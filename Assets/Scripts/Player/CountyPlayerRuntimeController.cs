@@ -32,7 +32,7 @@ namespace SheriffAmericanLife
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player Deputy";
             player.transform.SetParent(worldRoot, false);
-            player.transform.position = new Vector3(-8f, 1f, -24f);
+            player.transform.position = new Vector3(-6.5f, 1f, -26.5f);
             var capsule = player.GetComponent<CapsuleCollider>();
             if (capsule) Destroy(capsule);
             characterController = player.AddComponent<CharacterController>();
@@ -69,7 +69,7 @@ namespace SheriffAmericanLife
             var anchor = new GameObject(anchorName).transform;
             anchor.SetParent(parent, false);
             anchor.localPosition = localPosition;
-            anchor.localRotation = Quaternion.identity;
+            anchor.localRotation = anchorName.Contains("Third Person") ? Quaternion.Euler(12f,0f,0f) : Quaternion.identity;
             return anchor;
         }
 
