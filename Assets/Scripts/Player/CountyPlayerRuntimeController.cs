@@ -20,6 +20,9 @@ namespace SheriffAmericanLife
         private Transform vehicleFirst;
         private bool inVehicle;
         private CountyDutyState dutyState;
+        private OfficerInteractionController interactions;
+        private readonly Collider[] focusBuffer = new Collider[32];
+        private CivilianCharacter focusedCivilian;
         private Vector2 moveInput;
         private float throttle;
         private float steering;
@@ -29,6 +32,8 @@ namespace SheriffAmericanLife
         public void Initialize(Transform worldRoot)
         {
             dutyState = gameObject.AddComponent<CountyDutyState>();
+            interactions = worldRoot.GetComponent<OfficerInteractionController>();
+            if (interactions != null) interactions.ConfigureDutyState(dutyState);
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player Deputy";
             player.transform.SetParent(worldRoot, false);
@@ -76,6 +81,7 @@ namespace SheriffAmericanLife
 
         private void Update()
         {
+            RefreshCivilianFocus();
             if (walker && !inVehicle) walker.SetMoveInput(moveInput);
             if (vehicle)
             {
@@ -101,6 +107,8 @@ namespace SheriffAmericanLife
             if (GUI.Button(new Rect(Screen.width-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
                 cameraModes.ToggleCameraMode();
 
+            DrawCivilianInteractionHud(s, pad);
+
             if (!inVehicle)
             {
                 moveInput = Vector2.zero;
@@ -123,6 +131,90 @@ namespace SheriffAmericanLife
                 else if (GUI.RepeatButton(new Rect(Screen.width-w-pad,Screen.height-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
                 else throttle = 0;
             }
+        }
+
+        private void RefreshCivilianFocus()
+        {
+            if (inVehicle || player == null || interactions == null)
+            {
+                SetFocusedCivilian(null);
+                return;
+            }
+
+            Vector3 focusOrigin = player.transform.position + Vector3.up * 0.9f;
+            int count = Physics.OverlapSphereNonAlloc(
+                focusOrigin,
+                5.5f,
+                focusBuffer,
+                Physics.DefaultRaycastLayers,
+                QueryTriggerInteraction.Ignore);
+
+            CivilianCharacter nearest = null;
+            float nearestDistance = float.MaxValue;
+
+            for (int i = 0; i < count; i++)
+            {
+                Collider candidateCollider = focusBuffer[i];
+                if (candidateCollider == null) continue;
+
+                CivilianCharacter candidate = candidateCollider.GetComponentInParent<CivilianCharacter>();
+                if (candidate == null) continue;
+
+                float distance = Vector3.Distance(focusOrigin, candidate.transform.position);
+                if (distance < nearestDistance)
+                {
+                    nearest = candidate;
+                    nearestDistance = distance;
+                }
+            }
+
+            SetFocusedCivilian(nearest);
+        }
+
+        private void SetFocusedCivilian(CivilianCharacter civilian)
+        {
+            if (focusedCivilian == civilian) return;
+            focusedCivilian = civilian;
+            if (interactions != null) interactions.SetFocusedCivilian(focusedCivilian);
+        }
+
+        private void DrawCivilianInteractionHud(float scale, float padding)
+        {
+            if (inVehicle || focusedCivilian == null || interactions == null) return;
+
+            GUI.Label(
+                new Rect(padding, padding + 34f * scale, 260f * scale, 28f * scale),
+                "NEARBY: " + focusedCivilian.FullName,
+                statusStyle);
+
+            float buttonWidth = 76f * scale;
+            float buttonHeight = 36f * scale;
+            float gap = 5f * scale;
+            float x = Screen.width - (buttonWidth * 2f + gap + padding);
+            float y = padding + 150f * scale;
+
+            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "GREET", buttonStyle))
+                interactions.Greet();
+            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "QUESTIONS", buttonStyle))
+                interactions.AskQuestions();
+
+            y += buttonHeight + gap;
+            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "ID", buttonStyle))
+                interactions.RequestIdentification();
+            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "WARN", buttonStyle))
+                interactions.IssueWarning();
+
+            y += buttonHeight + gap;
+            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "CITE", buttonStyle))
+                interactions.IssueCitation();
+            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "DETAIN", buttonStyle))
+                interactions.Detain();
+
+            y += buttonHeight + gap;
+            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "ARREST", buttonStyle))
+                interactions.Arrest();
+            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "RELEASE", buttonStyle))
+                interactions.Release();
         }
 
         private void ToggleVehicle()
