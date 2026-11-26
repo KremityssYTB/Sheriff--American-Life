@@ -5,7 +5,7 @@ A Florida-inspired open-world law-enforcement and civilian roleplay simulator. T
 ## Current prototype foundation
 
 - Unity 6 project pinned to 6000.3.25f1
-- URP 17.0.3 package
+- URP 17.3.0 package
 - Editor setup command that creates a mobile URP asset, Universal Renderer, Main scene, and iOS player settings
 - Cypress County runtime blockout
 - Third-person movement and camera-mode toggle
