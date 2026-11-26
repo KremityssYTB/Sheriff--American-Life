@@ -82,19 +82,20 @@ namespace SheriffAmericanLife
             CreateStopSign(parent, label + " STOP Sign", stop - center - forward * 5f,
                 Quaternion.LookRotation(-forward, Vector3.up));
 
-            // Two same-approach test vehicles arrive together in adjacent approach lanes.
-            // The shared controller must serialize their entry even when arrival times match.
+            // Two vehicles use one inbound lane and arrive as a longitudinal queue.
+            // The rear vehicle begins 16 m behind the lead vehicle; the traffic agent
+            // maintains a speed-based gap instead of spawning two side-by-side cars.
             AddStopVehicle(parent, center, start, stop, curveA, curveB, exit, loopA, loopB,
-                side, forward, approach, movement, label, -2.25f, "Lane A");
+                side, forward, approach, movement, label, 0f, "Queue Lead", Vector3.zero);
             AddStopVehicle(parent, center, start, stop, curveA, curveB, exit, loopA, loopB,
-                side, forward, approach, movement, label, 2.25f, "Lane B");
+                side, forward, approach, movement, label, 0f, "Queue Rear", -forward * 16f);
         }
 
         private void AddStopVehicle(Transform parent, Vector3 center, Vector3 start,
             Vector3 stop, Vector3 curveA, Vector3 curveB, Vector3 exit, Vector3 loopA,
             Vector3 loopB, Vector3 side, Vector3 forward,
             CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
-            string label, float laneOffset, string laneLabel)
+            string label, float laneOffset, string laneLabel, Vector3 startOffset)
         {
             Vector3 offset = side * laneOffset;
             string routeName = label + " " + laneLabel + " " + movement;
@@ -110,7 +111,7 @@ namespace SheriffAmericanLife
             };
 
             GameObject car = Make(parent, "Stop Test Sedan " + routeName,
-                PrimitiveType.Cube, start - center + offset + Vector3.up * .8f,
+                PrimitiveType.Cube, start - center + offset + startOffset + Vector3.up * .8f,
                 new Vector3(1.9f, 1.25f, 4.2f), new Color(.28f, .38f, .52f),
                 Quaternion.LookRotation(forward, Vector3.up));
             car.AddComponent<Rigidbody>().mass = 1150f;
@@ -118,7 +119,9 @@ namespace SheriffAmericanLife
             agent.Configure(route, reporter, vehicleSpeed);
             Vector3 crosswalkStop = center - forward * 24f + offset;
             agent.ConfigureFourWayStop(controller, approach, movement,
-                stop + offset, exit + offset, crosswalkStop);
+                parent.TransformPoint(stop - center + offset),
+                parent.TransformPoint(exit - center + offset),
+                parent.TransformPoint(crosswalkStop - center + offset));
         }
 
         private void AddCrosswalkSensor(Transform parent, Vector3 center, Vector3 approachForward, string label)
