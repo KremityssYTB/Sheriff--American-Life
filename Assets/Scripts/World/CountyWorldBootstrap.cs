@@ -14,7 +14,7 @@ namespace SheriffAmericanLife
         public void GenerateWorld()
         {
             if (root != null) Destroy(root.gameObject);
-            root = new GameObject("Cypress_County_Blockout").transform;
+            root = new GameObject("Marion_County_Ocala_Blockout").transform;
             root.SetParent(transform, false);
             Random.InitState(seed);
 
@@ -41,6 +41,56 @@ namespace SheriffAmericanLife
             sun.transform.rotation=Quaternion.Euler(48,-32,0); sun.transform.SetParent(root,true);
             var clock = root.gameObject.AddComponent<WorldClockSystem>();
             clock.SetSun(sun);
+            SpawnTestCivilians(clock);
+        }
+
+        private void SpawnTestCivilians(WorldClockSystem clock)
+        {
+            Transform homeA = CreateWaypoint("Civilian A Home", new Vector3(-28, 0, -112));
+            Transform workA = CreateWaypoint("Civilian A Work", new Vector3(18, 0, -72));
+            Transform shopA = CreateWaypoint("Civilian A Shop", new Vector3(58, 0, -108));
+            Transform homeB = CreateWaypoint("Civilian B Home", new Vector3(72, 0, -30));
+            Transform workB = CreateWaypoint("Civilian B Work", new Vector3(-22, 0, -72));
+            Transform parkB = CreateWaypoint("Civilian B Park", new Vector3(20, 0, -170));
+
+            CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock,
+                new CivilianRoutineAgent.RoutineStop[] {
+                    Stop(7, 0, workA, "Commuting to work"),
+                    Stop(17, 0, shopA, "Shopping after work"),
+                    Stop(18, 0, homeA, "At home")
+                });
+            CreateCivilian("Resident - Local", new Vector3(72, 1, -30), new Color(.72f,.48f,.25f), clock,
+                new CivilianRoutineAgent.RoutineStop[] {
+                    Stop(8, 0, workB, "Heading to work"),
+                    Stop(16, 30, parkB, "Visiting the park"),
+                    Stop(18, 0, homeB, "At home")
+                });
+        }
+
+        private Transform CreateWaypoint(string waypointName, Vector3 position)
+        {
+            var waypoint = new GameObject(waypointName);
+            waypoint.transform.SetParent(root, false);
+            waypoint.transform.position = position;
+            return waypoint.transform;
+        }
+
+        private void CreateCivilian(string civilianName, Vector3 position, Color color, WorldClockSystem clock,
+            CivilianRoutineAgent.RoutineStop[] schedule)
+        {
+            GameObject civilian = Make(civilianName, PrimitiveType.Capsule, position, new Vector3(.8f, 1f, .8f), color);
+            civilian.AddComponent<CivilianRoutineAgent>().Configure(clock, schedule);
+        }
+
+        private CivilianRoutineAgent.RoutineStop Stop(int hour, int minute, Transform destination, string activity)
+        {
+            return new CivilianRoutineAgent.RoutineStop {
+                startHour = hour,
+                startMinute = minute,
+                destination = destination,
+                arrivalPauseSeconds = 5f,
+                activity = activity
+            };
         }
 
         private GameObject Make(string n, PrimitiveType t, Vector3 p, Vector3 s, Color c)
