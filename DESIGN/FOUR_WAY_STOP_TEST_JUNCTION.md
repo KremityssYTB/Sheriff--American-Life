@@ -7,7 +7,7 @@
 - A separate north-south and east-west road crossing
 - Four stop bars and four visible STOP sign assemblies
 - Two adjacent-lane test sedans on each approach (eight total), arriving together with representative straight-through, left-turn, and right-turn movement assignments
-- Four marked zebra crosswalks with trigger volumes and a shared `CountyFourWayStopController`
+- Four full-road-width zebra crosswalks with matching trigger volumes and a shared `CountyFourWayStopController`
 - One looping pedestrian test actor per crosswalk, walking between opposite sidewalks
 - Pedestrian actors wait at the curb while a vehicle already occupies the junction; crosswalk triggers keep new intersection reservations closed while pedestrians are crossing
 - Approaching vehicles brake at a dedicated yield line before the crosswalk while pedestrian occupancy is active
