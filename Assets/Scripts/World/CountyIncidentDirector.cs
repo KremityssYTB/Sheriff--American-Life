@@ -64,7 +64,6 @@ namespace SheriffAmericanLife
             }
 
             if (actorSpawner != null) actorSpawner.Spawn(scenario.type, scenario.location);
-            if (actorSpawner != null) actorSpawner.Spawn(scenario.type, scenario.location);
             WorldIncident incident = reporter.Report(scenario.type, scenario.description,
                 scenario.subjectDescription, scenario.location);
             eventsCreated++;
@@ -79,6 +78,7 @@ namespace SheriffAmericanLife
                 return null;
             Scenario scenario = scenarios[index];
             if (scenario == null) return null;
+            if (actorSpawner != null) actorSpawner.Spawn(scenario.type, scenario.location);
             WorldIncident incident = reporter.Report(scenario.type, scenario.description,
                 scenario.subjectDescription, scenario.location);
             eventsCreated++;
