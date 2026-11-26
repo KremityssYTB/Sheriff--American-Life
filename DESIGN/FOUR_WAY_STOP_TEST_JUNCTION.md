@@ -22,9 +22,11 @@ This provides a scene-level integration target for observing:
 - Registration of stopped vehicles
 - Exclusive intersection reservations, including two same-approach vehicles attempting entry together
 - A short arbitration window that allows arrivals from other approaches to register before right-of-way is decided
-- A deterministic simulation-only gridlock breaker for circular priority conflicts, while still refusing to override earlier arrivals or oncoming left-turn conflicts
+- A deterministic simulation-only gridlock breaker for circular priority conflicts, while still refusing to override earlier arrivals or simultaneous oncoming left-turn conflicts
 - Vehicle release after clearing the conflict area
 - Cleanup when an agent is disabled
+
+A manual validation matrix is maintained in DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md; its cases are not yet executed.
 
 ## Current limitations
 
