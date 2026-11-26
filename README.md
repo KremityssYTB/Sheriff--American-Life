@@ -124,5 +124,14 @@ All art, audio, and models must be original or properly licensed.
 - Citation issuance is triggered only after all three document checks are complete and the deputy chooses CITATION for a profile with a document violation. A warning does not create a ticket.
 - Fictional violation categories currently include suspended/expired/missing license, expired/missing registration, and missing/expired insurance. Prototype fine amounts are gameplay placeholders, not statements of real Florida law or court schedules.
 - The mobile MDT now has a TICKETS tab showing ticket details and outstanding/paid state. MARK PAID changes the in-game session record to Paid; no real payment is processed.
-- Citation creation also adds a traffic-stop report entry. The ledger and payment state are session-only and are not persisted between game sessions.
+- Citation creation also adds a traffic-stop report entry. Citation records and payment state are saved locally as versioned JSON under Unity's persistent data path; they are not synced to a server or shared between devices.
 - Source checks confirmed the new data fields, ticket issuance path, MDT wiring, and balanced braces. Unity compilation, Play Mode, UI layout, and iPhone tests remain outstanding.
+
+
+## Persistent traffic citation save update (2026-11-26)
+
+- The citation ledger now loads and saves a versioned JSON file in Unity's `Application.persistentDataPath`.
+- Issuing a citation and changing its payment status both trigger a save. Citation numbers use a persisted sequence counter and are reconciled against loaded ticket numbers to avoid reusing IDs after relaunch.
+- Loading ignores unsupported/empty save data and catches file/JSON errors without preventing the game from continuing with an empty in-memory ledger. Save failures are logged; current-session records remain available.
+- Save contents are fictional gameplay records only. They remain local to the device and are not backed up to a server.
+- Source inspection only. Unity compilation, JSON round-trip testing, storage behavior on iOS, and device testing have not been performed.
