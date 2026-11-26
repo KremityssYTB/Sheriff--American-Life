@@ -1,0 +1,87 @@
+# Mobile MDT Interface
+
+## Purpose
+
+The Mobile Data Terminal (MDT) is the deputy's in-vehicle and handheld computer. It presents dispatch calls and linked case information without owning the underlying simulation data.
+
+## Current implementation
+
+`Assets/Scripts/Systems/MobileMdtController.cs` is the presentation-facing controller.
+
+- Reads calls from `DispatchCallManager`.
+- Selects and clears the current call.
+- Retrieves witness statements using the call's source incident ID.
+- Retrieves incident reports linked to that same source incident ID.
+- Exposes accept, en-route, on-scene, resolve, and cancel actions.
+- Raises `MdtChanged` when calls, reports, or witness statements change.
+
+Dispatch resolution and cancellation create an incident report through `IncidentReportBook`. Reports store `relatedIncidentId`, allowing the MDT to show records associated with a specific call.
+
+## Proposed touch interface
+
+### 1. Active calls
+
+Show a scrollable list sorted by priority, then received time.
+
+Each row should display:
+- CAD call number
+- Priority and incident title
+- Short location label
+- Received game time
+- Current status
+- Assigned unit
+
+Use distinct but restrained priority indicators. Critical calls must be visually obvious without relying on color alone.
+
+### 2. Call details
+
+When a call is selected, show:
+- Full incident description
+- Subject description, when available
+- Location and map marker
+- Received time
+- Assigned unit
+- Current call status
+- Available status actions
+
+Only show actions valid for the current lifecycle state:
+- Available: Accept
+- Accepted: Mark en route
+- En route: Mark on scene
+- On scene: Resolve
+- Any non-terminal state: Cancel
+
+The controller currently validates transitions through DispatchCallManager. UI buttons must still handle a false return value and refresh from the latest call state.
+
+### 3. Case information
+
+Use sub-tabs or collapsible sections:
+- Witnesses: witness name, seen/heard type, statement, confidence
+- Reports: report number, category, action, outcome, narrative, recorded time
+- Incident: source incident description and subject details
+
+Do not imply that a witness statement is proof of guilt. Confidence is an estimate of observation quality, not a credibility verdict.
+
+### 4. Map and navigation
+
+The call location is currently a Unity world-space Vector3. The future map should convert this into a county map coordinate and support:
+- Show call on map
+- Set waypoint
+- Route guidance
+- Unit location and status
+
+Street addresses and real road routing are not implemented yet.
+
+## Mobile layout guidance
+
+- Landscape-first in-vehicle layout with a compact portrait fallback.
+- Large touch targets for accept, en-route, on-scene, resolve, and cancel.
+- Keep call priority, call number, and status visible while scrolling.
+- Avoid dense desktop-style tables.
+- Provide readable text at iPhone 16e resolution.
+- Support safe areas and scalable UI.
+- Do not require keyboard input for routine dispatch actions; use preset dispositions with an optional notes field.
+
+## Data and persistence limitations
+
+All calls, reports, and witness statements are currently session-only. No save/load, server CAD, multiplayer unit synchronization, GPS routing, or rendered MDT screen exists yet. The controller is a backend integration point for a future Canvas or UI Toolkit screen.
