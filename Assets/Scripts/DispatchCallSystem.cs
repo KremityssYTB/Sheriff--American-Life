@@ -1,7 +1,8 @@
 using UnityEngine;
 
-namespace SheriffAmericanLife
+namespace SheriffAmericanLife.Legacy
 {
+    // Retained only for the original keyboard-driven greybox bootstrap.
     public class DispatchCallSystem : MonoBehaviour
     {
         [SerializeField] private Transform player;
