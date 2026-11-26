@@ -213,3 +213,14 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - During the stop the HUD reports PULLING OVER / VEHICLE STOPPED and allows CANCEL STOP / END STOP. Ending the stop resumes the civilian vehicle and disables the lightbar.
 - This is not yet a complete traffic stop: driver contact, license/registration/insurance checks, warning/citation workflow, and report linkage remain next.
 - Source was inspected and committed. No Unity compilation, physics simulation, or iPhone test has been performed.
+
+
+## Traffic stop driver/document workflow update (2026-11-26)
+
+- Added `Assets/Scripts/Systems/TrafficStopDriverProfile.cs` for fictional driver identity, license, plate, registration, and insurance records.
+- `CountyWorldBootstrap` now assigns each spawned traffic vehicle a fictional driver profile. Most documents are valid; selected profiles have a suspended/expired license, expired registration, or missing insurance to support varied encounters.
+- `CountyPlayerRuntimeController` now exposes license, registration, and insurance checks after a vehicle is fully pulled over.
+- Each check and the final warning/citation decision is recorded in the session-only `IncidentReportBook` with driver and plate details.
+- The player can end the stop to resume traffic and disable the emergency lightbar.
+- This is a closed fictional gameplay loop; it does not query real Florida DMV, insurance, or police systems. No Unity compile, simulator, or device test has been run.
+- Next: add driver response dialogue and escalation behavior, then connect citations to a ticket record and the MDT case view.
