@@ -61,6 +61,8 @@ namespace SheriffAmericanLife
             var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
             incidentReporter.Configure(clock, actorSpawner);
             SpawnCountyTraffic(incidentReporter);
+            root.gameObject.AddComponent<CountyFourWayStopTestSpawner>()
+                .Configure(root, incidentReporter);
             var incidentDirector = root.gameObject.AddComponent<CountyIncidentDirector>();
             incidentDirector.Configure(incidentReporter, new CountyIncidentDirector.Scenario[] {
                 new CountyIncidentDirector.Scenario {
