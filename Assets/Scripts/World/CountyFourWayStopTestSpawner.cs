@@ -116,7 +116,7 @@ namespace SheriffAmericanLife
             CountyPedestrianCrossingSensor sensor = zone.AddComponent<CountyPedestrianCrossingSensor>();
             sensor.Configure(controller, new Vector3(roadWidth * 0.82f, 1.8f, 3.2f));
 
-            SpawnPedestrian(parent, position, side, label);
+            SpawnPedestrian(parent, position - center, side, label);
             for (int i = -3; i <= 3; i++)
             {
                 Vector3 stripePosition = position - center + approachForward * (i * 0.45f) + Vector3.up * 0.035f;
@@ -126,14 +126,14 @@ namespace SheriffAmericanLife
             }
         }
 
-        private void SpawnPedestrian(Transform parent, Vector3 crossingCenter, Vector3 crossingDirection, string label)
+        private void SpawnPedestrian(Transform parent, Vector3 localCrossingCenter, Vector3 crossingDirection, string label)
         {
-            Vector3 start = crossingCenter - crossingDirection * 10f + Vector3.up * 0.9f;
-            Vector3 finish = crossingCenter + crossingDirection * 10f + Vector3.up * 0.9f;
+            Vector3 start = localCrossingCenter - crossingDirection * 10f + Vector3.up * 0.9f;
+            Vector3 finish = localCrossingCenter + crossingDirection * 10f + Vector3.up * 0.9f;
             GameObject actor = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             actor.name = label + " Crosswalk Pedestrian Test Actor";
             actor.transform.SetParent(parent, false);
-            actor.transform.position = start;
+            actor.transform.localPosition = start;
             actor.transform.localScale = new Vector3(0.48f, 0.9f, 0.48f);
             Renderer renderer = actor.GetComponent<Renderer>();
             if (renderer != null)
@@ -146,7 +146,7 @@ namespace SheriffAmericanLife
             }
             actor.AddComponent<Rigidbody>().isKinematic = true;
             CountyPedestrianCrossingAgent agent = actor.AddComponent<CountyPedestrianCrossingAgent>();
-            agent.Configure(start, finish, 1.2f);
+            agent.Configure(parent.TransformPoint(start), parent.TransformPoint(finish), controller, 1.2f);
         }
 
         private void CreateStopSign(Transform parent, string signName, Vector3 localPosition,
