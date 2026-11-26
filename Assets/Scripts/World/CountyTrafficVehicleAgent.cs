@@ -22,6 +22,17 @@ namespace SheriffAmericanLife
         [SerializeField] private Vector3 stopLinePosition;
         [SerializeField] private float stopLineDistance = 12f;
 
+        [Header("Optional Four-Way Stop")]
+        [SerializeField] private CountyFourWayStopController fourWayStop;
+        [SerializeField] private CountyIntersectionRules.Approach stopApproach;
+        [SerializeField] private CountyIntersectionRules.Movement stopMovement;
+        [SerializeField] private Vector3 stopClearancePosition;
+        [SerializeField] private float stopDetectionDistance = 12f;
+        [SerializeField] private float stopPositionTolerance = 1.25f;
+        [SerializeField] private float stoppedSpeedThreshold = 0.25f;
+        private bool stopRegistered;
+        private bool hasStopReservation;
+
         private Rigidbody body;
         private int waypointIndex;
         private float nextCollisionReportTime;
@@ -47,6 +58,19 @@ namespace SheriffAmericanLife
             body.interpolation = RigidbodyInterpolation.Interpolate;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        public void ConfigureFourWayStop(CountyFourWayStopController controller,
+            CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
+            Vector3 stopLine, Vector3 clearancePosition)
+        {
+            fourWayStop = controller;
+            stopApproach = approach;
+            stopMovement = movement;
+            stopLinePosition = stopLine;
+            stopClearancePosition = clearancePosition;
+            stopRegistered = false;
+            hasStopReservation = false;
         }
 
         private void FixedUpdate()
@@ -77,6 +101,35 @@ namespace SheriffAmericanLife
             bool approachingLine = trafficSignal != null && distanceToLine > 0f && distanceToLine < stopLineDistance;
             if (approachingLine && !trafficSignal.CanProceed(eastWestRoad))
                 speedError = -Mathf.Max(0f, currentSpeed);
+
+            if (fourWayStop != null && !hasStopReservation)
+            {
+                float stopDistance = Vector3.Dot(stopLinePosition - transform.position, transform.forward);
+                if (stopDistance > 0f && stopDistance <= stopDetectionDistance)
+                {
+                    float safeApproachSpeed = Mathf.Sqrt(2f * braking * Mathf.Max(0f, stopDistance - stopPositionTolerance));
+                    speedError = Mathf.Min(speedError, safeApproachSpeed - currentSpeed);
+                    if (stopDistance <= stopPositionTolerance && Mathf.Abs(currentSpeed) <= stoppedSpeedThreshold)
+                    {
+                        if (!stopRegistered)
+                        {
+                            fourWayStop.RegisterStoppedVehicle(GetInstanceID(), stopApproach, stopMovement, Time.time);
+                            stopRegistered = true;
+                        }
+                        hasStopReservation = fourWayStop.TryAcquireIntersection(GetInstanceID());
+                        if (!hasStopReservation) speedError = -Mathf.Max(0f, currentSpeed);
+                    }
+                }
+            }
+
+            if (hasStopReservation &&
+                Vector3.Distance(transform.position, stopClearancePosition) <= waypointRadius)
+            {
+                fourWayStop.ReleaseIntersection(GetInstanceID());
+                fourWayStop = null;
+                hasStopReservation = false;
+                stopRegistered = false;
+            }
             if (Mathf.Abs(angle) > 65f) speedError = Mathf.Min(speedError, 0f);
             if (speedError >= 0f)
                 body.AddForce(transform.forward * Mathf.Min(acceleration, speedError * 2f), ForceMode.Acceleration);
@@ -91,6 +144,11 @@ namespace SheriffAmericanLife
         {
             if (route == null || route.Length == 0) return;
             waypointIndex = (waypointIndex + 1) % route.Length;
+        }
+
+        private void OnDisable()
+        {
+            if (fourWayStop != null) fourWayStop.RemoveVehicle(GetInstanceID());
         }
 
         private void OnCollisionEnter(Collision collision)
