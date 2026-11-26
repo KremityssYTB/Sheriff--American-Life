@@ -156,3 +156,13 @@ All art, audio, and models must be original or properly licensed.
 - The current arrest reason is generated from the existing fictional warrant flag or the completed-detention path. Property entries are generic placeholders; this is not a real search, evidence chain, jail connection, or legal workflow.
 - Booking records are local to the device, capped at 500, and are not synced. Load/save errors are caught and logged.
 - Source inspection only. Unity compilation, JSON round-trip, UI layout, transport gameplay, and iPhone runtime tests have not been performed.
+
+
+## Prisoner transport and jail intake update (2026-11-26)
+
+- Added a greybox Marion County Jail Intake building and marked vehicle intake bay near the sheriff office in the Ocala blockout.
+- The on-duty deputy must be in the patrol SUV, have an awaiting-transport booking, and drive within 18 m of the intake bay to complete transport.
+- Successful transport advances the booking from AwaitingTransport to Booked through the persistent arrest-booking ledger and adds a jail-intake report entry. The patrol SUV is stopped after the transfer.
+- The MDT BOOKINGS tab now displays awaiting-transport instructions instead of allowing the deputy to bypass the vehicle transport step. Release remains an MDT action after booking.
+- This is a prototype vehicle-to-record custody transfer. The arrested civilian is not physically seated in the SUV, and there is no animated escort, prisoner AI, collision restraint, jail interior navigation, or real justice-system connection.
+- Source inspection only; Unity compilation, scene layout, vehicle handling, persistence round-trip, and iPhone runtime remain untested.
