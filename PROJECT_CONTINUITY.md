@@ -44,7 +44,18 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 - `3bff77cbcadb47c10fd00ad3f1356a339c87476f` — manual validation matrix.
 - `fcb59ece86074c832898efca1e915f82222f257f` — README update.
 - `2d7f889a72631ba2fc0e1a5199e98cc2e0d542fd` — move stop signs out of vehicle probe paths.
+- `c65d6de9f66e48a4a2214a8e8b7a19290cb7a316` — protect emergency priority in deadlock fallback.
+- `b84f5e631dbf74efc73b8980c2d467ce7965c2af` — spawn marked emergency test sedan.
+- `7662b8a186862ac05213cbf83685843ab63a0f15` — add renderer-only alternating lightbar controller.
+- `3790ac02b6e3af034085a13fa1b41e8c48bfeb8a` — wire animated lightbar into test sedan.
 - `d4b9725930be9494bfb131e8fca0aca5fbfc7de0` — README continuity link.
+- `e12560d910f0a91ef5ff72b1893420526006b909` — correct traffic count and obstacle validation in README.
+- `05cbe89c357fe795267d79609bb92458ca3f09d6` — add stop-sign clearance test case.
+- `1b13ed004bea33199c7f1212705da32721dda180` — document roadside sign and obstacle response.
+- `c65d6de9f66e48a4a2214a8e8b7a19290cb7a316` — emergency fallback guard.
+- `73b0d240799730e0b875efcebde149014353ac57` — document marked emergency sedan.
+- `7662b8a186862ac05213cbf83685843ab63a0f15` — renderer-only lightbar controller.
+- `3790ac02b6e3af034085a13fa1b41e8c48bfeb8a` — animated lightbar spawner integration.
  
 ## Key source and documentation files
 
@@ -61,7 +72,7 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 
 ## Verification status
 
-Repository files were fetched after the recent edits. Source-level checks confirmed lane movement assignments, Bézier waypoint generation, lane-marking orientation, static-obstacle filtering code, emergency-priority checks, preservation of the occupied-intersection/pedestrian gate, and balanced braces in the spawner. These checks are not a C# compiler.
+Repository files were fetched after the recent edits. Source-level checks confirmed lane movement assignments, Bézier waypoint generation, lane-marking orientation, static-obstacle filtering code, roadside stop-sign placement, emergency-priority and fallback guards, preservation of the occupied-intersection/pedestrian gate, renderer-only alternating lightbar wiring, and balanced braces in the main traffic scripts. These checks are not a C# compiler.
 
 Not completed:
 - Unity compilation
