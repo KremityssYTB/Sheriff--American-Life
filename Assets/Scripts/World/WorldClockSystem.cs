@@ -46,6 +46,12 @@ namespace SheriffAmericanLife
             UpdateLighting();
         }
 
+        public void SetSun(Light directionalSun)
+        {
+            sun = directionalSun;
+            UpdateLighting();
+        }
+
         public void SetTime(float hour)
         {
             CurrentHour = Mathf.Repeat(hour, 24f);
