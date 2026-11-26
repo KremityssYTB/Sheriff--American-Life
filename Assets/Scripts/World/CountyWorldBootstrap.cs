@@ -48,6 +48,8 @@ namespace SheriffAmericanLife
             reportBook = root.gameObject.AddComponent<IncidentReportBook>();
             witnessStatementBook = root.gameObject.AddComponent<WitnessStatementBook>();
             dispatchCallManager = root.gameObject.AddComponent<DispatchCallManager>();
+            dispatchCallManager.Configure(reportBook);
+            root.gameObject.AddComponent<MobileMdtController>().Configure(dispatchCallManager, reportBook, witnessStatementBook);
             var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
             incidentReporter.Configure(clock);
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
