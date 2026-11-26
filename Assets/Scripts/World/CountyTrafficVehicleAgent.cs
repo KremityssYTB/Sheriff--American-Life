@@ -29,7 +29,8 @@ namespace SheriffAmericanLife
         [SerializeField] private Vector3 stopClearancePosition;
         [SerializeField] private Vector3 pedestrianStopLinePosition;
         [SerializeField] private float stopDetectionDistance = 12f;
-        [SerializeField] private float stopPositionTolerance = 1.25f;
+        [SerializeField] private float stopPositionTolerance = 2.8f;
+        [SerializeField] private float frontBumperOffset = 2.1f;
         [SerializeField] private float stoppedSpeedThreshold = 0.25f;
         [Header("Traffic Following")]
         [SerializeField] private float minimumFollowingDistance = 2.5f;
@@ -118,9 +119,10 @@ namespace SheriffAmericanLife
                 float crosswalkDistance = Vector3.Dot(pedestrianStopLinePosition - transform.position, transform.forward);
                 if (crosswalkDistance > 0f && crosswalkDistance <= 18f)
                 {
-                    float safeCrosswalkSpeed = Mathf.Sqrt(2f * braking * Mathf.Max(0f, crosswalkDistance - 1.5f));
+                    float crosswalkStopOffset = frontBumperOffset + 0.5f;
+                    float safeCrosswalkSpeed = Mathf.Sqrt(2f * braking * Mathf.Max(0f, crosswalkDistance - crosswalkStopOffset));
                     speedError = Mathf.Min(speedError, safeCrosswalkSpeed - currentSpeed);
-                    if (crosswalkDistance <= 1.5f && Mathf.Abs(currentSpeed) <= stoppedSpeedThreshold)
+                    if (crosswalkDistance <= crosswalkStopOffset && Mathf.Abs(currentSpeed) <= stoppedSpeedThreshold)
                         speedError = -Mathf.Max(0f, currentSpeed);
                 }
             }
