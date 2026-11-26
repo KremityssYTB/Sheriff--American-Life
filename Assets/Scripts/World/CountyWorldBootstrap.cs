@@ -118,7 +118,7 @@ namespace SheriffAmericanLife
                     Stop(17, 0, shopA, "Shopping after work"),
                     Stop(18, 0, homeA, "At home")
                 });
-            CreateCivilian("Resident - Local", new Vector3(72, 1, -30), new Color(.72f,.48f,.25f), clock, statements,
+            CreateCivilian("Resident - Local", new Vector3(72, 1, -30), new Color(.72f,.48f,.25f), clock, statements, reporter,
                 new CivilianRoutineAgent.RoutineStop[] {
                     Stop(8, 0, workB, "Heading to work"),
                     Stop(16, 30, parkB, "Visiting the park"),
