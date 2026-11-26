@@ -11,9 +11,12 @@ A Florida open-world law-enforcement and civilian life simulator. Target device:
 - Dispatch call prototype
 - **World clock and weather foundation** (clear, cloudy, rain, fog lighting states)
 - **Schedule-driven civilian prototype** with configurable daily destinations
+- **Civilian witness prototype** that records nearby incident observations (seen/heard, description, confidence, location)
+- **World incident event channel** for gameplay systems to publish disturbances, collisions, thefts, fires, and emergencies
+- **Session-only witness statement collection** ready for a future MDT/investigation screen
 - Ocala first-playable system plan
 
-The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the new clock/civilian scripts have not yet been profiled on an iPhone. The civilian routine currently uses direct waypoint movement; production pathfinding, animation, and obstacle avoidance remain future work.
+The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. No live gameplay event currently triggers an incident automatically; gameplay systems must call the incident reporter.
 
 ## World direction
 
@@ -54,9 +57,9 @@ An unsigned IPA is not directly installable. It must be signed with a compatible
 ## Development priorities
 
 1. Accurate Ocala district blockout and roads
-2. Connected world clock, civilian routines, and traffic
-3. Dispatch lifecycle and incident reports
-4. Civilian interactions and consequences
+2. Connect traffic, world events, witness observations, and dispatch generation
+3. Add evidence, legal grounds, and incident lifecycle
+4. Build the mobile MDT and witness interview workflow
 5. Mobile controls, animation, audio, and performance profiling
 6. Expand county-by-county
 
