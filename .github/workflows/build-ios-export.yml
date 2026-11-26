@@ -2,13 +2,7 @@ name: Build SHERIFF unsigned iOS IPA
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "Assets/**"
-      - "Packages/**"
-      - "ProjectSettings/**"
-      - ".github/workflows/build-ios-export.yml"
+  # Manual only until a valid UNITY_LICENSE secret is configured.
 
 permissions:
   contents: read
