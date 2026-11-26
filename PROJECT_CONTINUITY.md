@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26 (first runtime player/vehicle/touch prototype integrated)
+Last updated: 2026-11-26 (Ocala daily roadmap, browser preview, and player source correction)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -142,3 +142,18 @@ The manual validation matrix is a checklist, not a test report. Do not claim any
 ## Working protocol
 
 When the user says “Continue”, resume from this file and the current GitHub `main` branch. Fetch current contents and SHAs before editing. Commit the next logical implementation and update the documentation. State exactly what changed and what was actually verified. Do not imply memory storage, compilation, or runtime testing that did not happen.
+
+
+## Ocala-first daily development decision (2026-11-26)
+
+The user wants to complete Marion County/Ocala before beginning the other counties, with incremental GitHub updates each development day. This is the agreed production order: build a complete, connected Ocala/Marion first-release region, then reuse its systems and expand to Hillsborough/Tampa (including Ybor City), Orange/Orlando, Miami-Dade, Lee/Fort Myers, Volusia/Daytona, Duval/Jacksonville, and Leon/Tallahassee. “Complete Ocala” means a coherent playable county region with urban, residential, commercial, civic, rural, and surrounding-town content; do not attempt to model all 900 km² at full detail before a working slice exists.
+
+Daily roadmap: `COUNTIES/OCALA_DAILY_ROADMAP.md`. It defines the county acceptance gate, daily push/documentation protocol, and a first-week milestone outline. The first vehicle roster should cover vehicle classes rather than every real-world make/model: patrol SUV, civilian sedan/SUV, pickup, delivery van, emergency vehicle, then additional motorcycles, buses, trucks, utility and specialty vehicles. Use original or licensed assets and a shared handling/data definition.
+
+## Immediate iPhone playtest route
+
+A standalone 2D browser preview has been added under `web-demo/index.html`. It is a temporary companion intended to be opened in mobile Safari; it is not the Unity runtime and does not replace the Unity project. A GitHub Pages deployment workflow is at `.github/workflows/deploy-web-demo.yml`. Its deployment must be checked in Actions before giving the user a live URL.
+
+The Unity iOS workflow currently fails at its explicit preflight because the repository has no `UNITY_LICENSE` Actions secret. Latest inspected run #127 stopped at “Verify Unity project and license”; the Unity export and macOS packaging jobs were skipped. The repository also has no `ProjectSettings/EditorBuildSettings.asset` and no `Assets/Scenes` directory at the time of this audit, so the enabled-scene/build setup must be resolved before a Unity build can succeed. To avoid automatically failing the iOS workflow on every source push, its trigger is now manual-only until the user configures a valid Unity license and the scene/build settings are ready.
+
+The mobile player runtime source had an unresolved `onDuty` identifier in its duty button label. This was corrected to read `CountyDutyState.IsOnDuty`; the patrol vehicle now starts with its controls disabled, and sprint uses a hold-style repeat button. This is a source correction only, not a compile/test result.
