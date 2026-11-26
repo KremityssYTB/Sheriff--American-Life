@@ -96,4 +96,5 @@ The first playable milestone is complete when:
 
 - `Assets/Scripts/World/WorldClockSystem.cs` provides the first clock/weather foundation.
 - `Assets/Scripts/World/CivilianRoutineAgent.cs` provides schedule selection and simple waypoint movement for greybox testing.
+- `Assets/Scripts/World/CountyWorldBootstrap.cs` now creates two placeholder residents with different home/work/shop/park schedules and connects the world clock to the generated directional sun.
 - These scripts are foundations only. They do not yet provide NavMesh pathfinding, animation, traffic AI, rain VFX, or incident persistence.
