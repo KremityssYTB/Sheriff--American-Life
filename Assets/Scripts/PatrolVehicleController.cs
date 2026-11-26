@@ -1,7 +1,8 @@
 using UnityEngine;
 
-namespace SheriffAmericanLife
+namespace SheriffAmericanLife.Legacy
 {
+    // Retained for compatibility with the original keyboard-driven greybox bootstrap.
     public class PatrolVehicleController : MonoBehaviour
     {
         [SerializeField] private float acceleration = 12f;
