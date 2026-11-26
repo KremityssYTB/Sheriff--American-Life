@@ -106,7 +106,7 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - Citation issuance is triggered only after all three document checks are complete and the deputy chooses CITATION for a profile with a document violation. A warning does not create a ticket.
 - Fictional violation categories currently include suspended/expired/missing license, expired/missing registration, and missing/expired insurance. Prototype fine amounts are gameplay placeholders, not statements of real Florida law or court schedules.
 - The mobile MDT now has a TICKETS tab showing ticket details and outstanding/paid state. MARK PAID changes the in-game session record to Paid; no real payment is processed.
-- Citation creation also adds a traffic-stop report entry. The ledger and payment state were initially session-only; the later persistent-citation update below now saves them locally between game sessions.
+- Citation creation also adds a traffic-stop report entry. The ledger and payment state are saved locally as versioned JSON; repeat-driver history is also saved locally in a separate versioned file.
 - Source checks confirmed the new data fields, ticket issuance path, MDT wiring, and balanced braces. Unity compilation, Play Mode, UI layout, and iPhone tests remain outstanding.
 
 
@@ -118,3 +118,13 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - File and JSON exceptions are caught and logged. Load errors leave an empty in-memory ledger; save errors do not remove records from the current session.
 - Persistence is local-only. There is no account sync, server storage, or real-world records integration.
 - Verification is source inspection only. Unity compilation, JSON serialization round-trip, iOS sandbox storage, Play Mode, and iPhone testing remain outstanding.
+
+
+## Persistent repeat-driver history update (2026-11-26)
+
+- Added `TrafficDriverHistoryBook`, a versioned local JSON ledger stored at `Application.persistentDataPath/traffic-driver-history.json`.
+- The ledger identifies fictional drivers by normalized license number or plate, records warning and citation outcomes, and tracks total recorded stops, warning count, citation count, last contact, and recent event details.
+- The traffic-stop warning path records a warning only when the deputy chooses WARNING. The citation path records a history event only when a citation is successfully created.
+- The MDT now exposes a HISTORY tab showing driver identifiers, prior stop totals, warning/citation counts, last outcome, and up to five recent events per driver. Ticket text now correctly describes locally saved records.
+- History is fictional and local to the device; it is not connected to DMV, court, insurance, or police databases. Records are capped at 500 drivers and 20 recent events per driver.
+- Source-level verification only. Unity compilation, JSON round-trip, save migration, UI layout, and iPhone runtime tests remain outstanding.
