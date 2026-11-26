@@ -6,10 +6,14 @@ namespace SheriffAmericanLife
     {
         [SerializeField] private float acceleration=18f,maxSpeed=28f,reverseSpeed=9f,steering=85f,drag=5f;
         private float throttle,steer,speed;
+        private bool controlsEnabled=true;
+        public void SetControlsEnabled(bool value) { controlsEnabled=value; if(!value) { throttle=0f; steer=0f; } }
+        public void StopImmediately() { throttle=0f; steer=0f; speed=0f; }
         public void SetThrottle(float value) { throttle=Mathf.Clamp(value,-1,1); }
         public void SetSteering(float value) { steer=Mathf.Clamp(value,-1,1); }
         private void Update()
         {
+            if(!controlsEnabled) return;
             float limit=throttle>=0?maxSpeed:reverseSpeed;
             speed=Mathf.MoveTowards(speed,throttle*limit,acceleration*Time.deltaTime);
             if(Mathf.Abs(throttle)<.05f) speed=Mathf.MoveTowards(speed,0,drag*Time.deltaTime);
