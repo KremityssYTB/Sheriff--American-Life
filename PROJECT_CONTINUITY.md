@@ -184,3 +184,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The repo now includes `Assets/Editor/EnsureProjectSetupBeforeBuild.cs` and `[InitializeOnLoad]` on `ProjectSetup` so the generated Main scene and iOS settings are prepared in a clean cloud checkout. These source changes have not been compiled or verified in Unity.
 - Unity iOS output is an Xcode project. A distributable/installable IPA still needs Xcode packaging and Apple signing; do not call the Xcode export an IPA.
 - Existing GameCI workflow still needs a valid `UNITY_LICENSE` secret. No .ulf has been generated, and no Unity license or Apple signing credentials are stored in the repo.
+
+
+## Safe patrol vehicle exit update (2026-11-26)
+
+- Commit: `202c33cb143c8a4e954579eb001d5d432f969352`.
+- `Assets/Scripts/Player/CountyPlayerRuntimeController.cs` now searches left, right, behind, and ahead of the patrol SUV for an exit position.
+- Candidate positions require a downward ground hit and an unoccupied player capsule volume.
+- If no safe candidate is found, the player remains in the vehicle; the controller does not force an unsafe exit.
+- This has only been checked at source level. Unity compilation, Play Mode physics behavior, and iPhone testing remain outstanding.
+- Next source milestone: connect the player focus/interaction path to nearby civilians, then build the first traffic-stop encounter. Do not expand to another county before the Ocala gameplay loop is coherent.
