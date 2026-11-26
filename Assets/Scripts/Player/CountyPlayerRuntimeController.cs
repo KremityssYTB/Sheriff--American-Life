@@ -17,6 +17,7 @@ namespace SheriffAmericanLife
         private TrafficStopDriverBehavior activeDriverBehavior;
         private IncidentReportBook reportBook;
         private TrafficCitationBook citationBook;
+        private TrafficDriverHistoryBook driverHistoryBook;
         private bool trafficStopDecisionRecorded;
         private readonly Collider[] trafficBuffer = new Collider[48];
         private CameraModeController cameraModes;
@@ -43,6 +44,7 @@ namespace SheriffAmericanLife
             dutyState = gameObject.AddComponent<CountyDutyState>();
             reportBook = worldRoot.GetComponent<IncidentReportBook>();
             citationBook = worldRoot.GetComponent<TrafficCitationBook>();
+            driverHistoryBook = worldRoot.GetComponent<TrafficDriverHistoryBook>();
             interactions = worldRoot.GetComponent<OfficerInteractionController>();
             if (interactions != null) interactions.ConfigureDutyState(dutyState);
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -361,6 +363,8 @@ namespace SheriffAmericanLife
                 ? "Citation issued after document discrepancy review."
                 : "Verbal warning issued; driver advised to correct document issue.";
             RecordTrafficStopAction(action, outcome);
+            if (!issueCitation && driverHistoryBook != null)
+                driverHistoryBook.RecordWarning(activeDriverProfile, outcome);
             if (issueCitation && citationBook != null)
             {
                 Vector3 stopPosition = activeTrafficStop.transform.position;
@@ -369,6 +373,7 @@ namespace SheriffAmericanLife
                 TrafficCitation citation = citationBook.Issue(activeDriverProfile, location, "OCALA-1");
                 if (citation != null)
                 {
+                    if (driverHistoryBook != null) driverHistoryBook.RecordCitation(activeDriverProfile, citation);
                     RecordTrafficStopAction("Citation " + citation.citationNumber,
                         "Citation created for $" + citation.fineAmount + ". " + citation.violations);
                 }
