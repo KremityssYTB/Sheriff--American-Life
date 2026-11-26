@@ -135,3 +135,13 @@ All art, audio, and models must be original or properly licensed.
 - Loading ignores unsupported/empty save data and catches file/JSON errors without preventing the game from continuing with an empty in-memory ledger. Save failures are logged; current-session records remain available.
 - Save contents are fictional gameplay records only. They remain local to the device and are not backed up to a server.
 - Source inspection only. Unity compilation, JSON round-trip testing, storage behavior on iOS, and device testing have not been performed.
+
+
+## Persistent repeat-driver history update (2026-11-26)
+
+- Added `TrafficDriverHistoryBook`, a versioned local JSON ledger stored at `Application.persistentDataPath/traffic-driver-history.json`.
+- The ledger identifies fictional drivers by normalized license number or plate, records warning and citation outcomes, and tracks total recorded stops, warning count, citation count, last contact, and recent event details.
+- The traffic-stop warning path records a warning only when the deputy chooses WARNING. The citation path records a history event only when a citation is successfully created.
+- The MDT now exposes a HISTORY tab showing driver identifiers, prior stop totals, warning/citation counts, last outcome, and up to five recent events per driver. Ticket text now correctly describes locally saved records.
+- History is fictional and local to the device; it is not connected to DMV, court, insurance, or police databases. Records are capped at 500 drivers and 20 recent events per driver.
+- Source-level verification only. Unity compilation, JSON round-trip, save migration, UI layout, and iPhone runtime tests remain outstanding.
