@@ -139,11 +139,14 @@ namespace SheriffAmericanLife
             }
             else
             {
+                // Do not eject the player into a wall, another vehicle, or an occupied space.
+                // If every candidate is blocked, remain seated and let the player reposition.
+                if (!TryFindSafeExitPosition(out Vector3 exitPosition)) return;
+
                 vehicle.StopImmediately();
                 vehicle.SetControlsEnabled(false);
                 inVehicle = false;
-                Vector3 exit = patrolVehicle.transform.position - patrolVehicle.transform.right * 2.4f;
-                player.transform.SetPositionAndRotation(exit + Vector3.up*.15f, patrolVehicle.transform.rotation);
+                player.transform.SetPositionAndRotation(exitPosition, patrolVehicle.transform.rotation);
                 player.GetComponent<Renderer>().enabled = true;
                 characterController.enabled = true;
                 walker.SetMovementEnabled(true);
@@ -151,6 +154,50 @@ namespace SheriffAmericanLife
                 moveInput = Vector2.zero;
                 throttle = 0f; steering = 0f;
             }
+        }
+
+        private bool TryFindSafeExitPosition(out Vector3 safePosition)
+        {
+            safePosition = Vector3.zero;
+            if (patrolVehicle == null) return false;
+
+            Transform vehicleTransform = patrolVehicle.transform;
+            Vector3[] directions =
+            {
+                -vehicleTransform.right,
+                vehicleTransform.right,
+                -vehicleTransform.forward,
+                vehicleTransform.forward
+            };
+
+            for (int i = 0; i < directions.Length; i++)
+            {
+                float distance = i < 2 ? 2.4f : 3.2f;
+                Vector3 probe = vehicleTransform.position + directions[i] * distance;
+                Vector3 rayOrigin = probe + Vector3.up * 3f;
+
+                if (!Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit groundHit,
+                    8f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                    continue;
+
+                Vector3 candidate = groundHit.point + Vector3.up * 0.08f;
+                Vector3 capsuleBottom = candidate + Vector3.up * 0.34f;
+                Vector3 capsuleTop = candidate + Vector3.up * 1.46f;
+
+                bool occupied = Physics.CheckCapsule(
+                    capsuleBottom,
+                    capsuleTop,
+                    0.32f,
+                    Physics.DefaultRaycastLayers,
+                    QueryTriggerInteraction.Ignore);
+
+                if (occupied) continue;
+
+                safePosition = candidate;
+                return true;
+            }
+
+            return false;
         }
     }
 }
