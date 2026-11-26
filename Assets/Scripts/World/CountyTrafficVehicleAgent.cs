@@ -31,6 +31,12 @@ namespace SheriffAmericanLife
         [SerializeField] private float stopDetectionDistance = 12f;
         [SerializeField] private float stopPositionTolerance = 1.25f;
         [SerializeField] private float stoppedSpeedThreshold = 0.25f;
+        [Header("Traffic Following")]
+        [SerializeField] private float minimumFollowingDistance = 2.5f;
+        [SerializeField] private float followingTimeHeadway = 1.35f;
+        [SerializeField] private float followingDetectionDistance = 18f;
+        [SerializeField] private float followingProbeRadius = 0.75f;
+        private static readonly RaycastHit[] FollowingHits = new RaycastHit[16];
         private bool stopRegistered;
         private bool hasStopReservation;
 
@@ -98,6 +104,8 @@ namespace SheriffAmericanLife
 
             float currentSpeed = Vector3.Dot(body.velocity, transform.forward);
             float speedError = targetSpeed - currentSpeed;
+            float followingSpeedLimit = CalculateFollowingSpeedLimit(currentSpeed);
+            speedError = Mathf.Min(speedError, followingSpeedLimit - currentSpeed);
             Vector3 toStopLine = stopLinePosition - transform.position;
             toStopLine.y = 0f;
             float distanceToLine = Vector3.Dot(toStopLine, transform.forward);
@@ -153,6 +161,33 @@ namespace SheriffAmericanLife
 
             Vector3 lateral = Vector3.Project(body.velocity, transform.right);
             body.AddForce(-lateral * 1.8f, ForceMode.Acceleration);
+        }
+
+        private float CalculateFollowingSpeedLimit(float currentSpeed)
+        {
+            Vector3 origin = transform.position + Vector3.up * 0.6f + transform.forward * 2.2f;
+            int hitCount = Physics.SphereCastNonAlloc(origin, followingProbeRadius, transform.forward,
+                FollowingHits, followingDetectionDistance, Physics.DefaultRaycastLayers,
+                QueryTriggerInteraction.Ignore);
+            float nearestGap = float.PositiveInfinity;
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                CountyTrafficVehicleAgent other = FollowingHits[i].collider != null
+                    ? FollowingHits[i].collider.GetComponentInParent<CountyTrafficVehicleAgent>() : null;
+                if (other == null || other == this) continue;
+                Vector3 toOther = other.transform.position - transform.position;
+                toOther.y = 0f;
+                if (Vector3.Dot(toOther.normalized, transform.forward) < 0.65f) continue;
+                nearestGap = Mathf.Min(nearestGap, FollowingHits[i].distance);
+            }
+
+            if (float.IsPositiveInfinity(nearestGap)) return targetSpeed;
+
+            float availableGap = Mathf.Max(0f, nearestGap - minimumFollowingDistance);
+            float timeHeadwayLimit = availableGap / Mathf.Max(0.25f, followingTimeHeadway);
+            float brakingLimit = Mathf.Sqrt(2f * braking * availableGap);
+            return Mathf.Min(targetSpeed, timeHeadwayLimit, brakingLimit);
         }
 
         private void AdvanceWaypoint()
