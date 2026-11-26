@@ -25,3 +25,10 @@ Unity's iOS build step exports an Xcode project. Creating a distributable IPA is
 ## Phone-only limitation
 
 GitHub Actions can run cloud builds, but a Unity Personal license still has to be activated and supplied to the build environment. This workflow cannot create or bypass a Unity license. If the license file cannot be obtained without a desktop Unity Hub activation, the build will stop at the license check.
+
+
+## Browser preview
+
+The repository includes a separate 2D mobile browser preview in `web-demo/index.html`. It does not require Unity or a Unity license to serve as a static website. The GitHub Pages workflow is `.github/workflows/deploy-web-demo.yml`. The repository owner may need to enable Pages with “GitHub Actions” as the deployment source. A successful Actions deployment is required before the preview can be called live or tested on the iPhone.
+
+The browser preview is not an iOS IPA, is not the Unity game, and does not validate Unity runtime code.
