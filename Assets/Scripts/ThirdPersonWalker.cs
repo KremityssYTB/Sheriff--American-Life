@@ -1,7 +1,8 @@
 using UnityEngine;
 
-namespace SheriffAmericanLife
+namespace SheriffAmericanLife.Legacy
 {
+    // Retained for compatibility with the original keyboard-only greybox bootstrap.
     [RequireComponent(typeof(CharacterController))]
     public class ThirdPersonWalker : MonoBehaviour
     {
