@@ -204,3 +204,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Added a downtown contact civilian near the initial spawn so the loop can be exercised immediately in the first county greybox.
 - Source changes are committed to `main`; no Unity compile, Play Mode, iPhone input, or runtime tests have been run.
 - Next: build a traffic-stop encounter from an actual traffic vehicle, including safe pull-over, driver contact, document check, warning/citation decision, and report linkage.
+
+
+## Traffic stop pull-over update (2026-11-26)
+
+- Added a traffic-stop request state to `CountyTrafficVehicleAgent`: it accepts a roadside target, steers toward it, brakes, exposes `IsPulledOver`, and can resume its route.
+- The player patrol SUV now creates a simple red/blue lightbar and displays a PULL OVER control when an on-duty deputy is within 24 m of civilian traffic.
+- During the stop the HUD reports PULLING OVER / VEHICLE STOPPED and allows CANCEL STOP / END STOP. Ending the stop resumes the civilian vehicle and disables the lightbar.
+- This is not yet a complete traffic stop: driver contact, license/registration/insurance checks, warning/citation workflow, and report linkage remain next.
+- Source was inspected and committed. No Unity compilation, physics simulation, or iPhone test has been performed.
