@@ -27,7 +27,7 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 - Separate four-way-stop test junction with Florida arrival-order/right-side priority policy, exclusive intersection reservation, pedestrian occupancy gate, full-stop dwell, and queue cleanup.
 - Four-way-stop junction has left-turn, through, and right-turn inbound movement lanes on each approach, individual stop bars/signs, cubic Bézier movement paths, lane markings, and two queued vehicles per lane (24 test vehicles).
 - Traffic agents use forward sphere-cast speed limiting for vehicle following and raised static obstacles. This is braking-only; no steering around obstacles or lane changes.
-- One north-approach through-lane lead sedan is marked as the emergency test vehicle, with a dark-blue body and static red/blue roof lightbar. It receives priority over ordinary waiting traffic at the four-way stop, but cannot pre-empt an occupying vehicle or bypass pedestrian occupancy. Flashing lights, siren/audio, dispatch activation, full emergency fleet, and emergency pull-over behavior remain unimplemented.
+- One north-approach through-lane lead sedan is marked as the emergency test vehicle, with a dark-blue body and alternating red/blue roof lightbar controlled by a renderer-only script. It receives priority over ordinary waiting traffic at the four-way stop, but cannot pre-empt an occupying vehicle or bypass pedestrian occupancy. Siren/audio, dispatch activation, full emergency fleet, and emergency pull-over behavior remain unimplemented.
 - Vehicle collisions can publish incident reports into dispatch.
 
 ## Recent traffic commits (2026-11-26)
@@ -75,7 +75,7 @@ The manual validation matrix is a checklist, not a test report. Do not claim any
 ## Next development steps
 
 1. Inspect the current traffic source before changing it. Validate obstacle detection against road colliders, stop signs, vehicle colliders, and objects on adjacent lanes; tune detection height/radius and avoid false braking.
-2. Add flashing emergency lightbar behavior, siren/audio, and dispatch-triggered activation for the existing marked emergency test sedan.
+2. Add siren/audio and dispatch-triggered activation for the existing marked emergency test sedan.
 3. Add safe emergency pull-over behavior and intersection handling. Never allow emergency vehicles to enter an occupied conflict area or drive through an active pedestrian crossing.
 4. Implement obstacle steering/lane changes only after braking-only detection is stable.
 5. Validate the 24-car setup, emergency priority, static-obstacle detection, and roadside stop-sign clearance in Unity.
