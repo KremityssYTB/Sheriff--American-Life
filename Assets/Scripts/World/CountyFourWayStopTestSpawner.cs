@@ -174,12 +174,15 @@ namespace SheriffAmericanLife
                 agent.ConfigureEmergencyVehicle(true);
                 Renderer bodyRenderer = car.GetComponent<Renderer>();
                 if (bodyRenderer != null) bodyRenderer.material.color = new Color(.035f, .09f, .22f);
-                Make(car.transform, "Emergency Lightbar Red", PrimitiveType.Cube,
+                GameObject redLight = Make(car.transform, "Emergency Lightbar Red", PrimitiveType.Cube,
                     new Vector3(-.28f, .68f, 0f), new Vector3(.28f, .14f, .34f),
                     new Color(.9f, .04f, .035f));
-                Make(car.transform, "Emergency Lightbar Blue", PrimitiveType.Cube,
+                GameObject blueLight = Make(car.transform, "Emergency Lightbar Blue", PrimitiveType.Cube,
                     new Vector3(.28f, .68f, 0f), new Vector3(.28f, .14f, .34f),
                     new Color(.04f, .2f, .95f));
+                CountyEmergencyLightbar lightbar = car.AddComponent<CountyEmergencyLightbar>();
+                lightbar.Configure(redLight.GetComponent<Renderer>(),
+                    blueLight.GetComponent<Renderer>(), 2.5f);
             }
 
             Vector3 crosswalkStop = center - forward * 24f + (stop - (center - forward * 10f));
