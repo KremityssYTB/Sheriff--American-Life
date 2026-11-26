@@ -101,7 +101,7 @@ The older GitHub Actions/GameCI workflow remains an alternative, but it requires
 2. Replace temporary IMGUI controls with a polished touch HUD and add a real joystick/hold controls.
 3. Improve vehicle physics, collision handling, and camera transitions; validate the new safe-exit checks in Unity.
 4. Connect duty state to dispatch, MDT, and equipment; the first civilian ID/enforcement actions are now duty-gated while off-duty conversation remains available.
-5. Complete the traffic-stop encounter: driver contact, ID/registration checks, warning/citation decisions, and lawful suspect/arrest flow (the initial vehicle pull-over phase is now in source).
+5. Expand the traffic-stop encounter with driver dialogue, ticket records, and MDT case linkage (pull-over, fictional driver records, license/registration/insurance checks, and warning/citation decisions are now in source).
 6. Add one usable store/gas station and one home/interior to prove off-duty civilian gameplay.
 7. Return to traffic simulation validation and expansion after the player vertical slice is stable.
 
