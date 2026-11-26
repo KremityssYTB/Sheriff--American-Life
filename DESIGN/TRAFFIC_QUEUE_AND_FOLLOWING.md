@@ -23,6 +23,9 @@ The isolated four-way-stop test junction now uses one inbound lane per approach 
 The available gap subtracts a minimum following distance before calculating the headway and braking limits. The result is applied before stop-line, pedestrian, and signal constraints; those constraints can reduce speed further.
 
 Current serialized defaults:
+- Front bumper offset: 2.1 m
+- Stop-line center stopping tolerance: 2.8 m (keeps the bumper approximately 0.7 m before the line)
+- Crosswalk stopping offset: front bumper plus 0.5 m
 - Minimum following distance: 2.5 m
 - Time headway: 1.35 s
 - Detection distance: 18 m
@@ -39,6 +42,7 @@ The spawner creates route waypoints as children of the junction root. Stop-line,
 Use `DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md` for the queue, following-distance, and transform cases. In particular:
 
 - Rear vehicle must not contact the lead vehicle when the lead vehicle brakes or stops.
+- Vehicle front bumpers must remain behind stop bars and crosswalk yield lines when stopped.
 - Rear vehicle must not cross the stop line while waiting for the lead vehicle's reservation.
 - The lead vehicle must release its reservation only after clearing the conflict area.
 - Moving or rotating the junction root must preserve stop-line and crosswalk alignment.
