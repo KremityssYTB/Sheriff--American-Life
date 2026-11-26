@@ -1,28 +1,51 @@
 # SHERIFF: AMERICAN LIFE
 
-Florida-inspired open-world law-enforcement and civilian roleplay simulator. Target engine: Unity 6 + URP. Initial platform: iPhone 16e.
+A Florida-inspired open-world law-enforcement and civilian roleplay simulator. Target: iPhone 16e. Engine: Unity 6 with Universal Render Pipeline (URP).
 
-## First prototype
-Cypress County blockout, third-person walking, patrol vehicle prototype, camera toggle, dispatch call waypoint. This repository is source code, not a finished game or IPA.
+## Current prototype foundation
 
-## Requirements
-Unity 6 (6000.x), Universal Render Pipeline, iOS Build Support. Final iOS build/signing requires Xcode on a supported Mac.
+- Unity 6 project pinned to 6000.3.25f1
+- URP 17.0.3 package
+- Editor setup command that creates a mobile URP asset, Universal Renderer, Main scene, and iOS player settings
+- Cypress County runtime blockout
+- Third-person movement and camera-mode toggle
+- Basic patrol SUV movement prototype
+- Dispatch call acceptance and arrival trigger
+- GitHub Actions workflow that exports an Xcode project, compiles it on macOS, and packages an unsigned IPA
 
-## Setup
-1. Clone/download this repository.
-2. Add its folder in Unity Hub and open with Unity 6.
-3. Allow packages to resolve.
-4. Create `Assets/Scenes/Main.unity`.
-5. Add an empty GameObject named `WorldBootstrap` and attach `CountyWorldBootstrap`.
-6. Press Play to generate the test county blockout.
+This is an early greybox foundation, not a finished open-world game. Models, animation, mobile touch HUD, traffic AI, interiors, audio, and full police/civilian systems remain to be developed.
+
+## Project setup
+
+1. Open the repository with Unity 6.3 / Editor 6000.3.25f1 and allow packages to resolve.
+2. In Unity, run **SHERIFF → Setup Mobile URP Project**.
+3. The setup command creates the mobile URP asset, its Universal Renderer, and Assets/Scenes/Main.unity.
+4. Press Play to run the Cypress County blockout.
+5. Keyboard prototype controls: WASD / arrow keys to move, V to toggle camera mode, hold E plus movement keys to drive the patrol SUV, and J to accept/clear the dispatch call.
+
+## iOS build
+
+The GitHub Actions workflow requires a valid Unity license in the repository secret UNITY_LICENSE. It exports the Unity iOS Xcode project on Linux, then uses a macOS runner with Xcode to compile and package an unsigned IPA. No Apple signing certificate or provisioning profile is added to this artifact.
+
+An unsigned IPA is not directly installable on an iPhone. It must be signed with a compatible certificate and provisioning profile before installation.
+
+## iOS configuration
+
+- Bundle identifier: com.kremityss.sheriffamericanlife
+- Architecture: ARM64
+- Graphics API: Metal
+- Scripting backend: IL2CPP
+- Render pipeline: URP
 
 ## Planned counties
+
 - Cypress County — Palmetto Crossing
 - Bayshore County — Bayshore
 - Pine Ridge County — Pine Ridge
 - Suncoast County — Suncoast
 
 ## Roadmap
-Greybox world → mobile HUD and controls → NPC traffic/pedestrians → dispatch and police workflows → civilian jobs/economy/interiors → additional counties and optimization.
 
-All art/audio/models must be original or properly licensed. The first milestone is intentionally small; the full multi-county world is a staged project.
+Greybox world → touch controls and mobile HUD → traffic/pedestrian AI → dispatch and police workflows → civilian jobs/economy/interiors → additional counties → mobile performance and visual polish.
+
+All art, audio, and models must be original or properly licensed.
