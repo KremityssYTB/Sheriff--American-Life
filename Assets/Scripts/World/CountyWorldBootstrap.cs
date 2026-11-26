@@ -185,6 +185,25 @@ namespace SheriffAmericanLife
             body.mass = 1150f;
             CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, speed, signals, eastWest, stopLine);
+
+            TrafficStopDriverProfile driver = vehicle.AddComponent<TrafficStopDriverProfile>();
+            string[] firstNames = { "Jordan", "Avery", "Morgan", "Taylor", "Casey", "Riley", "Cameron", "Drew" };
+            string[] lastNames = { "Miller", "Johnson", "Davis", "Garcia", "Wilson", "Brown", "Martinez", "Anderson" };
+            string driverName = firstNames[Random.Range(0, firstNames.Length)] + " " +
+                lastNames[Random.Range(0, lastNames.Length)];
+            string plate = "FL" + Random.Range(1000, 9999).ToString() +
+                (char)('A' + Random.Range(0, 26)) + (char)('A' + Random.Range(0, 26));
+            DriverDocumentStatus licenseStatus = Random.value < .12f
+                ? (Random.value < .5f ? DriverDocumentStatus.Suspended : DriverDocumentStatus.Expired)
+                : DriverDocumentStatus.Valid;
+            VehicleDocumentStatus registrationStatus = Random.value < .1f
+                ? VehicleDocumentStatus.Expired : VehicleDocumentStatus.Valid;
+            VehicleDocumentStatus insuranceStatus = Random.value < .12f
+                ? VehicleDocumentStatus.NotFound : VehicleDocumentStatus.Valid;
+            string dob = Random.Range(1975, 2005).ToString("0000") + "-" +
+                Random.Range(1, 13).ToString("00") + "-" + Random.Range(1, 29).ToString("00");
+            driver.Configure(driverName, dob, "FL-" + Random.Range(10000000, 99999999),
+                licenseStatus, plate, driverName, registrationStatus, insuranceStatus);
         }
 
         private Transform CreateWaypoint(string waypointName, Vector3 position)
