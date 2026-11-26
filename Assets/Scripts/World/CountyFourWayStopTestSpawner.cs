@@ -102,7 +102,8 @@ namespace SheriffAmericanLife
             car.AddComponent<Rigidbody>().mass = 1150f;
             CountyTrafficVehicleAgent agent = car.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, vehicleSpeed);
-            agent.ConfigureFourWayStop(controller, approach, movement, stop, exit);
+            Vector3 crosswalkStop = center - forward * 24f;
+            agent.ConfigureFourWayStop(controller, approach, movement, stop, exit, crosswalkStop);
         }
 
         private void AddCrosswalkSensor(Transform parent, Vector3 center, Vector3 approachForward, string label)
