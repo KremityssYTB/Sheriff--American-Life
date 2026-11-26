@@ -13,6 +13,10 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 | Simultaneous left-turn conflict | East left-turn and South straight/right movement stop together | East yields to the oncoming conflicting movement |
 | Pedestrian occupies crosswalk | One or more pedestrian IDs enter sensor | New vehicle reservations remain blocked until all tracked pedestrians exit |
 | Two pedestrians overlap | Two IDs enter; first exits while second remains | Gate remains closed until second exits |
+| Lane-specific movement assignment | Each approach has a left-turn lane, through lane, and right-turn lane | Vehicles follow the matching movement path and remain in their assigned inbound lane |
+| Turn-path separation | All three movements operate at one approach | Left, straight, and right paths remain distinct and do not collapse into one waypoint line |
+| Outbound lane alignment | Vehicle completes a left or right turn | Vehicle exits aligned with the destination road and does not reverse direction or cut across a curb |
+| 24-vehicle test load | Two vehicles spawn in each of three lanes on all four approaches | All 24 agents initialize, maintain queue spacing, and do not overlap at spawn |
 | Same-approach queue | Two vehicles approach in one inbound lane | Rear vehicle maintains a safe gap, does not overlap the lead vehicle, and reaches the stop line only after the lead vehicle clears |
 | Following-distance response | Lead vehicle slows or stops before the junction | Rear vehicle reduces speed using headway and braking limits without contacting the lead vehicle |
 | Full-stop dwell | Vehicle reaches the stop line and remains below the stopped-speed threshold | Reservation is not requested until 1.25 seconds of continuous stopped time has elapsed |
@@ -39,5 +43,6 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 - The current runtime spawner creates representative traffic, not deterministic arrival-time scenarios.
 - The controller's arbitration delay, 1.25-second stop dwell, and priority logic are source-level only.
 - The following-distance probe is a simple sphere-cast prototype; it has not been tuned against Unity collider layouts or dense traffic.
+- The lane-specific test junction now uses a 22 m road width, three 3.4 m inbound movement lanes per approach, cubic Bezier turn paths, and two queued vehicles per lane (24 total). Route geometry and outbound lane alignment remain unverified in Unity.
 - No compilation, Play Mode, physics, or iPhone runtime test has been run.
 - A deterministic deadlock fallback is a prototype continuity safeguard, not a statement of Florida statutory right-of-way.
