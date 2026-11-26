@@ -4,9 +4,7 @@ using UnityEngine;
 namespace SheriffAmericanLife
 {
     /// <summary>
-    /// Lightweight ambient incident producer for the greybox county.
-    /// Scenarios are simulated dispatch reports; they do not yet spawn physical crime,
-    /// fire, medical, or traffic actors.
+    /// Weighted ambient scenario producer. Physical greybox actors are spawned by WorldIncidentReporter.
     /// </summary>
     public sealed class CountyIncidentDirector : MonoBehaviour
     {
@@ -75,7 +73,6 @@ namespace SheriffAmericanLife
                 return null;
             Scenario scenario = scenarios[index];
             if (scenario == null) return null;
-            if (actorSpawner != null) actorSpawner.Spawn(scenario.type, scenario.location);
             WorldIncident incident = reporter.Report(scenario.type, scenario.description,
                 scenario.subjectDescription, scenario.location);
             eventsCreated++;
