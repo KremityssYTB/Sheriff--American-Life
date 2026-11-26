@@ -92,7 +92,7 @@ namespace SheriffAmericanLife
 
             Transform right = window.transform.Find("Case Panel");
             MakeButton("DETAILS", right, new Vector2(.025f,.91f), new Vector2(.25f,.99f), () => SetTab("DETAILS"));
-            MakeButton("WITNESSES", right, new Vector2(.27f,.91f), new Vector2(.51f,.99f), () => SetTab("WITNESSES"));
+            MakeButton("WITNESSES", right, new Vector2(.27f,.91f), new Vector2(.47f,.99f), () => SetTab("WITNESSES"));
             MakeButton("REPORTS", right, new Vector2(.49f,.91f), new Vector2(.70f,.99f), () => SetTab("REPORTS"));
             MakeButton("TICKETS", right, new Vector2(.73f,.91f), new Vector2(.97f,.99f), () => SetTab("TICKETS"));
             ScrollArea detail = CreateScrollArea(right, new Vector2(.025f,.16f), new Vector2(.975f,.89f));
@@ -170,6 +170,7 @@ namespace SheriffAmericanLife
                 IReadOnlyList<TrafficCitation> tickets = mdt.Citations;
                 if (tickets.Count == 0) AddContentText("No traffic citations have been issued this session.", 22);
                 foreach (TrafficCitation ticket in tickets)
+                {
                     AddContentText(ticket.citationNumber + "  |  $" + ticket.fineAmount +
                         "  |  " + ticket.paymentStatus + "\\n" +
                         ticket.driverName + "  |  " + ticket.plateNumber + "\\n" +
@@ -177,6 +178,16 @@ namespace SheriffAmericanLife
                         "ISSUED: " + ticket.issuedAt + "  |  UNIT: " + ticket.officerUnit + "\\n" +
                         "LOCATION: " + ticket.location + "\\n" +
                         "VIOLATIONS: " + ticket.violations, 22);
+                    if (ticket.paymentStatus == CitationPaymentStatus.Outstanding)
+                    {
+                        GameObject paidButton = MakeButtonObject("MARK " + ticket.citationNumber + " PAID",
+                            detailsContent, () => {
+                                mdt.SetCitationPaymentStatus(ticket.citationNumber, CitationPaymentStatus.Paid);
+                                RefreshDetails();
+                            });
+                        paidButton.AddComponent<LayoutElement>().preferredHeight = 58f;
+                    }
+                }
                 AddContentText("Ticket records are session-only fictional gameplay data. Fines do not represent real Florida court amounts.", 18);
                 return;
             }
