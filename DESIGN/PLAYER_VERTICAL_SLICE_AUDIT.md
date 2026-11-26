@@ -78,3 +78,13 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - The targeted traffic vehicle steers toward a roadside point and brakes to a stop; the HUD exposes END STOP or CANCEL STOP and turns the lightbar off when the stop ends.
 - This is only the initial vehicle pull-over phase. Driver identity/contact, vehicle registration, license/insurance checks, citations, and stop reports are not yet connected.
 - Source-level checks only; Unity compilation, vehicle physics, collision avoidance, and mobile HUD behavior remain untested.
+
+
+## Traffic stop document-check source update (2026-11-26)
+
+- Added `TrafficStopDriverProfile` to each spawned civilian traffic vehicle with fictional driver name, date of birth, Florida-style license number and plate, registration state, and insurance state.
+- The bootstrap generates mostly valid records with a small chance of a suspended/expired license, expired registration, or missing insurance so stops can have different outcomes.
+- Once a vehicle is pulled over, the patrol HUD exposes separate license, registration, and insurance checks.
+- Each check is added to the session incident report book. After all three checks, a document issue permits a warning or citation decision; clear records show no document violation.
+- The stop can then be ended, which resumes the vehicle and turns off the lightbar.
+- These are fictional gameplay records and not connected to real Florida DMV, insurance, or law-enforcement databases. Source-only verification; Unity compilation and gameplay testing remain outstanding.
