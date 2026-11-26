@@ -120,7 +120,7 @@ namespace SheriffAmericanLife
                 stopLane - center, new Vector3(laneWidth * 0.88f, .025f, .45f),
                 Color.white, Quaternion.LookRotation(forward, Vector3.up));
             CreateStopSign(parent, label + " " + laneName + " STOP Sign",
-                stopLane - center - forward * 5f,
+                stopLane - center - forward * 5f + side * (laneWidth * 0.68f),
                 Quaternion.LookRotation(-forward, Vector3.up));
 
             Vector3[] routePoints = new Vector3[6];
