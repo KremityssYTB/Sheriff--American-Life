@@ -47,6 +47,9 @@ namespace SheriffAmericanLife
             AddStopApproach(junctionRoot, center, Vector3.right,
                 CountyIntersectionRules.Approach.West, "West", CountyIntersectionRules.Movement.Straight);
 
+            AddLaneMarkings(junctionRoot, center, Vector3.forward);
+            AddLaneMarkings(junctionRoot, center, Vector3.right);
+
             AddCrosswalkSensor(junctionRoot, center, Vector3.back, "North");
             AddCrosswalkSensor(junctionRoot, center, Vector3.left, "East");
             AddCrosswalkSensor(junctionRoot, center, Vector3.forward, "South");
@@ -70,12 +73,23 @@ namespace SheriffAmericanLife
             AddStopLane(parent, center, start, stop, side, forward, approach,
                 CountyIntersectionRules.Movement.Right, label, laneWidth, "Right Turn");
 
-            for (int i = -2; i <= 2; i++)
+        }
+
+        private void AddLaneMarkings(Transform parent, Vector3 center, Vector3 roadForward)
+        {
+            Vector3 side = Vector3.Cross(Vector3.up, roadForward).normalized;
+            for (int laneBoundary = -2; laneBoundary <= 2; laneBoundary++)
             {
-                Vector3 dividerPosition = center - forward * 37f + side * (i * laneWidth * 0.5f);
-                Make(parent, label + " Lane Divider " + i, PrimitiveType.Cube,
-                    dividerPosition - center, new Vector3(0.12f, 0.025f, 48f),
-                    new Color(0.88f, 0.78f, 0.25f));
+                float offset = laneBoundary * laneWidth;
+                for (float distance = -roadLength * 0.5f; distance <= roadLength * 0.5f; distance += 8f)
+                {
+                    if (Mathf.Abs(distance) < 18f) continue;
+                    Vector3 position = center + roadForward * distance + side * offset;
+                    Make(parent, "Lane Marking " + roadForward + " " + laneBoundary + " " + distance,
+                        PrimitiveType.Cube, position - center + Vector3.up * 0.035f,
+                        new Vector3(0.12f, 0.025f, 4f), new Color(0.88f, 0.78f, 0.25f),
+                        Quaternion.LookRotation(roadForward, Vector3.up));
+                }
             }
         }
 
