@@ -20,7 +20,7 @@ A Florida open-world law-enforcement and civilian life simulator. Target device:
 - **Civilian traffic prototype** with eight Rigidbody vehicles on a signalized junction plus a separate eight-vehicle four-way-stop test junction, visible stop signs and bars, stop-line braking, reservation-based entry, four full-road-width marked pedestrian crossings, four looping pedestrian test actors, multi-occupant trigger tracking, curb waiting, and vehicle braking at pedestrian yield lines, and vehicle-to-vehicle collision reporting into dispatch
 - **Civilian 911 call source** attached to test residents, with caller identity, location, and per-caller cooldown
 - **Mobile MDT controller and runtime touch-screen prototype** for call selection, status actions, linked witness statements, and incident reports
-- **Florida intersection priority rules and four-way-stop entry controller** with stopped-vehicle registration, arrival-order/right-side priority checks, left-turn conflict checks, exclusive intersection reservation with a short simultaneous-arrival arbitration window, and a pedestrian-conflict gate (integrated into the isolated four-way-stop test junction; the original signalized junction remains separate)
+- **Florida intersection priority rules and four-way-stop entry controller** with stopped-vehicle registration, arrival-order/right-side priority checks, simultaneous opposing left-turn conflict checks, exclusive intersection reservation with a short simultaneous-arrival arbitration window, and a pedestrian-conflict gate (integrated into the isolated four-way-stop test junction; the original signalized junction remains separate)
 - Ocala first-playable system plan
 - Mobile MDT interface design and controller foundation
 
@@ -65,7 +65,7 @@ An unsigned IPA is not directly installable. It must be signed with a compatible
 ## Development priorities
 
 1. Accurate Ocala district blockout and roads
-2. Validate crosswalk and simultaneous-arrival behavior in Unity, expand the stop-junction route matrix, then add emergency pre-emption and obstacle avoidance; add suspect/pedestrian AI, patient treatment, fire response, and civilian 911 phone UI
+2. Run the manual cases in DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md in Unity, validate crosswalk and simultaneous-arrival behavior, expand the stop-junction route matrix, then add emergency pre-emption and obstacle avoidance; add suspect/pedestrian AI, patient treatment, fire response, and civilian 911 phone UI
 3. Connect dispatch resolution to reports, evidence, and legal grounds
 4. Build the rendered mobile radio/MDT screen from `DESIGN/MOBILE_MDT_INTERFACE.md`
 5. Mobile controls, animation, audio, and performance profiling
