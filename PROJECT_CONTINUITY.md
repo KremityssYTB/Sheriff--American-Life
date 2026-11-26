@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26 (dispatch-linked emergency response pass)
+Last updated: 2026-11-26 (core open-world/off-duty gameplay scope captured)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -18,6 +18,22 @@ This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across Ch
 ## World direction
 
 Florida-inspired multi-county open-world law-enforcement and civilian-life simulator. Long-term 30 x 30 km streamed world, developed county-by-county. First playable area is Marion County / Ocala. Planned counties: Marion (Ocala), Hillsborough (Tampa including Ybor City), Orange (Orlando), Miami-Dade (Miami), Lee (Fort Myers), Volusia (Daytona Beach), Duval (Jacksonville), Leon (Tallahassee). First/third-person cameras; law enforcement, fire, EMS, and civilian gameplay.
+
+## Core game vision and user requirements
+
+The core game is an LSPDFR-style open-world roleplaying game with a highly detailed, lived-in Florida-inspired world. It is not just a traffic simulator or dispatch prototype. Preserve the full player-life loop as the highest-level design requirement.
+
+- **On duty and off duty:** the player must be able to go on/off duty. Off duty allows free exploration, stores/businesses, homes, personal vehicles, and civilian activities. Duty state controls duty equipment, patrol assignment, radio/MDT, dispatch, and role-specific actions.
+- **Police gameplay:** on-foot and vehicle patrol, walk/run, explore, enter/exit vehicles, traffic stops, driver interaction, ID checks, warnings/citations, investigations, evidence, witness/suspect interviews, reports, dispatch/911, radio, backup, pursuits, detain/cuff, search where justified, arrest, and prisoner transport.
+- **Departments/roles:** sheriff deputy is the first playable role; longer-term roles include municipal police, highway patrol/trooper, SWAT, detective, firefighter, paramedic/EMS, and civilian roleplay. Include uniforms, equipment, ranks, career progression, and promotions.
+- **Equipment:** interactive duty belt, flashlight, radar, bodycam, MDT, radio, taser/less-lethal tools, and appropriate weapons.
+- **Civilian/world life:** believable NPC schedules, conversations and reactions; shopping, driving, traffic-law behavior, 911 calls, witness behavior, suspect/victim roles, fleeing and surrendering behavior.
+- **Places that must become usable:** gas stations, convenience stores, grocery/retail stores, banks, houses, apartments, general businesses, sheriff/police facilities, fire stations, hospitals, jails, courthouses, and parking areas. Stores should be enterable and support staff/service interaction and purchases; gas stations support refuelling; homes and apartments support meaningful entry/home interactions.
+- **World scale and setting:** huge GTA6-like ambition with realistic lived-in detail, but built as a mobile-scalable streamed world. Florida counties/cities remain: Marion/Ocala, Hillsborough/Tampa including Ybor City, Orange/Orlando, Miami-Dade/Miami, Lee/Fort Myers, Volusia/Daytona Beach, Duval/Jacksonville, Leon/Tallahassee. Long-term 30 × 30 km; start compact in Ocala/Marion. Include cities, towns, rural areas, highways, farms, forests, lakes, neighborhoods and service infrastructure.
+- **Initial release scope:** single-player first. First- and third-person cameras. Build the sheriff-deputy vertical slice before expanding to every role/county.
+- **Production limits:** iPhone 16e/A18, Unity 6.3 + URP 17.3, iOS; iPhone-only workflow. No local Mac/PC/Chromebook assumed. Use original/properly licensed assets and do not copy proprietary LSPDFR/GTA assets or source.
+
+The detailed scope and staged build order are in `DESIGN/CORE_GAMEPLAY_SCOPE.md`. Treat these as user requirements and planned features, not as claims that they already exist in the prototype.
 
 ## Current committed prototype
 
