@@ -86,3 +86,10 @@ These are reference destinations. Their in-game distances and relative positions
 ## Scope boundary
 
 This document defines the first county's design target. It does not claim that the county has already been modeled, that GIS data has already been imported, or that a playable iOS build has passed testing.
+
+
+## Daily delivery plan
+
+The agreed strategy is to complete Marion County/Ocala before starting the other counties. Daily work should add a playable map/system increment, push to GitHub `main`, update `README.md`, `PROJECT_CONTINUITY.md`, and `COUNTIES/OCALA_DAILY_ROADMAP.md`, and report build/test status accurately. See [Ocala Daily Roadmap](OCALA_DAILY_ROADMAP.md).
+
+The initial vehicle catalogue is class-based, not a claim to recreate every real-world model: patrol SUV, civilian sedan, civilian SUV, pickup, delivery van and emergency vehicle first; add motorcycles, buses, heavy trucks, utility vehicles and more specialist fleet types after the shared vehicle system is working.
