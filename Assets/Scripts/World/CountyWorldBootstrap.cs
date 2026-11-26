@@ -51,10 +51,10 @@ namespace SheriffAmericanLife
             dispatchCallManager.Configure(reportBook);
             root.gameObject.AddComponent<MobileMdtController>().Configure(dispatchCallManager, reportBook, witnessStatementBook);
             root.gameObject.AddComponent<MobileMdtScreen>();
-            var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
-            incidentReporter.Configure(clock);
             var actorSpawner = root.gameObject.AddComponent<CountyIncidentActorSpawner>();
             actorSpawner.Configure(root);
+            var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
+            incidentReporter.Configure(clock, actorSpawner);
             var incidentDirector = root.gameObject.AddComponent<CountyIncidentDirector>();
             incidentDirector.Configure(incidentReporter, new CountyIncidentDirector.Scenario[] {
                 new CountyIncidentDirector.Scenario {
