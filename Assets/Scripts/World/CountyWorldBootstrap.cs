@@ -26,6 +26,10 @@ namespace SheriffAmericanLife
             Make("Highway", PrimitiveType.Cube, new Vector3(0,0,80), new Vector3(18,.12f,700), new Color(.12f,.12f,.12f));
             Make("Main Street", PrimitiveType.Cube, new Vector3(0,.02f,-80), new Vector3(280,.14f,14), new Color(.16f,.16f,.16f));
             Make("Cross Street", PrimitiveType.Cube, new Vector3(0,.03f,-80), new Vector3(14,.15f,280), new Color(.16f,.16f,.16f));
+            Make("Main Street Stop Line West", PrimitiveType.Cube, new Vector3(-10,.12f,-80), new Vector3(.45f,.025f,5.5f), Color.white);
+            Make("Main Street Stop Line East", PrimitiveType.Cube, new Vector3(10,.12f,-80), new Vector3(.45f,.025f,5.5f), Color.white);
+            Make("Cross Street Stop Line South", PrimitiveType.Cube, new Vector3(0,.12f,-90), new Vector3(5.5f,.025f,.45f), Color.white);
+            Make("Cross Street Stop Line North", PrimitiveType.Cube, new Vector3(0,.12f,-70), new Vector3(5.5f,.025f,.45f), Color.white);
 
             for (int x=-4; x<=4; x++)
             for (int z=-3; z<=2; z++)
