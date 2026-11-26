@@ -172,11 +172,11 @@ namespace SheriffAmericanLife
                 foreach (TrafficCitation ticket in tickets)
                 {
                     AddContentText(ticket.citationNumber + "  |  $" + ticket.fineAmount +
-                        "  |  " + ticket.paymentStatus + "\\n" +
-                        ticket.driverName + "  |  " + ticket.plateNumber + "\\n" +
-                        "LICENSE: " + ticket.licenseNumber + "\\n" +
-                        "ISSUED: " + ticket.issuedAt + "  |  UNIT: " + ticket.officerUnit + "\\n" +
-                        "LOCATION: " + ticket.location + "\\n" +
+                        "  |  " + ticket.paymentStatus + "\n" +
+                        ticket.driverName + "  |  " + ticket.plateNumber + "\n" +
+                        "LICENSE: " + ticket.licenseNumber + "\n" +
+                        "ISSUED: " + ticket.issuedAt + "  |  UNIT: " + ticket.officerUnit + "\n" +
+                        "LOCATION: " + ticket.location + "\n" +
                         "VIOLATIONS: " + ticket.violations, 22);
                     if (ticket.paymentStatus == CitationPaymentStatus.Outstanding)
                     {
