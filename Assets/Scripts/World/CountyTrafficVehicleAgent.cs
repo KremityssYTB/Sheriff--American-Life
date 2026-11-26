@@ -72,6 +72,14 @@ namespace SheriffAmericanLife
             body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
 
+        public void ConfigureEmergencyVehicle(bool enabled)
+        {
+            emergencyVehicle = enabled;
+            if (stopRegistered && fourWayStop != null)
+                fourWayStop.RegisterStoppedVehicle(GetInstanceID(), stopApproach,
+                    stopMovement, stopDwellStartedAt, emergencyVehicle);
+        }
+
         public void ConfigureFourWayStop(CountyFourWayStopController controller,
             CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
             Vector3 stopLine, Vector3 clearancePosition, Vector3 crosswalkStopLine)
