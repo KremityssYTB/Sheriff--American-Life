@@ -14,13 +14,15 @@ namespace SheriffAmericanLife
         [SerializeField] private float walkingSpeed = 1.25f;
         [SerializeField] private float sidewalkPause = 2.5f;
         private Rigidbody body;
+        private CountyFourWayStopController intersectionController;
         private Vector3 destination;
         private float pauseUntil;
 
-        public void Configure(Vector3 pointA, Vector3 pointB, float speed)
+        public void Configure(Vector3 pointA, Vector3 pointB, CountyFourWayStopController controller, float speed)
         {
             endpointA = pointA;
             endpointB = pointB;
+            intersectionController = controller;
             walkingSpeed = Mathf.Max(0.2f, speed);
             transform.position = endpointA;
             destination = endpointB;
@@ -38,6 +40,8 @@ namespace SheriffAmericanLife
         private void FixedUpdate()
         {
             if (Time.time < pauseUntil) return;
+            bool standingOnSidewalk = Vector3.Distance(body.position, endpointA) <= 0.12f || Vector3.Distance(body.position, endpointB) <= 0.12f;
+            if (standingOnSidewalk && intersectionController != null && intersectionController.IsOccupied) return;
             Vector3 next = Vector3.MoveTowards(body.position, destination, walkingSpeed * Time.fixedDeltaTime);
             body.MovePosition(next);
             Vector3 direction = destination - body.position;
