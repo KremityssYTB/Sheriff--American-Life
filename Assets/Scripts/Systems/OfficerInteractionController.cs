@@ -11,11 +11,13 @@ namespace SheriffAmericanLife
         [SerializeField] private CivilianCharacter focusedCivilian;
         [SerializeField] private IncidentReportBook reportBook;
         private CountyDutyState dutyState;
+        private ArrestBookingBook bookingBook;
 
         public CivilianCharacter FocusedCivilian => focusedCivilian;
 
         public void Configure(IncidentReportBook reports) => reportBook = reports;
         public void ConfigureDutyState(CountyDutyState state) => dutyState = state;
+        public void ConfigureBookingBook(ArrestBookingBook book) => bookingBook = book;
 
         public void SetFocusedCivilian(CivilianCharacter civilian) => focusedCivilian = civilian;
 
@@ -65,7 +67,23 @@ namespace SheriffAmericanLife
         {
             if (!HasTarget() || !RequireOnDuty("Make an arrest")) return;
             bool success = focusedCivilian.Arrest();
-            Record("Arrest", "Arrest", success ? "Arrest completed" : "Subject must be detained first");
+            if (success)
+            {
+                string reason = focusedCivilian.HasOutstandingWarrant
+                    ? "Outstanding warrant"
+                    : "Arrest following completed detention";
+                string[] property = { "Wallet (secured)", "Mobile phone (secured)", "Key ring (secured)" };
+                ArrestBookingRecord booking = bookingBook != null
+                    ? bookingBook.CreateBooking(focusedCivilian, reason, property)
+                    : null;
+                Record("Arrest", "Arrest", booking != null
+                    ? "Arrest completed; booking " + booking.bookingId + " created"
+                    : "Arrest completed; booking ledger unavailable");
+            }
+            else
+            {
+                Record("Arrest", "Arrest", "Subject must be detained first");
+            }
         }
 
         public void Release()
