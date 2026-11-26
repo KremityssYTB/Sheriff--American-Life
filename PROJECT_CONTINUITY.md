@@ -157,3 +157,17 @@ A standalone 2D browser preview has been added under `web-demo/index.html`. It i
 The Unity iOS workflow currently fails at its explicit preflight because the repository has no `UNITY_LICENSE` Actions secret. Latest inspected run #127 stopped at “Verify Unity project and license”; the Unity export and macOS packaging jobs were skipped. The repository also has no `ProjectSettings/EditorBuildSettings.asset` and no `Assets/Scenes` directory at the time of this audit, so the enabled-scene/build setup must be resolved before a Unity build can succeed. To avoid automatically failing the iOS workflow on every source push, its trigger is now manual-only until the user configures a valid Unity license and the scene/build settings are ready.
 
 The mobile player runtime source had an unresolved `onDuty` identifier in its duty button label. This was corrected to read `CountyDutyState.IsOnDuty`; the patrol vehicle now starts with its controls disabled, and sprint uses a hold-style repeat button. This is a source correction only, not a compile/test result.
+
+
+### Browser preview deployment status (2026-11-26)
+
+- `web-demo/index.html` and `.github/workflows/deploy-web-demo.yml` are committed.
+- Browser preview includes touch movement, walk/drive state, enter/exit, patrol SUV, duty toggle, emergency lights, dispatch call generation, location interactions, and basic Ocala landmark/building placeholders.
+- First Pages workflow failed at Configure GitHub Pages because the repository Pages site did not exist.
+- Second attempt used `enablement: true` but failed with “Resource not accessible by integration” when trying to create the Pages site. This is a repository configuration permission gate, not an HTML build error.
+- User must open repository Settings → Pages → Build and deployment → Source = GitHub Actions, then rerun “Deploy Ocala browser preview”.
+- Expected site URL after successful deployment: https://kremityssytb.github.io/Sheriff--American-Life/
+- Do not claim it is live or tested on iPhone until the deployment and actual browser test succeed.
+- The preview is a standalone 2D browser playtest companion; it is not the Unity game, WebGL build, or iOS IPA.
+
+The Unity iOS workflow's latest run stopped at its explicit preflight: missing `UNITY_LICENSE` Actions secret. The export and macOS Xcode package jobs were skipped. The repository also currently has no `Assets/Scenes` directory or `ProjectSettings/EditorBuildSettings.asset`; scene creation and Build Settings must be added before a Unity build can pass. The iOS workflow is now manual-only to prevent every GitHub source push from triggering a known failing license preflight.
