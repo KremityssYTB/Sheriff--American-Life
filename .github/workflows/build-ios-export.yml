@@ -1,0 +1,57 @@
+name: Unity iOS Xcode Export
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "Assets/**"
+      - "Packages/**"
+      - "ProjectSettings/**"
+      - ".github/workflows/build-ios-export.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-ios:
+    name: Build unsigned iOS Xcode project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Verify project and Unity license secret
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          test -f ProjectSettings/ProjectVersion.txt || { echo "Missing Unity project settings."; exit 1; }
+          test -d Assets || { echo "Missing Assets folder."; exit 1; }
+          test -n "$UNITY_LICENSE" || { echo "Missing UNITY_LICENSE repository secret. Add a valid Unity Personal .ulf license as a GitHub Actions secret."; exit 1; }
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-iOS-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-iOS-
+
+      - name: Export iOS Xcode project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: 6000.3.25f1
+          targetPlatform: iOS
+          buildsPath: build
+
+      - name: Upload Xcode project
+        uses: actions/upload-artifact@v4
+        with:
+          name: SHERIFF-iOS-Xcode-Project
+          path: build/iOS
+          if-no-files-found: error
+          retention-days: 14
