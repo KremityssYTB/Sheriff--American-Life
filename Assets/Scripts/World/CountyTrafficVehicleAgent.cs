@@ -46,6 +46,8 @@ namespace SheriffAmericanLife
         private bool trafficStopRequested;
         private bool pulledOver;
         private Vector3 trafficStopPosition;
+        private float evasionUntil;
+        private TrafficStopDriverBehavior driverBehavior;
         public bool IsPulledOver => pulledOver;
         public bool HasActiveTrafficStop => trafficStopRequested;
         private float stopDwellStartedAt;
@@ -108,6 +110,8 @@ namespace SheriffAmericanLife
             trafficStopPosition.y = transform.position.y;
             trafficStopRequested = true;
             pulledOver = false;
+            driverBehavior = GetComponent<TrafficStopDriverBehavior>();
+            evasionUntil = driverBehavior != null ? Time.time + driverBehavior.InitialEvasionSeconds : Time.time;
             body.WakeUp();
             return true;
         }
@@ -116,6 +120,8 @@ namespace SheriffAmericanLife
         {
             trafficStopRequested = false;
             pulledOver = false;
+            evasionUntil = 0f;
+            if (driverBehavior != null) driverBehavior.ResetStop();
             if (body != null) body.WakeUp();
         }
 
@@ -224,6 +230,13 @@ namespace SheriffAmericanLife
 
         private void ProcessTrafficStop()
         {
+            if (Time.time < evasionUntil)
+            {
+                // A fleeing driver makes one brief, bounded attempt to leave before the stop AI takes over.
+                body.AddForce(transform.forward * acceleration * 1.2f, ForceMode.Acceleration);
+                return;
+            }
+
             Vector3 offset = trafficStopPosition - transform.position;
             offset.y = 0f;
             float distance = offset.magnitude;
