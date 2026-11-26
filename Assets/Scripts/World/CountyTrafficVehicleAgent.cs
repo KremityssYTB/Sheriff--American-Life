@@ -38,6 +38,8 @@ namespace SheriffAmericanLife
         [SerializeField] private float followingTimeHeadway = 1.35f;
         [SerializeField] private float followingDetectionDistance = 18f;
         [SerializeField] private float followingProbeRadius = 0.75f;
+        [SerializeField] private float minimumObstacleClearance = 2.5f;
+        [SerializeField] private bool emergencyVehicle;
         private static readonly RaycastHit[] FollowingHits = new RaycastHit[16];
         private bool stopRegistered;
         private bool hasStopReservation;
@@ -150,7 +152,7 @@ namespace SheriffAmericanLife
                     {
                         if (!stopRegistered)
                         {
-                            fourWayStop.RegisterStoppedVehicle(GetInstanceID(), stopApproach, stopMovement, Time.time);
+                            fourWayStop.RegisterStoppedVehicle(GetInstanceID(), stopApproach, stopMovement, Time.time, emergencyVehicle);
                             stopRegistered = true;
                             stopDwellStartedAt = Time.time;
                         }
@@ -192,18 +194,31 @@ namespace SheriffAmericanLife
 
             for (int i = 0; i < hitCount; i++)
             {
-                CountyTrafficVehicleAgent other = FollowingHits[i].collider != null
-                    ? FollowingHits[i].collider.GetComponentInParent<CountyTrafficVehicleAgent>() : null;
-                if (other == null || other == this) continue;
-                Vector3 toOther = other.transform.position - transform.position;
-                toOther.y = 0f;
-                if (Vector3.Dot(toOther.normalized, transform.forward) < 0.65f) continue;
-                nearestGap = Mathf.Min(nearestGap, FollowingHits[i].distance);
+                Collider hitCollider = FollowingHits[i].collider;
+                if (hitCollider == null || hitCollider.isTrigger ||
+                    hitCollider.attachedRigidbody == body) continue;
+
+                CountyTrafficVehicleAgent other =
+                    hitCollider.GetComponentInParent<CountyTrafficVehicleAgent>();
+                if (other != null && other == this) continue;
+
+                Vector3 toObstacle = hitCollider.bounds.center - transform.position;
+                toObstacle.y = 0f;
+                if (toObstacle.sqrMagnitude > 0.01f &&
+                    Vector3.Dot(toObstacle.normalized, transform.forward) < 0.65f) continue;
+
+                // Ignore low ground geometry; retain vehicles and raised/static road obstructions.
+                if (other == null && hitCollider.bounds.max.y < transform.position.y + 0.2f)
+                    continue;
+
+                float clearance = other != null ? minimumFollowingDistance : minimumObstacleClearance;
+                float gap = Mathf.Max(0f, FollowingHits[i].distance - clearance);
+                nearestGap = Mathf.Min(nearestGap, gap);
             }
 
             if (float.IsPositiveInfinity(nearestGap)) return targetSpeed;
 
-            float availableGap = Mathf.Max(0f, nearestGap - minimumFollowingDistance);
+            float availableGap = nearestGap;
             float timeHeadwayLimit = availableGap / Mathf.Max(0.25f, followingTimeHeadway);
             float brakingLimit = Mathf.Sqrt(2f * braking * availableGap);
             return Mathf.Min(targetSpeed, timeHeadwayLimit, brakingLimit);
