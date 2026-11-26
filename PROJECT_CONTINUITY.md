@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26 (Ocala daily roadmap, browser preview, and player source correction)
+Last updated: 2026-11-26 (free Unity Build Automation setup path)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -171,3 +171,16 @@ The mobile player runtime source had an unresolved `onDuty` identifier in its du
 - The preview is a standalone 2D browser playtest companion; it is not the Unity game, WebGL build, or iOS IPA.
 
 The Unity iOS workflow's latest run stopped at its explicit preflight: missing `UNITY_LICENSE` Actions secret. The export and macOS Xcode package jobs were skipped. The repository also currently has no `Assets/Scenes` directory or `ProjectSettings/EditorBuildSettings.asset`; scene creation and Build Settings must be added before a Unity build can pass. The iOS workflow is now manual-only to prevent every GitHub source push from triggering a known failing license preflight.
+
+
+## Cloud licensing/build setup update (2026-11-26)
+
+- User constraint remains iPhone-only, no Mac/PC/Chromebook, and $0 budget. Do not recommend paid cloud PCs or paid subscriptions.
+- Private setup repository: https://github.com/KremityssYTB/Unity-License. Its README now documents Unity Build Automation as the recommended route, with GameCI/.ulf retained only as an alternative.
+- Current preferred path: Unity Build Automation from the Unity Cloud Dashboard, connected to this public GitHub repository. Unity's 2026 DevOps pricing update lists 100 Mac build minutes/month for iOS/macOS builds, plus other free allocations. If a free limit is reached without a payment method, access is blocked; do not add billing details or enable pay-as-you-go.
+- Unity Build Automation supports GitHub and Unity 6000.3 LTS. The game repo has `ProjectSettings/ProjectVersion.txt` identifying 6000.3.25f1.
+- Unity Build Automation still requires one owner-authenticated setup in the Unity Cloud Dashboard: create/launch a free Unity Cloud Personal project, connect GitHub, select this repo and `main`, then create an iOS target on a macOS builder. Start with manual builds; auto-build requires webhook write permission.
+- For manual builds of this public repo, use the minimum public-repository read access token in Unity's dashboard. Never send the token in chat or commit it.
+- The repo now includes `Assets/Editor/EnsureProjectSetupBeforeBuild.cs` and `[InitializeOnLoad]` on `ProjectSetup` so the generated Main scene and iOS settings are prepared in a clean cloud checkout. These source changes have not been compiled or verified in Unity.
+- Unity iOS output is an Xcode project. A distributable/installable IPA still needs Xcode packaging and Apple signing; do not call the Xcode export an IPA.
+- Existing GameCI workflow still needs a valid `UNITY_LICENSE` secret. No .ulf has been generated, and no Unity license or Apple signing credentials are stored in the repo.
