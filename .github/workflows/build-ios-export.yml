@@ -1,4 +1,4 @@
-name: Unity iOS Xcode Export
+name: Build SHERIFF unsigned iOS IPA
 
 on:
   workflow_dispatch:
@@ -14,8 +14,8 @@ permissions:
   contents: read
 
 jobs:
-  build-ios:
-    name: Build unsigned iOS Xcode project
+  unity-export:
+    name: Export Unity iOS Xcode project
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,13 +23,16 @@ jobs:
         with:
           lfs: true
 
-      - name: Verify project and Unity license secret
+      - name: Verify Unity project and license
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         run: |
-          test -f ProjectSettings/ProjectVersion.txt || { echo "Missing Unity project settings."; exit 1; }
-          test -d Assets || { echo "Missing Assets folder."; exit 1; }
-          test -n "$UNITY_LICENSE" || { echo "Missing UNITY_LICENSE repository secret. Add a valid Unity Personal .ulf license as a GitHub Actions secret."; exit 1; }
+          test -f ProjectSettings/ProjectVersion.txt
+          test -d Assets
+          test -n "$UNITY_LICENSE" || {
+            echo "Missing UNITY_LICENSE secret. Unity Personal activation is still required."
+            exit 1
+          }
 
       - name: Cache Unity Library
         uses: actions/cache@v4
@@ -39,7 +42,7 @@ jobs:
           restore-keys: |
             Library-iOS-
 
-      - name: Export iOS Xcode project
+      - name: Export Xcode project
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -53,5 +56,45 @@ jobs:
         with:
           name: SHERIFF-iOS-Xcode-Project
           path: build/iOS
+          if-no-files-found: error
+          retention-days: 14
+
+  package-unsigned-ipa:
+    name: Compile and package unsigned IPA
+    runs-on: macos-latest
+    needs: unity-export
+    steps:
+      - name: Download Xcode project
+        uses: actions/download-artifact@v4
+        with:
+          name: SHERIFF-iOS-Xcode-Project
+          path: build/iOS
+
+      - name: Build unsigned iOS app with Xcode
+        run: |
+          xcodebuild \
+            -project build/iOS/Unity-iPhone.xcodeproj \
+            -scheme Unity-iPhone \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          APP_PATH="build/DerivedData/Build/Products/Release-iphoneos/Unity-iPhone.app"
+          test -d "$APP_PATH"
+          mkdir -p build/ipa/Payload
+          cp -R "$APP_PATH" build/ipa/Payload/
+          cd build/ipa
+          /usr/bin/zip -r ../../SHERIFF-unsigned.ipa Payload
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: SHERIFF-unsigned-IPA
+          path: SHERIFF-unsigned.ipa
           if-no-files-found: error
           retention-days: 14
