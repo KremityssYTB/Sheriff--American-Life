@@ -10,7 +10,7 @@ This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across Ch
 - Repository: https://github.com/KremityssYTB/Sheriff--American-Life
 - Branch: `main`
 - Engine target: Unity 6.3 (`6000.3.25f1`) + URP 17.3.0
-- Target device: iPhone 16e / A18, iOS 26.5
+- Target device: iPhone 16e / A18, iOS 27.2.1 (current device OS)
 - Bundle ID: `com.kremityss.sheriffamericanlife`
 - User workflow: iPhone-only; no Mac, PC, or Chromebook available. Do not assume Unity Editor or Xcode can be run locally.
 - Keep changes mobile-conscious and clearly distinguish source checks from Unity compilation, Play Mode, and device tests.
