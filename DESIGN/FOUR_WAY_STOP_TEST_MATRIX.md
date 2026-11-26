@@ -18,6 +18,7 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 | Outbound lane alignment | Vehicle completes a left or right turn | Vehicle exits aligned with the destination road and does not reverse direction or cut across a curb |
 | 24-vehicle test load | Two vehicles spawn in each of three lanes on all four approaches | All 24 agents initialize, maintain queue spacing, and do not overlap at spawn |
 | Same-approach queue | Two vehicles approach in one inbound lane | Rear vehicle maintains a safe gap, does not overlap the lead vehicle, and reaches the stop line only after the lead vehicle clears |
+| Stop-sign clearance | Vehicle approaches a stop bar with the roadside STOP sign present | The sign does not block the lane or cause premature braking before the stop line |
 | Static obstacle response | Place a raised static obstacle in a vehicle's lane | Vehicle reduces speed and stops with the configured clearance; it must not treat the road surface as an obstacle |
 | Non-blocking ground geometry | Place a low ground-level collider near the lane | Vehicle ignores low ground geometry and continues |
 | Emergency priority | Register an emergency-designated vehicle and an ordinary vehicle at the stop | Emergency vehicle receives priority after its stop dwell; ordinary traffic waits |
