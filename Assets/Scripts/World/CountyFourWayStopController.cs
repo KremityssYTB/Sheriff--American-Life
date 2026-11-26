@@ -65,41 +65,52 @@ namespace SheriffAmericanLife
 
             if (blockedByRightSideArrival)
             {
-                // If at least one waiting vehicle has no higher-priority conflict, let it go first.
-                // Only use a stable simulation tie-break when every simultaneous arrival is blocked
-                // by another vehicle on its right (the all-four-arrive-at-once deadlock case).
-                bool anUnblockedCandidateExists = false;
+                // Detect a true circular right-side-yield cycle. Do not mistake a
+                // left-turn conflict for a deadlock that can be overridden.
+                bool everyArrivalHasRightSideBlocker = true;
+                int fallbackWinnerId = 0;
+                int fallbackWinnerApproach = int.MaxValue;
+
                 foreach (Arrival candidate in waiting.Values)
                 {
-                    bool candidateBlocked = false;
+                    bool candidateHasRightSideBlocker = false;
+                    bool candidateHasEarlierArrival = false;
+                    bool candidateHasOncomingConflict = false;
+
                     foreach (Arrival other in waiting.Values)
                     {
                         if (other.vehicleId == candidate.vehicleId) continue;
-                        if (other.stoppedAt < candidate.stoppedAt - simultaneousArrivalTolerance ||
-                            CountyIntersectionRules.MustYieldForOncomingTraffic(candidate.approach,
-                                candidate.movement, other.approach, other.movement) ||
-                            CountyIntersectionRules.MustYieldAtFourWayStop(candidate.approach,
-                                candidate.stoppedAt, other.approach, other.stoppedAt,
-                                simultaneousArrivalTolerance))
-                        {
-                            candidateBlocked = true;
-                            break;
-                        }
+                        if (other.stoppedAt < candidate.stoppedAt - simultaneousArrivalTolerance)
+                            candidateHasEarlierArrival = true;
+                        if (CountyIntersectionRules.MustYieldAtFourWayStop(candidate.approach,
+                            candidate.stoppedAt, other.approach, other.stoppedAt,
+                            simultaneousArrivalTolerance))
+                            candidateHasRightSideBlocker = true;
+                        if (CountyIntersectionRules.MustYieldForOncomingTraffic(candidate.approach,
+                            candidate.movement, other.approach, other.movement))
+                            candidateHasOncomingConflict = true;
                     }
-                    if (!candidateBlocked) { anUnblockedCandidateExists = true; break; }
+
+                    if (!candidateHasRightSideBlocker)
+                        everyArrivalHasRightSideBlocker = false;
+
+                    if (!candidateHasEarlierArrival && !candidateHasOncomingConflict &&
+                        (int)candidate.approach < fallbackWinnerApproach)
+                    {
+                        fallbackWinnerApproach = (int)candidate.approach;
+                        fallbackWinnerId = candidate.vehicleId;
+                    }
+                    else if (!candidateHasEarlierArrival && !candidateHasOncomingConflict &&
+                        (int)candidate.approach == fallbackWinnerApproach &&
+                        (fallbackWinnerId == 0 || candidate.vehicleId < fallbackWinnerId))
+                    {
+                        fallbackWinnerId = candidate.vehicleId;
+                    }
                 }
 
-                if (anUnblockedCandidateExists) return false;
-
-                foreach (Arrival other in waiting.Values)
-                {
-                    if (other.vehicleId == vehicleId) continue;
-                    bool simultaneous = Mathf.Abs(other.stoppedAt - mine.stoppedAt) <= simultaneousArrivalTolerance;
-                    if (!simultaneous) continue;
-                    if ((int)other.approach < (int)mine.approach ||
-                        (other.approach == mine.approach && other.vehicleId < mine.vehicleId))
-                        return false;
-                }
+                if (!everyArrivalHasRightSideBlocker || fallbackWinnerId == 0 ||
+                    fallbackWinnerId != vehicleId)
+                    return false;
             }
 
             occupyingVehicleId = vehicleId;
