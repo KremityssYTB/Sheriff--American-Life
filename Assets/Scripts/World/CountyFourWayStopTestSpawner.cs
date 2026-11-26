@@ -56,7 +56,6 @@ namespace SheriffAmericanLife
             CountyIntersectionRules.Approach approach, string label,
             CountyIntersectionRules.Movement movement)
         {
-            // Derive the vehicle's right-hand side from its travel direction.
             Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
             Vector3 stop = center - forward * 10f;
             Vector3 start = center - forward * 62f;
@@ -83,27 +82,43 @@ namespace SheriffAmericanLife
             CreateStopSign(parent, label + " STOP Sign", stop - center - forward * 5f,
                 Quaternion.LookRotation(-forward, Vector3.up));
 
-            string movementName = movement.ToString();
+            // Two same-approach test vehicles arrive together in adjacent approach lanes.
+            // The shared controller must serialize their entry even when arrival times match.
+            AddStopVehicle(parent, center, start, stop, curveA, curveB, exit, loopA, loopB,
+                side, forward, approach, movement, label, -2.25f, "Lane A");
+            AddStopVehicle(parent, center, start, stop, curveA, curveB, exit, loopA, loopB,
+                side, forward, approach, movement, label, 2.25f, "Lane B");
+        }
+
+        private void AddStopVehicle(Transform parent, Vector3 center, Vector3 start,
+            Vector3 stop, Vector3 curveA, Vector3 curveB, Vector3 exit, Vector3 loopA,
+            Vector3 loopB, Vector3 side, Vector3 forward,
+            CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
+            string label, float laneOffset, string laneLabel)
+        {
+            Vector3 offset = side * laneOffset;
+            string routeName = label + " " + laneLabel + " " + movement;
             Transform[] route =
             {
-                Waypoint(parent, label + " " + movementName + " Stop Line", stop - center),
-                Waypoint(parent, label + " " + movementName + " Entry", curveA - center),
-                Waypoint(parent, label + " " + movementName + " Turn", curveB - center),
-                Waypoint(parent, label + " " + movementName + " Clear Conflict Area", exit - center),
-                Waypoint(parent, label + " " + movementName + " Outer Loop A", loopA - center),
-                Waypoint(parent, label + " " + movementName + " Outer Loop B", loopB - center),
-                Waypoint(parent, label + " " + movementName + " Return Start", start - center)
+                Waypoint(parent, routeName + " Stop Line", stop - center + offset),
+                Waypoint(parent, routeName + " Entry", curveA - center + offset),
+                Waypoint(parent, routeName + " Turn", curveB - center + offset),
+                Waypoint(parent, routeName + " Clear Conflict Area", exit - center + offset),
+                Waypoint(parent, routeName + " Outer Loop A", loopA - center + offset),
+                Waypoint(parent, routeName + " Outer Loop B", loopB - center + offset),
+                Waypoint(parent, routeName + " Return Start", start - center + offset)
             };
 
-            GameObject car = Make(parent, "Stop Test Sedan " + label + " " + movementName,
-                PrimitiveType.Cube, start - center + Vector3.up * .8f,
-                new Vector3(4.2f, 1.25f, 1.9f), new Color(.28f, .38f, .52f),
+            GameObject car = Make(parent, "Stop Test Sedan " + routeName,
+                PrimitiveType.Cube, start - center + offset + Vector3.up * .8f,
+                new Vector3(1.9f, 1.25f, 4.2f), new Color(.28f, .38f, .52f),
                 Quaternion.LookRotation(forward, Vector3.up));
             car.AddComponent<Rigidbody>().mass = 1150f;
             CountyTrafficVehicleAgent agent = car.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, vehicleSpeed);
-            Vector3 crosswalkStop = center - forward * 24f;
-            agent.ConfigureFourWayStop(controller, approach, movement, stop, exit, crosswalkStop);
+            Vector3 crosswalkStop = center - forward * 24f + offset;
+            agent.ConfigureFourWayStop(controller, approach, movement,
+                stop + offset, exit + offset, crosswalkStop);
         }
 
         private void AddCrosswalkSensor(Transform parent, Vector3 center, Vector3 approachForward, string label)
