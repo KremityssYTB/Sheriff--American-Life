@@ -9,6 +9,8 @@ namespace SheriffAmericanLife
         [SerializeField] private KeyCode acceptKey = KeyCode.J;
         private bool activeCall;
 
+        public void SetPlayer(Transform target) => player = target;
+
         private void Update()
         {
             if (Input.GetKeyDown(acceptKey))
