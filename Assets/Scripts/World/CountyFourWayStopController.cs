@@ -21,10 +21,12 @@ namespace SheriffAmericanLife
         private readonly Dictionary<int, Arrival> waiting = new Dictionary<int, Arrival>();
         private int occupyingVehicleId;
         private bool pedestrianConflict;
+        private readonly HashSet<int> pedestrianOccupants = new HashSet<int>();
 
         public int OccupyingVehicleId => occupyingVehicleId;
         public int WaitingVehicleCount => waiting.Count;
         public bool IsOccupied => occupyingVehicleId != 0;
+        public bool IsPedestrianConflictActive => pedestrianConflict;
 
         public void RegisterStoppedVehicle(int vehicleId, CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement, float stoppedAt)
         {
@@ -70,11 +72,20 @@ namespace SheriffAmericanLife
             if (occupyingVehicleId == vehicleId) occupyingVehicleId = 0;
         }
 
-        public void SetPedestrianConflict(bool occupied) { pedestrianConflict = occupied; }
+        public void SetPedestrianConflict(bool occupied) { pedestrianConflict = occupied || pedestrianOccupants.Count > 0; }
+
+        public void SetPedestrianOccupancy(int pedestrianId, bool inConflict)
+        {
+            if (pedestrianId == 0) return;
+            if (inConflict) pedestrianOccupants.Add(pedestrianId);
+            else pedestrianOccupants.Remove(pedestrianId);
+            pedestrianConflict = pedestrianOccupants.Count > 0;
+        }
 
         private void OnDisable()
         {
             waiting.Clear();
+            pedestrianOccupants.Clear();
             occupyingVehicleId = 0;
             pedestrianConflict = false;
         }
