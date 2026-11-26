@@ -14,6 +14,17 @@ namespace SheriffAmericanLife.Editor
         private const string SettingsFolder = "Assets/Settings";
         private const string SceneFolder = "Assets/Scenes";
 
+        static ProjectSetup()
+        {
+            EditorApplication.delayCall += EnsureGeneratedProject;
+        }
+
+        private static void EnsureGeneratedProject()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(SceneFolder + "/Main.unity") == null)
+                Setup();
+        }
+
         [MenuItem("SHERIFF/Setup Mobile URP Project")]
         public static void Setup()
         {
