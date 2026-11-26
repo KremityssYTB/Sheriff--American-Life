@@ -14,21 +14,24 @@ namespace SheriffAmericanLife
         private IncidentReportBook reports;
         private WitnessStatementBook witnesses;
         private TrafficCitationBook citations;
+        private TrafficDriverHistoryBook driverHistory;
         private string selectedCallId;
 
         public DispatchCall SelectedCall => dispatch != null ? dispatch.Find(selectedCallId) : null;
         public IReadOnlyList<DispatchCall> Calls => dispatch != null ? dispatch.Calls : Array.Empty<DispatchCall>();
         public IReadOnlyList<TrafficCitation> Citations => citations != null ? citations.Citations : Array.Empty<TrafficCitation>();
+        public IReadOnlyList<DriverHistoryRecord> DriverHistory => driverHistory != null ? driverHistory.Records : Array.Empty<DriverHistoryRecord>();
         public event Action MdtChanged;
 
         public void Configure(DispatchCallManager dispatchManager, IncidentReportBook reportBook,
-            WitnessStatementBook witnessBook, TrafficCitationBook citationBook)
+            WitnessStatementBook witnessBook, TrafficCitationBook citationBook, TrafficDriverHistoryBook driverHistoryBook)
         {
             Unsubscribe();
             dispatch = dispatchManager;
             reports = reportBook;
             witnesses = witnessBook;
             citations = citationBook;
+            driverHistory = driverHistoryBook;
             Subscribe();
             MdtChanged?.Invoke();
         }
@@ -62,6 +65,11 @@ namespace SheriffAmericanLife
                 citations.CitationAdded += HandleCitationChanged;
                 citations.CitationUpdated += HandleCitationChanged;
             }
+            if (driverHistory != null)
+            {
+                driverHistory.HistoryChanged -= HandleHistoryChanged;
+                driverHistory.HistoryChanged += HandleHistoryChanged;
+            }
         }
 
         private void Unsubscribe()
@@ -78,6 +86,7 @@ namespace SheriffAmericanLife
                 citations.CitationAdded -= HandleCitationChanged;
                 citations.CitationUpdated -= HandleCitationChanged;
             }
+            if (driverHistory != null) driverHistory.HistoryChanged -= HandleHistoryChanged;
         }
 
         public bool SelectCall(string callId)
@@ -151,5 +160,6 @@ namespace SheriffAmericanLife
         private void HandleReportAdded(IncidentReport report) => MdtChanged?.Invoke();
         private void HandleWitnessAdded(WitnessStatement statement) => MdtChanged?.Invoke();
         private void HandleCitationChanged(TrafficCitation citation) => MdtChanged?.Invoke();
+        private void HandleHistoryChanged() => MdtChanged?.Invoke();
     }
 }
