@@ -57,13 +57,19 @@ namespace SheriffAmericanLife
     public sealed class WorldIncidentReporter : MonoBehaviour
     {
         [SerializeField] private WorldClockSystem worldClock;
+        [SerializeField] private CountyIncidentActorSpawner actorSpawner;
 
-        public void Configure(WorldClockSystem clock) => worldClock = clock;
+        public void Configure(WorldClockSystem clock, CountyIncidentActorSpawner spawner = null)
+        {
+            worldClock = clock;
+            actorSpawner = spawner;
+        }
 
         public WorldIncident Report(WorldIncidentType type, string description,
             string subjectDescription, Vector3 location)
         {
             float hour = worldClock != null ? worldClock.CurrentHour : 12f;
+            if (actorSpawner != null) actorSpawner.Spawn(type, location);
             return WorldIncidentBus.Publish(type, description, subjectDescription, location, hour);
         }
     }
