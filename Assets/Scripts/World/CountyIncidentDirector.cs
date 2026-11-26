@@ -31,7 +31,6 @@ namespace SheriffAmericanLife
         private float nextEventTime;
         private int eventsCreated;
         private bool configured;
-        private CountyIncidentActorSpawner actorSpawner;
 
         public int EventsCreated => eventsCreated;
         public event Action<WorldIncident> ScenarioReported;
@@ -40,7 +39,6 @@ namespace SheriffAmericanLife
         {
             reporter = incidentReporter;
             scenarios = availableScenarios;
-            actorSpawner = GetComponent<CountyIncidentActorSpawner>();
             configured = true;
             ScheduleNext(firstEventDelay);
         }
@@ -63,7 +61,6 @@ namespace SheriffAmericanLife
                 return;
             }
 
-            if (actorSpawner != null) actorSpawner.Spawn(scenario.type, scenario.location);
             WorldIncident incident = reporter.Report(scenario.type, scenario.description,
                 scenario.subjectDescription, scenario.location);
             eventsCreated++;
