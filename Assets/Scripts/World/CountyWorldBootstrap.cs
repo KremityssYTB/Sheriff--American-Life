@@ -111,6 +111,7 @@ namespace SheriffAmericanLife
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
             interactionController.Configure(reportBook);
             SpawnTestCivilians(clock, witnessStatementBook, incidentReporter);
+            root.gameObject.AddComponent<CountyPlayerRuntimeController>().Initialize(root);
         }
 
         private void SpawnTestCivilians(WorldClockSystem clock, WitnessStatementBook statements, WorldIncidentReporter reporter)
