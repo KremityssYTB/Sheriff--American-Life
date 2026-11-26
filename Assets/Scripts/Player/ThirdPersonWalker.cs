@@ -13,6 +13,8 @@ namespace SheriffAmericanLife
         private float verticalSpeed;
 
         private void Awake() { controller=GetComponent<CharacterController>(); }
+        public void SetCameraTransform(Transform value) { cameraTransform=value; }
+        public void SetMovementEnabled(bool value) { enabled=value; input=Vector2.zero; sprint=false; }
         public void SetMoveInput(Vector2 value) { input=Vector2.ClampMagnitude(value,1f); }
         public void SetSprint(bool value) { sprint=value; }
 
