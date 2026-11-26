@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26 (core open-world/off-duty gameplay scope captured)
+Last updated: 2026-11-26 (player vertical-slice source audit and duplicate-type isolation)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -33,7 +33,7 @@ The core game is an LSPDFR-style open-world roleplaying game with a highly detai
 - **Initial release scope:** single-player first. First- and third-person cameras. Build the sheriff-deputy vertical slice before expanding to every role/county.
 - **Production limits:** iPhone 16e/A18, Unity 6.3 + URP 17.3, iOS; iPhone-only workflow. No local Mac/PC/Chromebook assumed. Use original/properly licensed assets and do not copy proprietary LSPDFR/GTA assets or source.
 
-The detailed scope and staged build order are in `DESIGN/CORE_GAMEPLAY_SCOPE.md`. Treat these as user requirements and planned features, not as claims that they already exist in the prototype.
+The detailed scope and staged build order are in `DESIGN/CORE_GAMEPLAY_SCOPE.md`. Treat these as user requirements and planned features, not as claims that they already exist.
 
 ## Current committed prototype
 
@@ -46,12 +46,24 @@ The detailed scope and staged build order are in `DESIGN/CORE_GAMEPLAY_SCOPE.md`
 - One north-approach through-lane lead sedan is marked as the emergency test vehicle, with a dark-blue body, dispatch-controlled alternating red/blue lightbar, and generated two-tone siren. The unit is named `OCALA-1`: MDT ACCEPT assigns it, EN ROUTE activates lights and siren, ON SCENE stops the siren while keeping lights active, and RESOLVED/CANCELLED turns both off. It receives priority over ordinary waiting traffic at the four-way stop, but cannot pre-empt an occupying vehicle or bypass pedestrian occupancy. This is a single-unit prototype; full CAD assignment, emergency pull-over behavior, and fleet support remain unimplemented.
 - Vehicle collisions can publish incident reports into dispatch.
 
+## Player and mobile-control source audit (2026-11-26)
+
+- `Assets/Scripts/Player/ThirdPersonWalker.cs`: camera-relative movement, sprint, and public movement/sprint input methods.
+- `Assets/Scripts/Vehicle/PatrolVehicleController.cs`: public throttle and steering inputs, basic transform-based vehicle movement.
+- `Assets/Scripts/Systems/CameraModeController.cs`: first/third-person camera anchors and mode toggle API.
+- `Assets/Scripts/UI/MobileControls.cs`: bridge methods for movement, sprint, vehicle inputs, camera toggle, and test dispatch.
+- `Assets/Scripts/Systems/OfficerInteractionController.cs`: focused-civilian interaction/report actions.
+- These newer components are not yet wired into `CountyWorldBootstrap`. The bootstrap still spawns the old keyboard-only greybox player, camera, dispatch placeholder, and vehicle.
+- Four duplicate root-level class declarations (`CameraModeController`, `DispatchCallSystem`, `PatrolVehicleController`, `ThirdPersonWalker`) conflicted with newer folder-organized classes in the same namespace. The root-level scripts were moved into `SheriffAmericanLife.Legacy`, and `CountyWorldBootstrap` now explicitly uses those legacy types. This isolates the duplicates while preserving the old greybox path.
+- The source audit and namespace changes are not a Unity compilation. Additional duplicate types or unrelated compile errors may remain.
+- Detailed source inventory and acceptance checks: `DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md`.
+
 ## Recent traffic commits (2026-11-26)
 
 - `8e1b718c17dfd611f443cd9044321442271a78b9` — lane-specific turn paths.
 - `0e260491ce53e9aabc790dc8453cf8d58cd0e94e` — route waypoint sequencing and stop-bar orientation.
 - `12c4080a92bb5a894380a4a736e37f0226cec292` — README and validation updates for lane geometry.
-- `5ebb8a69be12bedb64395672929ca58992d40e01` — lane-marking alignment on both road axes.
+- `5ebb8a69be12bedb64395672929ca58992d40e01e` — lane-marking alignment on both road axes.
 - `6078a35fd9a28e1f20f9fa375f5561c64a7bce79` — forward obstacle-aware braking in traffic agent.
 - `12a49520e51a38598c28b8b774f3ca5dfc347e39` — emergency vehicle priority in four-way-stop controller.
 - `e63c64d5335521c7343b75bb8ccf5071080368c8` — emergency designation API on traffic agent.
@@ -80,26 +92,25 @@ The detailed scope and staged build order are in `DESIGN/CORE_GAMEPLAY_SCOPE.md`
 - `975e217dc1828c6ee2ed5a558ac463ce558e7108` — add dispatch/siren manual validation cases.
 - `e956f30285e0152f46fefbd08525525b0a020198` — document emergency response state transitions.
 - `180778b25675efd8f0b50619d285ee48ec7b6027` — ensure lightbar is off before dispatch.
- 
+
 ## Key source and documentation files
 
+- `Assets/Scripts/Player/ThirdPersonWalker.cs`
+- `Assets/Scripts/Vehicle/PatrolVehicleController.cs`
+- `Assets/Scripts/Systems/CameraModeController.cs`
+- `Assets/Scripts/UI/MobileControls.cs`
+- `Assets/Scripts/Systems/OfficerInteractionController.cs`
 - `Assets/Scripts/World/CountyTrafficVehicleAgent.cs`
 - `Assets/Scripts/World/CountyEmergencyLightbar.cs`
 - `Assets/Scripts/World/CountyEmergencySiren.cs`
 - `Assets/Scripts/World/CountyEmergencyResponseUnit.cs`
 - `Assets/Scripts/World/CountyFourWayStopTestSpawner.cs`
-- `Assets/Scripts/World/CountyFourWayStopController.cs`
-- `Assets/Scripts/World/CountyIntersectionRules.cs`
-- `Assets/Scripts/World/CountyPedestrianCrossingAgent.cs`
-- `Assets/Scripts/World/CountyPedestrianCrossingSensor.cs`
-- `DESIGN/TRAFFIC_QUEUE_AND_FOLLOWING.md`
-- `DESIGN/FOUR_WAY_STOP_CONTROLLER.md`
-- `DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md`
-- `README.md`
+- `DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md`
+- `DESIGN/CORE_GAMEPLAY_SCOPE.md`
 
 ## Verification status
 
-Repository files were fetched after the recent edits. Source-level checks confirmed lane movement assignments, Bézier waypoint generation, lane-marking orientation, static-obstacle filtering code, roadside stop-sign placement, emergency-priority and fallback guards, preservation of the occupied-intersection/pedestrian gate, renderer-only dispatch-controlled lightbar wiring, OCALA-1 dispatch lifecycle matching, generated siren clip setup, and balanced braces in the main emergency/traffic scripts. These checks are not a C# compiler.
+Repository files were fetched after the recent edits. Source-level checks confirmed the legacy namespace isolation and explicit bootstrap references, and inspected the mobile movement/vehicle/camera bridge APIs. This does not prove C# compilation or runtime behavior.
 
 Not completed:
 - Unity compilation
@@ -112,12 +123,13 @@ The manual validation matrix is a checklist, not a test report. Do not claim any
 
 ## Next development steps
 
-1. Validate the OCALA-1 MDT sequence: ACCEPT, EN ROUTE, ON SCENE, RESOLVED/CANCELLED; verify lightbar and siren transitions and ensure unrelated unit assignments do not activate this vehicle.
-2. Add safe emergency pull-over behavior and intersection handling. Never allow emergency vehicles to enter an occupied conflict area or drive through an active pedestrian crossing.
-3. Inspect and tune obstacle detection against road colliders, stop signs, vehicle colliders, and objects on adjacent lanes; avoid false braking.
-4. Implement obstacle steering/lane changes only after braking-only detection is stable.
-5. Validate the 24-car setup, emergency priority, static-obstacle detection, roadside stop-sign clearance, and dispatch audio in Unity.
-6. Update this file, README, relevant design docs, and manual validation matrix after each significant implementation.
+1. Integrate `Player.ThirdPersonWalker`, the newer camera controller, and mobile controls into `CountyWorldBootstrap`; ensure the spawned capsule has only the intended movement collider.
+2. Implement safe patrol-vehicle enter/exit, camera target handoff, and exclusive on-foot/vehicle input routing.
+3. Add explicit on-duty/off-duty state; duty state gates department tools and dispatch, not ordinary free-roam, stores, homes, or personal driving.
+4. Connect civilian focus/interaction to the player interaction loop.
+5. Build one complete traffic stop, then detain/cuff/search/arrest/prisoner transport.
+6. Add one usable store/gas station and one home/interior to prove off-duty civilian gameplay.
+7. Resume traffic simulation expansion after the touch-controlled player loop is functional.
 
 ## Working protocol
 
