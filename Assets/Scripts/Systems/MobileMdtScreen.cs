@@ -3,6 +3,8 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 namespace SheriffAmericanLife
 {
@@ -47,6 +49,12 @@ namespace SheriffAmericanLife
 
         private void BuildScreen()
         {
+            if (EventSystem.current == null)
+            {
+                GameObject eventSystemObject = new GameObject("MDT Event System", typeof(EventSystem), typeof(InputSystemUIInputModule));
+                eventSystemObject.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
+            }
+
             GameObject canvasObject = new GameObject("Mobile MDT Canvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvas = canvasObject.GetComponent<Canvas>();
