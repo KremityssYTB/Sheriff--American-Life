@@ -17,17 +17,25 @@ namespace SheriffAmericanLife
         [SerializeField] private float waypointRadius = 7f;
         [SerializeField] private float collisionReportSpeed = 3.5f;
         [SerializeField] private WorldIncidentReporter incidentReporter;
+        [SerializeField] private TrafficSignalController trafficSignal;
+        [SerializeField] private bool eastWestRoad = true;
+        [SerializeField] private Vector3 stopLinePosition;
+        [SerializeField] private float stopLineDistance = 12f;
 
         private Rigidbody body;
         private int waypointIndex;
         private float nextCollisionReportTime;
         private const float CollisionCooldown = 20f;
 
-        public void Configure(Transform[] waypoints, WorldIncidentReporter reporter, float speed)
+        public void Configure(Transform[] waypoints, WorldIncidentReporter reporter, float speed,
+            TrafficSignalController signal = null, bool isEastWest = true, Vector3 stopLine = default)
         {
             route = waypoints;
             incidentReporter = reporter;
             targetSpeed = Mathf.Max(2f, speed);
+            trafficSignal = signal;
+            eastWestRoad = isEastWest;
+            stopLinePosition = stopLine;
         }
 
         private void Awake()
@@ -63,6 +71,12 @@ namespace SheriffAmericanLife
 
             float currentSpeed = Vector3.Dot(body.velocity, transform.forward);
             float speedError = targetSpeed - currentSpeed;
+            Vector3 toStopLine = stopLinePosition - transform.position;
+            toStopLine.y = 0f;
+            float distanceToLine = Vector3.Dot(toStopLine, transform.forward);
+            bool approachingLine = trafficSignal != null && distanceToLine > 0f && distanceToLine < stopLineDistance;
+            if (approachingLine && !trafficSignal.CanProceed(eastWestRoad))
+                speedError = Mathf.Min(speedError, -Mathf.Max(2f, currentSpeed));
             if (Mathf.Abs(angle) > 65f) speedError = Mathf.Min(speedError, 0f);
             if (speedError >= 0f)
                 body.AddForce(transform.forward * Mathf.Min(acceleration, speedError * 2f), ForceMode.Acceleration);
