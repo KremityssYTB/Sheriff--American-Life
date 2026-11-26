@@ -95,7 +95,8 @@ namespace SheriffAmericanLife
             MakeButton("WITNESSES", right, new Vector2(.21f,.91f), new Vector2(.405f,.99f), () => SetTab("WITNESSES"));
             MakeButton("REPORTS", right, new Vector2(.41f,.91f), new Vector2(.595f,.99f), () => SetTab("REPORTS"));
             MakeButton("TICKETS", right, new Vector2(.60f,.91f), new Vector2(.785f,.99f), () => SetTab("TICKETS"));
-            MakeButton("HISTORY", right, new Vector2(.79f,.91f), new Vector2(.985f,.99f), () => SetTab("HISTORY"));
+            MakeButton("HISTORY", right, new Vector2(.665f,.91f), new Vector2(.82f,.99f), () => SetTab("HISTORY"));
+            MakeButton("BOOKINGS", right, new Vector2(.825f,.91f), new Vector2(.985f,.99f), () => SetTab("BOOKINGS"));
             ScrollArea detail = CreateScrollArea(right, new Vector2(.025f,.16f), new Vector2(.975f,.89f));
             detailsContent = detail.content;
             CreateActionButtons(right);
@@ -188,6 +189,39 @@ namespace SheriffAmericanLife
                     }
                 }
                 AddContentText("History is local fictional gameplay data. It is not a real DMV, court, or law-enforcement record.", 18);
+                return;
+            }
+
+            if (activeTab == "BOOKINGS")
+            {
+                AddContentText("ARREST & BOOKING REGISTER", 28);
+                IReadOnlyList<ArrestBookingRecord> bookings = mdt.Bookings;
+                if (bookings.Count == 0) AddContentText("No arrest bookings have been created.", 22);
+                foreach (ArrestBookingRecord booking in bookings)
+                {
+                    AddContentText(booking.bookingId + "  |  " + booking.status + "\\n" +
+                        booking.personName + "  |  " + booking.identificationNumber + "\\n" +
+                        "REASON: " + booking.arrestReason + "\\nARRESTED: " + booking.arrestedAt +
+                        (string.IsNullOrEmpty(booking.bookedAt) ? "" : "\\nBOOKED: " + booking.bookedAt) +
+                        (string.IsNullOrEmpty(booking.releasedAt) ? "" : "\\nRELEASED: " + booking.releasedAt), 22);
+                    AddContentText("PROPERTY INVENTORY\\n" +
+                        (booking.propertyInventory == null || booking.propertyInventory.Count == 0
+                            ? "No property listed"
+                            : string.Join("\\n", booking.propertyInventory)), 19);
+                    if (booking.status == BookingStatus.AwaitingTransport)
+                    {
+                        GameObject processButton = MakeButtonObject("MARK " + booking.bookingId + " BOOKED",
+                            detailsContent, () => { mdt.MarkBookingProcessed(booking.bookingId); RefreshDetails(); });
+                        processButton.AddComponent<LayoutElement>().preferredHeight = 58f;
+                    }
+                    else if (booking.status == BookingStatus.Booked)
+                    {
+                        GameObject releaseButton = MakeButtonObject("RELEASE " + booking.bookingId,
+                            detailsContent, () => { mdt.ReleaseBookedPerson(booking.bookingId); RefreshDetails(); });
+                        releaseButton.AddComponent<LayoutElement>().preferredHeight = 58f;
+                    }
+                }
+                AddContentText("Fictional local gameplay records only. Property entries are placeholder custody inventory, not a real search or evidence record.", 18);
                 return;
             }
 
