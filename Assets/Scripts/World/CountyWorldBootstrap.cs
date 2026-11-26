@@ -134,12 +134,12 @@ namespace SheriffAmericanLife
         private void SpawnCountyTraffic(WorldIncidentReporter reporter)
         {
             Transform[] eastbound = new Transform[] {
-                CreateWaypoint("Traffic Eastbound Start", new Vector3(-132,.1f,-83)),
-                CreateWaypoint("Traffic Eastbound End", new Vector3(132,.1f,-83))
+                CreateWaypoint("Traffic Eastbound End", new Vector3(132,.1f,-83)),
+                CreateWaypoint("Traffic Eastbound Start", new Vector3(-132,.1f,-83))
             };
             Transform[] westbound = new Transform[] {
-                CreateWaypoint("Traffic Westbound Start", new Vector3(132,.1f,-77)),
-                CreateWaypoint("Traffic Westbound End", new Vector3(-132,.1f,-77))
+                CreateWaypoint("Traffic Westbound End", new Vector3(-132,.1f,-77)),
+                CreateWaypoint("Traffic Westbound Start", new Vector3(132,.1f,-77))
             };
 
             SpawnTrafficVehicle("Civilian Sedan East 1", new Vector3(-108,.8f,-83), eastbound, reporter, 7.5f, new Color(.2f,.3f,.42f));
