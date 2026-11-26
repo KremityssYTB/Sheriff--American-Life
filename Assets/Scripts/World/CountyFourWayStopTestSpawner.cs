@@ -130,14 +130,14 @@ namespace SheriffAmericanLife
             Vector3 side = Vector3.Cross(Vector3.up, approachForward).normalized;
             zone.transform.localRotation = Quaternion.LookRotation(side, Vector3.up);
             CountyPedestrianCrossingSensor sensor = zone.AddComponent<CountyPedestrianCrossingSensor>();
-            sensor.Configure(controller, new Vector3(roadWidth * 0.82f, 1.8f, 3.2f));
+            sensor.Configure(controller, new Vector3(3.8f, 1.8f, roadWidth * 0.82f));
 
             SpawnPedestrian(parent, position - center, side, label);
             for (int i = -3; i <= 3; i++)
             {
                 Vector3 stripePosition = position - center + approachForward * (i * 0.45f) + Vector3.up * 0.035f;
                 Make(parent, label + " Crosswalk Stripe " + i, PrimitiveType.Cube,
-                    stripePosition, new Vector3(0.72f, 0.035f, 2.6f), Color.white,
+                    stripePosition, new Vector3(0.45f, 0.035f, roadWidth * 0.82f), Color.white,
                     Quaternion.LookRotation(side, Vector3.up));
             }
         }
