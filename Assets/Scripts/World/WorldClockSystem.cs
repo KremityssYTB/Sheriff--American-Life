@@ -40,7 +40,7 @@ namespace SheriffAmericanLife
         {
             if (advanceTime)
             {
-                CurrentHour += (24f / (minutesPerGameDay * 60f)) * Time.deltaTime * 60f;
+                CurrentHour += (24f / (minutesPerGameDay * 60f)) * Time.deltaTime;
                 if (CurrentHour >= 24f) CurrentHour -= 24f;
             }
             UpdateLighting();
