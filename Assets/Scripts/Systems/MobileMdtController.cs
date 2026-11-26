@@ -15,16 +15,18 @@ namespace SheriffAmericanLife
         private WitnessStatementBook witnesses;
         private TrafficCitationBook citations;
         private TrafficDriverHistoryBook driverHistory;
+        private ArrestBookingBook bookingBook;
         private string selectedCallId;
 
         public DispatchCall SelectedCall => dispatch != null ? dispatch.Find(selectedCallId) : null;
         public IReadOnlyList<DispatchCall> Calls => dispatch != null ? dispatch.Calls : Array.Empty<DispatchCall>();
         public IReadOnlyList<TrafficCitation> Citations => citations != null ? citations.Citations : Array.Empty<TrafficCitation>();
         public IReadOnlyList<DriverHistoryRecord> DriverHistory => driverHistory != null ? driverHistory.Records : Array.Empty<DriverHistoryRecord>();
+        public IReadOnlyList<ArrestBookingRecord> Bookings => bookingBook != null ? bookingBook.Records : Array.Empty<ArrestBookingRecord>();
         public event Action MdtChanged;
 
         public void Configure(DispatchCallManager dispatchManager, IncidentReportBook reportBook,
-            WitnessStatementBook witnessBook, TrafficCitationBook citationBook, TrafficDriverHistoryBook driverHistoryBook)
+            WitnessStatementBook witnessBook, TrafficCitationBook citationBook, TrafficDriverHistoryBook driverHistoryBook, ArrestBookingBook arrestBookingBook)
         {
             Unsubscribe();
             dispatch = dispatchManager;
@@ -32,6 +34,7 @@ namespace SheriffAmericanLife
             witnesses = witnessBook;
             citations = citationBook;
             driverHistory = driverHistoryBook;
+            bookingBook = arrestBookingBook;
             Subscribe();
             MdtChanged?.Invoke();
         }
@@ -70,6 +73,11 @@ namespace SheriffAmericanLife
                 driverHistory.HistoryChanged -= HandleHistoryChanged;
                 driverHistory.HistoryChanged += HandleHistoryChanged;
             }
+            if (bookingBook != null)
+            {
+                bookingBook.BookingsChanged -= HandleBookingsChanged;
+                bookingBook.BookingsChanged += HandleBookingsChanged;
+            }
         }
 
         private void Unsubscribe()
@@ -87,6 +95,7 @@ namespace SheriffAmericanLife
                 citations.CitationUpdated -= HandleCitationChanged;
             }
             if (driverHistory != null) driverHistory.HistoryChanged -= HandleHistoryChanged;
+            if (bookingBook != null) bookingBook.BookingsChanged -= HandleBookingsChanged;
         }
 
         public bool SelectCall(string callId)
@@ -160,6 +169,10 @@ namespace SheriffAmericanLife
         private void HandleReportAdded(IncidentReport report) => MdtChanged?.Invoke();
         private void HandleWitnessAdded(WitnessStatement statement) => MdtChanged?.Invoke();
         private void HandleCitationChanged(TrafficCitation citation) => MdtChanged?.Invoke();
+        public bool MarkBookingProcessed(string bookingId) => bookingBook != null && bookingBook.MarkBooked(bookingId);
+        public bool ReleaseBookedPerson(string bookingId) => bookingBook != null && bookingBook.MarkReleased(bookingId);
+
         private void HandleHistoryChanged() => MdtChanged?.Invoke();
+        private void HandleBookingsChanged() => MdtChanged?.Invoke();
     }
 }
