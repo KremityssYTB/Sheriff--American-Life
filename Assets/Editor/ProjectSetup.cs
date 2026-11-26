@@ -64,7 +64,6 @@ namespace SheriffAmericanLife.Editor
                 return;
             }
 
-            AssetDatabase.CreateAsset(renderer, SettingsFolder + "/SHERIFF_Mobile_URP_Renderer.asset");
             var serialized = new SerializedObject(pipeline);
             var rendererList = serialized.FindProperty("m_RendererDataList");
             rendererList.arraySize = 1;
