@@ -18,6 +18,7 @@ namespace SheriffAmericanLife
         }
 
         [SerializeField] private float simultaneousArrivalTolerance = 0.15f;
+        [SerializeField] private float arbitrationDelay = 0.25f;
         private readonly Dictionary<int, Arrival> waiting = new Dictionary<int, Arrival>();
         private int occupyingVehicleId;
         private bool pedestrianConflict;
@@ -47,6 +48,9 @@ namespace SheriffAmericanLife
             if (occupyingVehicleId != 0 || pedestrianConflict) return false;
             Arrival mine;
             if (!waiting.TryGetValue(vehicleId, out mine)) return false;
+            // Allow other approaches to register arrivals from the same physics-time window
+            // before awarding the intersection to the first callback that asks.
+            if (Time.time - mine.stoppedAt < arbitrationDelay) return false;
 
             foreach (Arrival other in waiting.Values)
             {
