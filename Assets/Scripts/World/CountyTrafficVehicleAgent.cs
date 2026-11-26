@@ -27,6 +27,7 @@ namespace SheriffAmericanLife
         [SerializeField] private CountyIntersectionRules.Approach stopApproach;
         [SerializeField] private CountyIntersectionRules.Movement stopMovement;
         [SerializeField] private Vector3 stopClearancePosition;
+        [SerializeField] private Vector3 pedestrianStopLinePosition;
         [SerializeField] private float stopDetectionDistance = 12f;
         [SerializeField] private float stopPositionTolerance = 1.25f;
         [SerializeField] private float stoppedSpeedThreshold = 0.25f;
@@ -62,13 +63,14 @@ namespace SheriffAmericanLife
 
         public void ConfigureFourWayStop(CountyFourWayStopController controller,
             CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
-            Vector3 stopLine, Vector3 clearancePosition)
+            Vector3 stopLine, Vector3 clearancePosition, Vector3 crosswalkStopLine)
         {
             fourWayStop = controller;
             stopApproach = approach;
             stopMovement = movement;
             stopLinePosition = stopLine;
             stopClearancePosition = clearancePosition;
+            pedestrianStopLinePosition = crosswalkStopLine;
             stopRegistered = false;
             hasStopReservation = false;
         }
@@ -102,6 +104,18 @@ namespace SheriffAmericanLife
             bool approachingLine = trafficSignal != null && distanceToLine > 0f && distanceToLine < stopLineDistance;
             if (approachingLine && !trafficSignal.CanProceed(eastWestRoad))
                 speedError = -Mathf.Max(0f, currentSpeed);
+
+            if (fourWayStop != null && !hasStopReservation && fourWayStop.IsPedestrianConflictActive)
+            {
+                float crosswalkDistance = Vector3.Dot(pedestrianStopLinePosition - transform.position, transform.forward);
+                if (crosswalkDistance > 0f && crosswalkDistance <= 18f)
+                {
+                    float safeCrosswalkSpeed = Mathf.Sqrt(2f * braking * Mathf.Max(0f, crosswalkDistance - 1.5f));
+                    speedError = Mathf.Min(speedError, safeCrosswalkSpeed - currentSpeed);
+                    if (crosswalkDistance <= 1.5f && Mathf.Abs(currentSpeed) <= stoppedSpeedThreshold)
+                        speedError = -Mathf.Max(0f, currentSpeed);
+                }
+            }
 
             if (fourWayStop != null && !hasStopReservation)
             {
