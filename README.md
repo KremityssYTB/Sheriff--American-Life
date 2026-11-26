@@ -16,12 +16,13 @@ A Florida open-world law-enforcement and civilian life simulator. Target device:
 - **Session-only witness statement collection** ready for a future MDT/investigation screen
 - **Incident-driven dispatch prototype** that converts published world events into CAD calls with priority and lifecycle tracking
 - **Ambient county incident director** with weighted collision, theft, disturbance, fire, medical, suspicious-activity, and assault reports
+- **Physical greybox incident scenes** with collision wrecks/debris, fire and smoke particles, a prone medical patient, theft-scene actors, and disturbance participants
 - **Civilian 911 call source** attached to test residents, with caller identity, location, and per-caller cooldown
 - **Mobile MDT controller and runtime touch-screen prototype** for call selection, status actions, linked witness statements, and incident reports
 - Ocala first-playable system plan
 - Mobile MDT interface design and controller foundation
 
-The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. Dispatch automatically creates a call when a gameplay system publishes a world incident. The ambient scenario director now publishes timed sample reports, and civilian 911 call sources expose callable report methods. These remain abstract reports: no physical crash, fire, suspect, injury, EMS/firefighter AI, or civilian phone UI is implemented. Dispatch calls, reports, and witness statements are session-only. The MDT now includes a runtime-generated Canvas screen with active calls, case details, witness/report tabs, status actions, and a floating open/close button. Dispatch resolution and cancellation now create reports linked to the originating incident, allowing the MDT to show a call's related records.
+The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. Dispatch automatically creates a call when a gameplay system publishes a world incident. The ambient scenario director now publishes timed sample reports, and civilian 911 call sources expose callable report methods. Ambient incidents now spawn visible greybox scene actors before dispatch publication. They are static placeholders: vehicle impact physics, fire spread/extinguishing, patient treatment, suspect AI, EMS/firefighter AI, and civilian phone UI are still not implemented. Dispatch calls, reports, and witness statements are session-only. The MDT now includes a runtime-generated Canvas screen with active calls, case details, witness/report tabs, status actions, and a floating open/close button. Dispatch resolution and cancellation now create reports linked to the originating incident, allowing the MDT to show a call's related records.
 
 ## World direction
 
@@ -62,7 +63,7 @@ An unsigned IPA is not directly installable. It must be signed with a compatible
 ## Development priorities
 
 1. Accurate Ocala district blockout and roads
-2. Turn abstract incident reports into physical world events and build the civilian 911 phone interaction
+2. Add vehicle impact physics, suspect/pedestrian AI, patient treatment, fire response, and civilian 911 phone UI
 3. Connect dispatch resolution to reports, evidence, and legal grounds
 4. Build the rendered mobile radio/MDT screen from `DESIGN/MOBILE_MDT_INTERFACE.md`
 5. Mobile controls, animation, audio, and performance profiling
