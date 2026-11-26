@@ -45,6 +45,7 @@ namespace SheriffAmericanLife
             clock.SetSun(sun);
             reportBook = root.gameObject.AddComponent<IncidentReportBook>();
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
+            interactionController.Configure(reportBook);
             SpawnTestCivilians(clock);
         }
 
