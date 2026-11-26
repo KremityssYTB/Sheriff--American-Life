@@ -52,10 +52,11 @@ namespace SheriffAmericanLife
             clock.SetSun(sun);
             reportBook = root.gameObject.AddComponent<IncidentReportBook>();
             TrafficCitationBook citationBook = root.gameObject.AddComponent<TrafficCitationBook>();
+            TrafficDriverHistoryBook driverHistoryBook = root.gameObject.AddComponent<TrafficDriverHistoryBook>();
             witnessStatementBook = root.gameObject.AddComponent<WitnessStatementBook>();
             dispatchCallManager = root.gameObject.AddComponent<DispatchCallManager>();
             dispatchCallManager.Configure(reportBook);
-            root.gameObject.AddComponent<MobileMdtController>().Configure(dispatchCallManager, reportBook, witnessStatementBook, citationBook);
+            root.gameObject.AddComponent<MobileMdtController>().Configure(dispatchCallManager, reportBook, witnessStatementBook, citationBook, driverHistoryBook);
             root.gameObject.AddComponent<MobileMdtScreen>();
             var actorSpawner = root.gameObject.AddComponent<CountyIncidentActorSpawner>();
             actorSpawner.Configure(root);
