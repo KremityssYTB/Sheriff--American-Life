@@ -13,7 +13,9 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 | Simultaneous left-turn conflict | East left-turn and South straight/right movement stop together | East yields to the oncoming conflicting movement |
 | Pedestrian occupies crosswalk | One or more pedestrian IDs enter sensor | New vehicle reservations remain blocked until all tracked pedestrians exit |
 | Two pedestrians overlap | Two IDs enter; first exits while second remains | Gate remains closed until second exits |
-| Same-approach queue | Two vehicles register from one approach | Only one vehicle can occupy the intersection at a time |
+| Same-approach queue | Two vehicles approach in one inbound lane | Rear vehicle maintains a safe gap, does not overlap the lead vehicle, and reaches the stop line only after the lead vehicle clears |
+| Following-distance response | Lead vehicle slows or stops before the junction | Rear vehicle reduces speed using headway and braking limits without contacting the lead vehicle |
+| Junction transform | Move or rotate the test junction root | Stop-line, clearance, and crosswalk reference points remain aligned with the junction |
 | Occupant cleanup | Waiting or occupying vehicle is disabled | Its queue entry or reservation is removed |
 | Gridlock fallback | All approaches form a circular simultaneous priority conflict | Stable fallback selects a non-earlier-arrival vehicle without overriding an oncoming left-turn conflict |
 
@@ -32,5 +34,6 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 - No automated Unity Test Framework suite is configured in the project manifest.
 - The current runtime spawner creates representative traffic, not deterministic arrival-time scenarios.
 - The controller's arbitration delay and priority logic are source-level only.
+- The following-distance probe is a simple sphere-cast prototype; it has not been tuned against Unity collider layouts or dense traffic.
 - No compilation, Play Mode, physics, or iPhone runtime test has been run.
 - A deterministic deadlock fallback is a prototype continuity safeguard, not a statement of Florida statutory right-of-way.
