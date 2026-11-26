@@ -9,6 +9,8 @@ namespace SheriffAmericanLife
         [SerializeField] private bool firstPerson;
         public void ToggleCameraMode() { SetFirstPerson(!firstPerson); }
         public void SetFirstPerson(bool value) { firstPerson=value; if(viewCamera) viewCamera.fieldOfView=firstPerson?78:68; }
+        public void Configure(Camera camera, Transform thirdPerson, Transform firstPersonAnchorValue)
+        { viewCamera=camera; thirdPersonAnchor=thirdPerson; firstPersonAnchor=firstPersonAnchorValue; }
         private void LateUpdate()
         {
             if(!viewCamera) return;
