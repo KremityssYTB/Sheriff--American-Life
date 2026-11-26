@@ -9,7 +9,8 @@ namespace SheriffAmericanLife
     public sealed class CountyFourWayStopTestSpawner : MonoBehaviour
     {
         [SerializeField] private float roadLength = 150f;
-        [SerializeField] private float roadWidth = 14f;
+        [SerializeField] private float roadWidth = 22f;
+        [SerializeField] private float laneWidth = 3.4f;
         [SerializeField] private float vehicleSpeed = 5.5f;
         private Transform root;
         private WorldIncidentReporter reporter;
@@ -54,74 +55,108 @@ namespace SheriffAmericanLife
 
         private void AddStopApproach(Transform parent, Vector3 center, Vector3 forward,
             CountyIntersectionRules.Approach approach, string label,
-            CountyIntersectionRules.Movement movement)
+            CountyIntersectionRules.Movement ignoredDefaultMovement)
         {
             Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
             Vector3 stop = center - forward * 10f;
             Vector3 start = center - forward * 62f;
-            Vector3 turnDirection = movement == CountyIntersectionRules.Movement.Left ? -side : side;
-            Vector3 exitDirection = movement == CountyIntersectionRules.Movement.Straight
-                ? forward : turnDirection;
-            Vector3 exit = movement == CountyIntersectionRules.Movement.Straight
-                ? center + forward * 25f
-                : center + forward * 10f + turnDirection * 25f;
-            Vector3 curveA = movement == CountyIntersectionRules.Movement.Straight
-                ? center + forward * 7f
-                : center + forward * 8f + turnDirection * 3f;
-            Vector3 curveB = movement == CountyIntersectionRules.Movement.Straight
-                ? center + forward * 17f
-                : center + forward * 10f + turnDirection * 13f;
-            Vector3 loopA = exit + exitDirection * 42f + side * 35f;
-            Vector3 loopB = start + side * 35f;
 
-            Make(parent, label + " Stop Bar", PrimitiveType.Cube,
-                stop - center, new Vector3(roadWidth * .72f, .025f, .45f),
-                Color.white, (approach == CountyIntersectionRules.Approach.East ||
-                    approach == CountyIntersectionRules.Approach.West)
-                    ? Quaternion.Euler(0f, 90f, 0f) : Quaternion.identity);
-            CreateStopSign(parent, label + " STOP Sign", stop - center - forward * 5f,
+            // Right-hand traffic: left-turn lane, through lane, and right-turn lane.
+            // Lane offsets are measured along the vehicle's right vector.
+            AddStopLane(parent, center, start, stop, side, forward, approach,
+                CountyIntersectionRules.Movement.Left, label, -laneWidth, "Left Turn");
+            AddStopLane(parent, center, start, stop, side, forward, approach,
+                CountyIntersectionRules.Movement.Straight, label, 0f, "Through");
+            AddStopLane(parent, center, start, stop, side, forward, approach,
+                CountyIntersectionRules.Movement.Right, label, laneWidth, "Right Turn");
+
+            for (int i = -2; i <= 2; i++)
+            {
+                Vector3 dividerPosition = center - forward * 37f + side * (i * laneWidth * 0.5f);
+                Make(parent, label + " Lane Divider " + i, PrimitiveType.Cube,
+                    dividerPosition - center, new Vector3(0.12f, 0.025f, 48f),
+                    new Color(0.88f, 0.78f, 0.25f));
+            }
+        }
+
+        private void AddStopLane(Transform parent, Vector3 center, Vector3 start,
+            Vector3 stop, Vector3 side, Vector3 forward,
+            CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
+            string label, float laneOffset, string laneName)
+        {
+            Vector3 inboundOffset = side * laneOffset;
+            Vector3 exitDirection = movement == CountyIntersectionRules.Movement.Straight
+                ? forward
+                : (movement == CountyIntersectionRules.Movement.Left ? -side : side);
+            Vector3 exitSide = Vector3.Cross(Vector3.up, exitDirection).normalized;
+            Vector3 exitOffset = movement == CountyIntersectionRules.Movement.Straight
+                ? exitSide * laneOffset
+                : exitSide * laneWidth;
+
+            Vector3 p0 = center + forward * -7f + inboundOffset;
+            Vector3 p3 = center + forward * 9f + exitDirection * 24f + exitOffset;
+            Vector3 p1 = p0 + forward * 13f;
+            Vector3 p2 = p3 - exitDirection * 13f;
+            Vector3 exit = p3;
+            Vector3 loopA = exit + exitDirection * 42f + exitSide * 35f;
+            Vector3 loopB = start + inboundOffset + side * 35f;
+
+            Vector3 stopLane = stop + inboundOffset;
+            Make(parent, label + " " + laneName + " Stop Bar", PrimitiveType.Cube,
+                stopLane - center, new Vector3(laneWidth * 0.88f, .025f, .45f),
+                Color.white, Quaternion.LookRotation(side, Vector3.up));
+            CreateStopSign(parent, label + " " + laneName + " STOP Sign",
+                stopLane - center - forward * 5f,
                 Quaternion.LookRotation(-forward, Vector3.up));
 
-            // Two vehicles use one inbound lane and arrive as a longitudinal queue.
-            // The rear vehicle begins 16 m behind the lead vehicle; the traffic agent
-            // maintains a speed-based gap instead of spawning two side-by-side cars.
-            AddStopVehicle(parent, center, start, stop, curveA, curveB, exit, loopA, loopB,
-                side, forward, approach, movement, label, 0f, "Queue Lead", Vector3.zero);
-            AddStopVehicle(parent, center, start, stop, curveA, curveB, exit, loopA, loopB,
-                side, forward, approach, movement, label, 0f, "Queue Rear", -forward * 16f);
+            Vector3[] routePoints = new Vector3[7];
+            routePoints[0] = stopLane;
+            for (int i = 1; i <= 5; i++)
+            {
+                float t = i / 5f;
+                float u = 1f - t;
+                routePoints[i] = u * u * u * p0 +
+                    3f * u * u * t * p1 +
+                    3f * u * t * t * p2 +
+                    t * t * t * p3;
+            }
+            routePoints[6] = exit + exitDirection * 28f + exitOffset;
+
+            AddStopVehicle(parent, center, start, stopLane, routePoints,
+                loopA, loopB, side, forward, exitDirection, approach, movement,
+                label, laneName, 0f, "Queue Lead", Vector3.zero);
+            AddStopVehicle(parent, center, start, stopLane, routePoints,
+                loopA, loopB, side, forward, exitDirection, approach, movement,
+                label, laneName, 0f, "Queue Rear", -forward * 16f);
         }
 
         private void AddStopVehicle(Transform parent, Vector3 center, Vector3 start,
-            Vector3 stop, Vector3 curveA, Vector3 curveB, Vector3 exit, Vector3 loopA,
-            Vector3 loopB, Vector3 side, Vector3 forward,
+            Vector3 stop, Vector3[] turnRoute, Vector3 loopA, Vector3 loopB,
+            Vector3 side, Vector3 forward, Vector3 exitDirection,
             CountyIntersectionRules.Approach approach, CountyIntersectionRules.Movement movement,
-            string label, float laneOffset, string laneLabel, Vector3 startOffset)
+            string label, string laneName, float unusedLaneOffset, string queueName, Vector3 startOffset)
         {
-            Vector3 offset = side * laneOffset;
-            string routeName = label + " " + laneLabel + " " + movement;
-            Transform[] route =
-            {
-                Waypoint(parent, routeName + " Stop Line", stop - center + offset),
-                Waypoint(parent, routeName + " Entry", curveA - center + offset),
-                Waypoint(parent, routeName + " Turn", curveB - center + offset),
-                Waypoint(parent, routeName + " Clear Conflict Area", exit - center + offset),
-                Waypoint(parent, routeName + " Outer Loop A", loopA - center + offset),
-                Waypoint(parent, routeName + " Outer Loop B", loopB - center + offset),
-                Waypoint(parent, routeName + " Return Start", start - center + offset)
-            };
+            string routeName = label + " " + laneName + " " + queueName + " " + movement;
+            Transform[] route = new Transform[turnRoute.Length + 3];
+            route[0] = Waypoint(parent, routeName + " Stop Line", stop - center);
+            for (int i = 0; i < turnRoute.Length; i++)
+                route[i + 1] = Waypoint(parent, routeName + " Turn Path " + i, turnRoute[i] - center);
+            route[route.Length - 2] = Waypoint(parent, routeName + " Outer Loop A", loopA - center);
+            route[route.Length - 1] = Waypoint(parent, routeName + " Outer Loop B", loopB - center);
 
+            Vector3 initialForward = forward;
             GameObject car = Make(parent, "Stop Test Sedan " + routeName,
-                PrimitiveType.Cube, start - center + offset + startOffset + Vector3.up * .8f,
+                PrimitiveType.Cube, start - center + startOffset + Vector3.up * .8f,
                 new Vector3(1.9f, 1.25f, 4.2f), new Color(.28f, .38f, .52f),
-                Quaternion.LookRotation(forward, Vector3.up));
+                Quaternion.LookRotation(initialForward, Vector3.up));
             car.AddComponent<Rigidbody>().mass = 1150f;
             CountyTrafficVehicleAgent agent = car.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, vehicleSpeed);
-            Vector3 crosswalkStop = center - forward * 24f + offset;
+            Vector3 crosswalkStop = center - forward * 24f + (stop - (center - forward * 10f));
             agent.ConfigureFourWayStop(controller, approach, movement,
-                parent.TransformPoint(stop - center + offset),
-                parent.TransformPoint(exit - center + offset),
-                parent.TransformPoint(crosswalkStop - center + offset));
+                parent.TransformPoint(stop - center),
+                parent.TransformPoint(turnRoute[turnRoute.Length - 1] - center),
+                parent.TransformPoint(crosswalkStop - center));
         }
 
         private void AddCrosswalkSensor(Transform parent, Vector3 center, Vector3 approachForward, string label)
