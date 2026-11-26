@@ -210,9 +210,7 @@ namespace SheriffAmericanLife
                             : string.Join("\n", booking.propertyInventory)), 19);
                     if (booking.status == BookingStatus.AwaitingTransport)
                     {
-                        GameObject processButton = MakeButtonObject("MARK " + booking.bookingId + " BOOKED",
-                            detailsContent, () => { mdt.MarkBookingProcessed(booking.bookingId); RefreshDetails(); });
-                        processButton.AddComponent<LayoutElement>().preferredHeight = 58f;
+                        AddContentText("AWAITING VEHICLE TRANSPORT. Drive the patrol SUV to the Marion County Jail Intake bay and complete the transport from the vehicle HUD.", 18);
                     }
                     else if (booking.status == BookingStatus.Booked)
                     {
