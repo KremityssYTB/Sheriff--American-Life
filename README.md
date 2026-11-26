@@ -99,7 +99,7 @@ The older GitHub Actions/GameCI workflow remains an alternative, but it requires
 
 1. Compile and run the new runtime player slice; fix any Unity API, input, collider, or camera issues.
 2. Replace temporary IMGUI controls with a polished touch HUD and add a real joystick/hold controls.
-3. Improve vehicle physics, safe exit placement, collision handling, and camera transitions.
+3. Improve vehicle physics, collision handling, and camera transitions; validate the new safe-exit checks in Unity.
 4. Connect duty state to dispatch, MDT, equipment, and duty-only interactions while preserving off-duty free roam.
 5. Build a focused civilian interaction/traffic-stop encounter and lawful suspect/arrest flow.
 6. Add one usable store/gas station and one home/interior to prove off-duty civilian gameplay.
