@@ -56,6 +56,14 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 - `73b0d240799730e0b875efcebde149014353ac57` — document marked emergency sedan.
 - `7662b8a186862ac05213cbf83685843ab63a0f15` — renderer-only lightbar controller.
 - `3790ac02b6e3af034085a13fa1b41e8c48bfeb8a` — animated lightbar spawner integration.
+- `954545430b970b68fe02d4f09c00b889062161ec` — generated two-tone emergency siren.
+- `832223bc488ca61f2da4ba3fc44acdeaa0609bde` — dispatch lifecycle response-unit bridge.
+- `325fd6c549b92bc951d693d2bc589d49e76d539b` — make emergency lightbar dispatch-activated.
+- `d7cad6b2c7ddcb1307a5d1628fa9e909b4478a3e` — wire siren and response unit into test sedan.
+- `d815ff3aef66d69f5c91244dea050314e7f8a348` — README dispatch-linked response update.
+- `975e217dc1828c6ee2ed5a558ac463ce558e7108` — add dispatch/siren manual validation cases.
+- `e956f30285e0152f46fefbd08525525b0a020198` — document emergency response state transitions.
+- `180778b25675efd8f0b50619d285ee48ec7b6027` — ensure lightbar is off before dispatch.
  
 ## Key source and documentation files
 
@@ -75,7 +83,7 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 
 ## Verification status
 
-Repository files were fetched after the recent edits. Source-level checks confirmed lane movement assignments, Bézier waypoint generation, lane-marking orientation, static-obstacle filtering code, roadside stop-sign placement, emergency-priority and fallback guards, preservation of the occupied-intersection/pedestrian gate, renderer-only alternating lightbar wiring, and balanced braces in the main traffic scripts. These checks are not a C# compiler.
+Repository files were fetched after the recent edits. Source-level checks confirmed lane movement assignments, Bézier waypoint generation, lane-marking orientation, static-obstacle filtering code, roadside stop-sign placement, emergency-priority and fallback guards, preservation of the occupied-intersection/pedestrian gate, renderer-only dispatch-controlled lightbar wiring, OCALA-1 dispatch lifecycle matching, generated siren clip setup, and balanced braces in the main emergency/traffic scripts. These checks are not a C# compiler.
 
 Not completed:
 - Unity compilation
