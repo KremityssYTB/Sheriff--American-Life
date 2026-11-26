@@ -10,6 +10,7 @@ namespace SheriffAmericanLife
         private IncidentReportBook reportBook;
         private OfficerInteractionController interactionController;
         private WitnessStatementBook witnessStatementBook;
+        private DispatchCallManager dispatchCallManager;
 
         private void Start() { if (generateOnStart) GenerateWorld(); }
 
@@ -46,6 +47,7 @@ namespace SheriffAmericanLife
             clock.SetSun(sun);
             reportBook = root.gameObject.AddComponent<IncidentReportBook>();
             witnessStatementBook = root.gameObject.AddComponent<WitnessStatementBook>();
+            dispatchCallManager = root.gameObject.AddComponent<DispatchCallManager>();
             var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
             incidentReporter.Configure(clock);
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
