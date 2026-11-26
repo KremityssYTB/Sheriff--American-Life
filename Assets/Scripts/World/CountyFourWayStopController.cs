@@ -57,7 +57,9 @@ namespace SheriffAmericanLife
             {
                 if (other.vehicleId == vehicleId) continue;
                 if (other.stoppedAt < mine.stoppedAt - simultaneousArrivalTolerance) return false;
-                if (CountyIntersectionRules.MustYieldForOncomingTraffic(mine.approach, mine.movement, other.approach, other.movement)) return false;
+                bool simultaneousArrival = Mathf.Abs(mine.stoppedAt - other.stoppedAt) <= simultaneousArrivalTolerance;
+                if (simultaneousArrival && CountyIntersectionRules.MustYieldForOncomingTraffic(
+                    mine.approach, mine.movement, other.approach, other.movement)) return false;
                 if (CountyIntersectionRules.MustYieldAtFourWayStop(mine.approach, mine.stoppedAt,
                     other.approach, other.stoppedAt, simultaneousArrivalTolerance))
                     blockedByRightSideArrival = true;
@@ -86,7 +88,8 @@ namespace SheriffAmericanLife
                             candidate.stoppedAt, other.approach, other.stoppedAt,
                             simultaneousArrivalTolerance))
                             candidateHasPriorityConflict = true;
-                        if (CountyIntersectionRules.MustYieldForOncomingTraffic(candidate.approach,
+                        bool simultaneousArrival = Mathf.Abs(candidate.stoppedAt - other.stoppedAt) <= simultaneousArrivalTolerance;
+                        if (simultaneousArrival && CountyIntersectionRules.MustYieldForOncomingTraffic(candidate.approach,
                             candidate.movement, other.approach, other.movement))
                         {
                             candidateHasOncomingConflict = true;
