@@ -33,6 +33,12 @@ Current serialized defaults:
 
 These are initial prototype values and require tuning against the final vehicle collider, speed, and road scale.
 
+## Full-stop dwell and queue cleanup
+
+A vehicle must remain at or below the configured stopped-speed threshold for at least 1.25 seconds before it can request an intersection reservation. The dwell timer starts when the agent first registers its stopped arrival, so the controller's simultaneous-arrival arbitration window is already elapsed by the time the dwell completes. If the vehicle rolls forward beyond the stop line or accelerates above twice the stopped-speed threshold before receiving a reservation, its waiting record is removed and the dwell timer resets. This prevents a brief speed dip from counting as a legal stop and prevents stale queue entries after a failed stop.
+
+The dwell value is a prototype tuning parameter; it is not intended as a final legal timing rule.
+
 ## Junction coordinate handling
 
 The spawner creates route waypoints as children of the junction root. Stop-line, conflict-area clearance, and crosswalk-stop references are now converted with the junction root's `TransformPoint` before they are passed to the traffic agent. This keeps those references aligned if the test junction is moved or rotated.
@@ -43,6 +49,8 @@ Use `DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md` for the queue, following-distance, and
 
 - Rear vehicle must not contact the lead vehicle when the lead vehicle brakes or stops.
 - Vehicle front bumpers must remain behind stop bars and crosswalk yield lines when stopped.
+- A vehicle must remain fully stopped for at least 1.25 seconds before it can request a reservation.
+- If a waiting vehicle rolls forward or accelerates before receiving a reservation, its waiting record and dwell timer must reset.
 - Rear vehicle must not cross the stop line while waiting for the lead vehicle's reservation.
 - The lead vehicle must release its reservation only after clearing the conflict area.
 - Moving or rotating the junction root must preserve stop-line and crosswalk alignment.
