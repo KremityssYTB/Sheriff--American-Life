@@ -11,17 +11,30 @@ namespace SheriffAmericanLife
         [SerializeField] private Renderer redRenderer;
         [SerializeField] private Renderer blueRenderer;
         [SerializeField, Min(0.5f)] private float flashCyclesPerSecond = 2.5f;
+        private bool lightbarEnabled;
 
         public void Configure(Renderer red, Renderer blue, float frequency = 2.5f)
         {
             redRenderer = red;
             blueRenderer = blue;
             flashCyclesPerSecond = Mathf.Max(0.5f, frequency);
+            lightbarEnabled = false;
             ApplyState(false);
+        }
+
+        public void SetLightbarEnabled(bool enabled)
+        {
+            lightbarEnabled = enabled;
+            if (!enabled)
+            {
+                if (redRenderer != null) redRenderer.enabled = false;
+                if (blueRenderer != null) blueRenderer.enabled = false;
+            }
         }
 
         private void Update()
         {
+            if (!lightbarEnabled) return;
             bool redActive = Mathf.Sin(Time.time * flashCyclesPerSecond * Mathf.PI * 2f) >= 0f;
             ApplyState(redActive);
         }
@@ -34,8 +47,9 @@ namespace SheriffAmericanLife
 
         private void OnDisable()
         {
-            if (redRenderer != null) redRenderer.enabled = true;
-            if (blueRenderer != null) blueRenderer.enabled = true;
+            lightbarEnabled = false;
+            if (redRenderer != null) redRenderer.enabled = false;
+            if (blueRenderer != null) blueRenderer.enabled = false;
         }
     }
 }
