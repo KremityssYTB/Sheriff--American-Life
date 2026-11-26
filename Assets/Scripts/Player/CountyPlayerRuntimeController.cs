@@ -19,7 +19,7 @@ namespace SheriffAmericanLife
         private Transform vehicleThird;
         private Transform vehicleFirst;
         private bool inVehicle;
-        private bool onDuty = true;
+        private CountyDutyState dutyState;
         private Vector2 moveInput;
         private float throttle;
         private float steering;
@@ -28,6 +28,7 @@ namespace SheriffAmericanLife
 
         public void Initialize(Transform worldRoot)
         {
+            dutyState = gameObject.AddComponent<CountyDutyState>();
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player Deputy";
             player.transform.SetParent(worldRoot, false);
@@ -91,11 +92,11 @@ namespace SheriffAmericanLife
             }
             float s = Mathf.Clamp(Screen.width / 390f, .8f, 1.25f);
             float w = 66f*s, h = 58f*s, pad = 12f*s;
-            GUI.Label(new Rect(pad, pad, 260*s, 30*s), onDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY", statusStyle);
+            GUI.Label(new Rect(pad, pad, 260*s, 30*s), dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY", statusStyle);
             if (GUI.Button(new Rect(Screen.width-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
                 ToggleVehicle();
             if (GUI.Button(new Rect(Screen.width-112*s,pad+50*s,100*s,42*s), onDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
-                onDuty = !onDuty;
+                dutyState.ToggleDuty();
             if (GUI.Button(new Rect(Screen.width-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
                 cameraModes.ToggleCameraMode();
 
