@@ -34,7 +34,7 @@ The runtime county bootstrap now spawns a first mobile-oriented player/vehicle s
 3. Improve driving physics, collision handling, and vehicle entry/exit animation; safe exit-position checks are now present in source but need runtime validation.
 4. Subscribe dispatch, MDT, uniforms/equipment, and duty-only interactions to `CountyDutyState.OnDutyChanged`.
 5. Replace the current proximity focus with a proper view/line-of-sight selection system and add dialogue/response depth.
-6. Implement traffic stop interaction, suspect AI response, detain/cuff/search/arrest, and prisoner transport.
+6. Complete traffic stop driver contact, document check, warning/citation decision, suspect AI response, detain/cuff/search/arrest, and prisoner transport.
 7. Add one usable store/gas station and one home/interior for off-duty gameplay.
 
 ## Acceptance checks
@@ -69,3 +69,12 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - A downtown contact resident is spawned near the initial player location so the first interaction can be reached without travelling across the greybox.
 - Interaction actions continue to write to the session-only incident report book.
 - This is source-level integration only. Unity compilation, touch layout, interaction range, and runtime behavior have not been tested.
+
+
+## Traffic stop pull-over source update (2026-11-26)
+
+- Civilian traffic agents now expose a pull-over request, a shoulder target, a stopped state, and a resume method.
+- The patrol SUV now creates a simple red/blue renderer lightbar and exposes a mobile PULL OVER control when an on-duty deputy is within 24 m of a traffic vehicle.
+- The targeted traffic vehicle steers toward a roadside point and brakes to a stop; the HUD exposes END STOP or CANCEL STOP and turns the lightbar off when the stop ends.
+- This is only the initial vehicle pull-over phase. Driver identity/contact, vehicle registration, license/insurance checks, citations, and stop reports are not yet connected.
+- Source-level checks only; Unity compilation, vehicle physics, collision avoidance, and mobile HUD behavior remain untested.
