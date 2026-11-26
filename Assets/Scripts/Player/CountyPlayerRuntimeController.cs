@@ -18,6 +18,8 @@ namespace SheriffAmericanLife
         private IncidentReportBook reportBook;
         private TrafficCitationBook citationBook;
         private TrafficDriverHistoryBook driverHistoryBook;
+        private ArrestBookingBook arrestBookingBook;
+        private readonly Vector3 jailIntakePosition = new Vector3(-102f, 0f, -15f);
         private bool trafficStopDecisionRecorded;
         private readonly Collider[] trafficBuffer = new Collider[48];
         private CameraModeController cameraModes;
@@ -45,6 +47,7 @@ namespace SheriffAmericanLife
             reportBook = worldRoot.GetComponent<IncidentReportBook>();
             citationBook = worldRoot.GetComponent<TrafficCitationBook>();
             driverHistoryBook = worldRoot.GetComponent<TrafficDriverHistoryBook>();
+            arrestBookingBook = worldRoot.GetComponent<ArrestBookingBook>();
             interactions = worldRoot.GetComponent<OfficerInteractionController>();
             if (interactions != null) interactions.ConfigureDutyState(dutyState);
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -130,6 +133,7 @@ namespace SheriffAmericanLife
 
             DrawCivilianInteractionHud(s, pad);
             DrawTrafficStopHud(s, pad);
+            DrawPrisonerTransportHud(s, pad);
 
             if (!inVehicle)
             {
@@ -294,6 +298,55 @@ namespace SheriffAmericanLife
                 if (GUI.Button(new Rect(x, y, 100f * scale, 42f * scale), "PULL OVER", buttonStyle))
                     BeginTrafficStop();
             }
+        }
+
+        private void DrawPrisonerTransportHud(float scale, float padding)
+        {
+            if (!inVehicle || arrestBookingBook == null || dutyState == null || !dutyState.IsOnDuty)
+                return;
+
+            ArrestBookingRecord pending = null;
+            foreach (ArrestBookingRecord record in arrestBookingBook.Records)
+            {
+                if (record != null && record.status == BookingStatus.AwaitingTransport)
+                {
+                    pending = record;
+                    break;
+                }
+            }
+            if (pending == null) return;
+
+            float distance = Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition);
+            float x = Screen.width - 150f * scale;
+            float y = padding + 150f * scale;
+            GUI.Label(new Rect(x, y, 145f * scale, 48f * scale),
+                "JAIL INTAKE  " + distance.ToString("0") + " m", statusStyle);
+            GUI.Label(new Rect(x, y + 44f * scale, 145f * scale, 42f * scale),
+                pending.bookingId + "  " + pending.personName, statusStyle);
+
+            bool atIntake = distance <= 18f;
+            if (atIntake && GUI.Button(new Rect(x, y + 88f * scale, 145f * scale, 42f * scale),
+                "COMPLETE TRANSPORT", buttonStyle))
+                CompletePrisonerTransport(pending);
+            else if (!atIntake)
+                GUI.Label(new Rect(x, y + 88f * scale, 145f * scale, 42f * scale),
+                    "Drive to intake bay", statusStyle);
+        }
+
+        private void CompletePrisonerTransport(ArrestBookingRecord booking)
+        {
+            if (!inVehicle || booking == null || arrestBookingBook == null ||
+                dutyState == null || !dutyState.IsOnDuty ||
+                Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition) > 18f)
+                return;
+
+            if (!arrestBookingBook.MarkBooked(booking.bookingId)) return;
+            if (reportBook != null)
+                reportBook.AddReport("Jail intake", booking.personName, "Prisoner transport",
+                    "Transport completed at Marion County jail intake. Booking " + booking.bookingId + " received.",
+                    "Fictional gameplay custody transfer recorded at the Ocala greybox jail intake.");
+            vehicle.StopImmediately();
+            Debug.Log("Prisoner transport completed: " + booking.bookingId);
         }
 
         private void BeginTrafficStop()
