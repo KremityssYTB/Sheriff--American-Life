@@ -48,6 +48,8 @@ namespace SheriffAmericanLife
             cameraObject.AddComponent<AudioListener>();
             var follow = cameraObject.AddComponent<CameraModeController>();
             follow.SetTarget(player.transform);
+            var dispatch = gameObject.AddComponent<DispatchCallSystem>();
+            dispatch.SetPlayer(player.transform);
 
             CreatePatrolVehicle(new Vector3(5, 0.8f, -12));
         }
