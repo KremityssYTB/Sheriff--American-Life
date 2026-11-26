@@ -165,6 +165,23 @@ namespace SheriffAmericanLife
             car.AddComponent<Rigidbody>().mass = 1150f;
             CountyTrafficVehicleAgent agent = car.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, vehicleSpeed);
+
+            // One clearly marked test emergency vehicle exercises reservation priority.
+            bool isEmergencyTestVehicle = label == "North" &&
+                laneName == "Through" && queueName == "Queue Lead";
+            if (isEmergencyTestVehicle)
+            {
+                agent.ConfigureEmergencyVehicle(true);
+                Renderer bodyRenderer = car.GetComponent<Renderer>();
+                if (bodyRenderer != null) bodyRenderer.material.color = new Color(.035f, .09f, .22f);
+                Make(car.transform, "Emergency Lightbar Red", PrimitiveType.Cube,
+                    new Vector3(-.28f, .68f, 0f), new Vector3(.28f, .14f, .34f),
+                    new Color(.9f, .04f, .035f));
+                Make(car.transform, "Emergency Lightbar Blue", PrimitiveType.Cube,
+                    new Vector3(.28f, .68f, 0f), new Vector3(.28f, .14f, .34f),
+                    new Color(.04f, .2f, .95f));
+            }
+
             Vector3 crosswalkStop = center - forward * 24f + (stop - (center - forward * 10f));
             agent.ConfigureFourWayStop(controller, approach, movement,
                 parent.TransformPoint(stop - center),
