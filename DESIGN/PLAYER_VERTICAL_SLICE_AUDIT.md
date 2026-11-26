@@ -12,7 +12,7 @@ The runtime county bootstrap now spawns a first mobile-oriented player/vehicle s
 | On-foot movement | `Assets/Scripts/Player/ThirdPersonWalker.cs` | Camera-relative movement and sprint; runtime input is routed by the new controller |
 | Touch controls | `CountyPlayerRuntimeController.OnGUI` | Temporary IMGUI directional and sprint buttons; not a polished joystick and not device-tested |
 | Patrol vehicle | `Assets/Scripts/Vehicle/PatrolVehicleController.cs` | Transform-based throttle/steering; not Rigidbody vehicle physics |
-| Enter/exit | `CountyPlayerRuntimeController.ToggleVehicle` | Distance-gated enter, hides player, disables on-foot controller, routes drive input, exits beside SUV; no exit obstruction test |
+| Enter/exit | `CountyPlayerRuntimeController.ToggleVehicle` | Distance-gated enter; exit now searches four nearby positions, checks ground and capsule clearance, and keeps the player seated if all positions are blocked |
 | Camera | `Assets/Scripts/Systems/CameraModeController.cs` | Runtime-configured first/third-person anchors; no collision avoidance |
 | Duty state | `Assets/Scripts/Systems/CountyDutyState.cs` | Session state/event and HUD toggle; not yet connected to dispatch/equipment gating |
 | Existing civilian actions | `Assets/Scripts/Systems/OfficerInteractionController.cs` | Exists, but player focus/raycast and interaction HUD are not connected |
@@ -31,7 +31,7 @@ The runtime county bootstrap now spawns a first mobile-oriented player/vehicle s
 
 1. Compile and run in Unity; resolve all C# and scene/bootstrap errors.
 2. Verify IMGUI touch controls on an iPhone; replace with a proper joystick and hold-based touch buttons if unreliable.
-3. Improve driving physics, collision handling, vehicle entry/exit animation, and safe exit-position checks.
+3. Improve driving physics, collision handling, and vehicle entry/exit animation; safe exit-position checks are now present in source but need runtime validation.
 4. Subscribe dispatch, MDT, uniforms/equipment, and duty-only interactions to `CountyDutyState.OnDutyChanged`.
 5. Add player-centered civilian focus/raycast and connect `OfficerInteractionController`.
 6. Implement traffic stop interaction, suspect AI response, detain/cuff/search/arrest, and prisoner transport.
@@ -51,3 +51,11 @@ The runtime county bootstrap now spawns a first mobile-oriented player/vehicle s
 ## Verification limits
 
 Only GitHub source was inspected and committed. No Unity compilation, Play Mode test, iPhone touch test, physics validation, performance profiling, iOS export, or IPA installation has been performed. The temporary IMGUI controls and all runtime behavior remain unverified. This document is an implementation audit, not a passed test report.
+
+
+## Safe vehicle exit source update (2026-11-26)
+
+- `CountyPlayerRuntimeController` now checks four candidate exit locations around the patrol SUV.
+- Each candidate must have ground beneath it and enough capsule clearance for the player.
+- If every candidate is blocked or lacks ground, the player stays seated rather than being placed inside an obstacle.
+- This is a source-level safeguard only. Physics behavior, trigger/layer interactions, and iPhone use have not been tested in Unity.
