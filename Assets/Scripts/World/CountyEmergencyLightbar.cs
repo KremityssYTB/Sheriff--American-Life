@@ -18,8 +18,7 @@ namespace SheriffAmericanLife
             redRenderer = red;
             blueRenderer = blue;
             flashCyclesPerSecond = Mathf.Max(0.5f, frequency);
-            lightbarEnabled = false;
-            ApplyState(false);
+            SetLightbarEnabled(false);
         }
 
         public void SetLightbarEnabled(bool enabled)
