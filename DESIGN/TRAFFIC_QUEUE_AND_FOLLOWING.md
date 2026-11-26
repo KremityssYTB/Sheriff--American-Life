@@ -20,7 +20,7 @@ This is a test-junction layout, not a final Florida road cross-section. The path
 
 ## Following controller
 
-`CountyTrafficVehicleAgent.CalculateFollowingSpeedLimit` performs a forward sphere-cast from just ahead of the vehicle body. It selects the nearest detected `CountyTrafficVehicleAgent` in front and caps the requested speed using three limits:
+`CountyTrafficVehicleAgent.CalculateFollowingSpeedLimit` performs a forward sphere-cast from just ahead of the vehicle body. It considers other `CountyTrafficVehicleAgent` vehicles and raised static colliders in front, ignoring triggers, the vehicle's own Rigidbody colliders, and low ground geometry. It caps requested speed using three limits:
 
 1. Configured target speed.
 2. Available gap divided by configured time headway.
@@ -36,6 +36,7 @@ Current serialized defaults:
 - Time headway: 1.35 s
 - Detection distance: 18 m
 - Sphere-cast radius: 0.75 m
+- Static-obstacle clearance: 2.5 m
 
 These are initial prototype values and require tuning against the final vehicle collider, speed, and road scale.
 
@@ -64,7 +65,8 @@ Use `DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md` for the queue, following-distance, and
 ## Known limitations
 
 - Sphere-cast following is a lightweight prototype, not a production car-following model.
-- It does not yet handle lane changes, overtaking, multiple lanes, vehicle classes, cut-ins, reverse movement, or obstacle avoidance.
+- Static-obstacle response is a forward-probe prototype; it does not steer around obstructions, change lanes, overtake, handle cut-ins/reversing vehicles, or route around blocked roads.
 - A fixed minimum gap and time headway are not yet adapted to weather, tire grip, road grade, or vehicle mass.
 - The test vehicles now use lane-specific left/straight/right paths, but the cubic curves and outbound lane alignment remain unverified. Lane changes, queue branching, and multi-lane merge behavior are future work.
+- Emergency designation can be enabled on a traffic agent. At a four-way stop, a designated emergency vehicle receives priority over ordinary waiting traffic, but cannot pre-empt an occupant or enter while a pedestrian conflict is active. Emergency lights, sirens, dispatch activation, and an actual emergency vehicle spawn are not implemented yet.
 - No Unity compilation, Play Mode test, physics test, or iPhone profiling has been completed.
