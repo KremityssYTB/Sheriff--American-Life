@@ -9,6 +9,7 @@ using System.Reflection;
 
 namespace SheriffAmericanLife.Editor
 {
+    [InitializeOnLoad]
     public static class ProjectSetup
     {
         private const string SettingsFolder = "Assets/Settings";
