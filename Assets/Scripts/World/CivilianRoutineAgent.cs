@@ -30,6 +30,13 @@ namespace SheriffAmericanLife
         private int activeStop = -1;
         private float pauseRemaining;
 
+        public void Configure(WorldClockSystem clock, RoutineStop[] schedule)
+        {
+            worldClock = clock;
+            dailyRoutine = schedule;
+            activeStop = -1;
+        }
+
         private void Update()
         {
             if (worldClock == null || dailyRoutine == null || dailyRoutine.Length == 0) return;
