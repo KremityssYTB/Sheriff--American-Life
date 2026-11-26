@@ -106,7 +106,7 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - Citation issuance is triggered only after all three document checks are complete and the deputy chooses CITATION for a profile with a document violation. A warning does not create a ticket.
 - Fictional violation categories currently include suspended/expired/missing license, expired/missing registration, and missing/expired insurance. Prototype fine amounts are gameplay placeholders, not statements of real Florida law or court schedules.
 - The mobile MDT now has a TICKETS tab showing ticket details and outstanding/paid state. MARK PAID changes the in-game session record to Paid; no real payment is processed.
-- Citation creation also adds a traffic-stop report entry. The ledger and payment state are session-only and are not persisted between game sessions.
+- Citation creation also adds a traffic-stop report entry. The ledger and payment state were initially session-only; the later persistent-citation update below now saves them locally between game sessions.
 - Source checks confirmed the new data fields, ticket issuance path, MDT wiring, and balanced braces. Unity compilation, Play Mode, UI layout, and iPhone tests remain outstanding.
 
 
