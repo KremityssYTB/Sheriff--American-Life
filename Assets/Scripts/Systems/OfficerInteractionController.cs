@@ -13,6 +13,8 @@ namespace SheriffAmericanLife
 
         public CivilianCharacter FocusedCivilian => focusedCivilian;
 
+        public void Configure(IncidentReportBook reports) => reportBook = reports;
+
         public void SetFocusedCivilian(CivilianCharacter civilian) => focusedCivilian = civilian;
 
         public void Greet()
