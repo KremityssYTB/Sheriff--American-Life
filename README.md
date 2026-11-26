@@ -41,6 +41,12 @@ The long-term world is based on real Florida geography and developed county-by-c
 
 The 30 × 30 km multi-county world is a long-term target. Development starts with a compact, streamed Ocala district rather than loading the full world at once.
 
+## Traffic prototype documentation
+
+- [Four-way-stop controller](DESIGN/FOUR_WAY_STOP_CONTROLLER.md)
+- [Four-way-stop manual validation matrix](DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md)
+- [Traffic queue and following-distance prototype](DESIGN/TRAFFIC_QUEUE_AND_FOLLOWING.md)
+
 ## Project setup
 
 1. Open with Unity Editor 6000.3.25f1 and allow packages to resolve.
