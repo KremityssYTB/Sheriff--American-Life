@@ -76,7 +76,7 @@ namespace SheriffAmericanLife
             float distanceToLine = Vector3.Dot(toStopLine, transform.forward);
             bool approachingLine = trafficSignal != null && distanceToLine > 0f && distanceToLine < stopLineDistance;
             if (approachingLine && !trafficSignal.CanProceed(eastWestRoad))
-                speedError = Mathf.Min(speedError, -Mathf.Max(2f, currentSpeed));
+                speedError = -Mathf.Max(0f, currentSpeed);
             if (Mathf.Abs(angle) > 65f) speedError = Mathf.Min(speedError, 0f);
             if (speedError >= 0f)
                 body.AddForce(transform.forward * Mathf.Min(acceleration, speedError * 2f), ForceMode.Acceleration);
