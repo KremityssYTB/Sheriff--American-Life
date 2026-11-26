@@ -1,0 +1,90 @@
+using UnityEngine;
+
+namespace SheriffAmericanLife
+{
+    /// <summary>
+    /// Context-action entry points for touch HUD buttons or an interaction wheel.
+    /// The HUD can call these public methods after assigning the focused civilian.
+    /// </summary>
+    public sealed class OfficerInteractionController : MonoBehaviour
+    {
+        [SerializeField] private CivilianCharacter focusedCivilian;
+        [SerializeField] private IncidentReportBook reportBook;
+
+        public CivilianCharacter FocusedCivilian => focusedCivilian;
+
+        public void SetFocusedCivilian(CivilianCharacter civilian) => focusedCivilian = civilian;
+
+        public void Greet()
+        {
+            if (!HasTarget()) return;
+            focusedCivilian.Greet();
+            Record("Community contact", "Greet", "Contact made");
+        }
+
+        public void AskQuestions()
+        {
+            if (!HasTarget()) return;
+            focusedCivilian.AskQuestions();
+            Record("Field interview", "Questioning", "Information requested");
+        }
+
+        public void RequestIdentification()
+        {
+            if (!HasTarget()) return;
+            focusedCivilian.ProvideIdentification();
+            Record("Identity check", "Request identification", "Identification provided");
+        }
+
+        public void IssueWarning()
+        {
+            if (!HasTarget()) return;
+            focusedCivilian.Warn();
+            Record("Enforcement", "Verbal warning", "Warning issued");
+        }
+
+        public void IssueCitation()
+        {
+            if (!HasTarget()) return;
+            focusedCivilian.Cite();
+            Record("Traffic / ordinance", "Citation", "Citation issued");
+        }
+
+        public void Detain()
+        {
+            if (!HasTarget()) return;
+            bool success = focusedCivilian.Detain();
+            Record("Investigation", "Detain", success ? "Subject detained" : "Action not permitted");
+        }
+
+        public void Arrest()
+        {
+            if (!HasTarget()) return;
+            bool success = focusedCivilian.Arrest();
+            Record("Arrest", "Arrest", success ? "Arrest completed" : "Subject must be detained first");
+        }
+
+        public void Release()
+        {
+            if (!HasTarget()) return;
+            focusedCivilian.Release();
+            Record("Investigation", "Release", "Subject released if previously detained");
+        }
+
+        private bool HasTarget()
+        {
+            if (focusedCivilian != null) return true;
+            Debug.Log("No civilian is currently selected.");
+            return false;
+        }
+
+        private void Record(string category, string action, string outcome)
+        {
+            if (reportBook == null) return;
+            reportBook.AddReport(category, focusedCivilian.FullName, action, outcome,
+                "Deputy interaction recorded for " + focusedCivilian.FullName +
+                ". Current disposition: " + focusedCivilian.Disposition +
+                ". Legal status: " + focusedCivilian.LegalState + ".");
+        }
+    }
+}
