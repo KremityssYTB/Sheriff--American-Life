@@ -12,6 +12,10 @@ The intended world includes gas stations, convenience stores, grocery/retail sto
 
 See [Core Gameplay Scope](DESIGN/CORE_GAMEPLAY_SCOPE.md) for the complete requirements and vertical-slice order. These are design targets; they are not all implemented yet.
 
+## Phone-playable browser preview
+
+A separate lightweight browser preview is being added under [web-demo](web-demo/index.html), with touch movement, a patrol SUV, driving, on/off-duty toggle, simple dispatch calls, and location interactions. It is a temporary 2D playtest companion, not the Unity game build. The GitHub Pages deployment workflow is [deploy-web-demo.yml](.github/workflows/deploy-web-demo.yml); the live URL is not confirmed until the first deployment succeeds.
+
 ## Current prototype foundation
 
 - Unity 6 project and mobile URP setup
