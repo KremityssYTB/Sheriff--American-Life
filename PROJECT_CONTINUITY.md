@@ -244,3 +244,14 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The mobile MDT now has a TICKETS tab showing ticket details and outstanding/paid state. MARK PAID changes the in-game session record to Paid; no real payment is processed.
 - Citation creation also adds a traffic-stop report entry. The ledger and payment state are session-only and are not persisted between game sessions.
 - Source checks confirmed the new data fields, ticket issuance path, MDT wiring, and balanced braces. Unity compilation, Play Mode, UI layout, and iPhone tests remain outstanding.
+
+
+## Persistent traffic citation save update (2026-11-26)
+
+- Commit: `040bfafe4e982561600e50cb045c59fdf354f593` — `Assets/Scripts/Systems/TrafficCitationBook.cs`.
+- The citation ledger now reads/writes a versioned JSON save at `Application.persistentDataPath/traffic-citations.json`.
+- Citation issuance and payment-status changes save immediately. The next ticket sequence is persisted and reconciled against loaded citation numbers.
+- Empty, unsupported-version, malformed, or unreadable save data is handled without crashing the ledger; load failure starts an empty in-memory list. Save failure is logged while current-session records remain accessible.
+- The save is local to the device; there is no cloud sync or cross-device sharing.
+- Source inspection only. No Unity compile, JSON round-trip test, iOS storage test, Play Mode test, or iPhone runtime test has been run.
+- Next: add a driver history keyed by fictional license/plate values, with prior warnings and citations surfaced in the MDT. Keep the history local and fictional, and avoid treating it as a real DMV record.
