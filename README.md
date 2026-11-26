@@ -77,11 +77,15 @@ The 30 × 30 km multi-county world is a long-term target. Development starts wit
 3. Open Assets/Scenes/Main.unity and press Play.
 4. The current source prototype creates a basic touch-oriented control surface at runtime; verify it in Unity before treating it as usable.
 
-## iOS build
+## iOS cloud build
 
-The repository includes a GitHub Actions workflow for an unsigned iOS export. A valid Unity license is required for Unity batchmode. The iOS Xcode build stage requires a macOS runner with Xcode. The workflow has not yet been verified by a successful end-to-end build.
+The recommended phone-only route is Unity Build Automation through the Unity Cloud Dashboard. It connects directly to this GitHub repository and supports iOS builds on hosted macOS builders. The free allocation published for 2026 includes 100 Mac build minutes per month. If the free allowance is exhausted and no payment method is on file, Unity blocks further usage; do not add billing details or enable pay-as-you-go.
 
-An unsigned IPA is not directly installable. It must be signed with a compatible certificate and provisioning profile before installation.
+See [BUILDING.md](BUILDING.md) and the private [Unity-License setup repository](https://github.com/KremityssYTB/Unity-License) for setup instructions. Unity Build Automation must still be connected and configured by the account owner in the Unity Cloud Dashboard. The first cloud build has not yet been run.
+
+The iOS build process generates an Xcode project; Xcode then builds it into an app. A distributable/installable IPA requires a separate packaging and Apple-signing step. An unsigned IPA is not directly installable.
+
+The older GitHub Actions/GameCI workflow remains an alternative, but it requires a valid Unity Personal license secret named `UNITY_LICENSE`. That secret is not configured. Unity Personal activation is through Unity Hub; do not attempt manual `.alf` activation.
 
 ## iOS configuration
 
