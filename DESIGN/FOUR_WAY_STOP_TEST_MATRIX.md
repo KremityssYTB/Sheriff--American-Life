@@ -18,6 +18,10 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 | Outbound lane alignment | Vehicle completes a left or right turn | Vehicle exits aligned with the destination road and does not reverse direction or cut across a curb |
 | 24-vehicle test load | Two vehicles spawn in each of three lanes on all four approaches | All 24 agents initialize, maintain queue spacing, and do not overlap at spawn |
 | Same-approach queue | Two vehicles approach in one inbound lane | Rear vehicle maintains a safe gap, does not overlap the lead vehicle, and reaches the stop line only after the lead vehicle clears |
+| Static obstacle response | Place a raised static obstacle in a vehicle's lane | Vehicle reduces speed and stops with the configured clearance; it must not treat the road surface as an obstacle |
+| Non-blocking ground geometry | Place a low ground-level collider near the lane | Vehicle ignores low ground geometry and continues |
+| Emergency priority | Register an emergency-designated vehicle and an ordinary vehicle at the stop | Emergency vehicle receives priority after its stop dwell; ordinary traffic waits |
+| Emergency safety gate | Keep another vehicle in the junction or a pedestrian in the crosswalk | Emergency vehicle cannot pre-empt an occupant or bypass pedestrian occupancy |
 | Following-distance response | Lead vehicle slows or stops before the junction | Rear vehicle reduces speed using headway and braking limits without contacting the lead vehicle |
 | Full-stop dwell | Vehicle reaches the stop line and remains below the stopped-speed threshold | Reservation is not requested until 1.25 seconds of continuous stopped time has elapsed |
 | Rolled stop reset | Waiting vehicle rolls forward beyond the stop line or accelerates before reservation | Its waiting record is removed and a new full-stop dwell is required |
@@ -42,7 +46,8 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 - No automated Unity Test Framework suite is configured in the project manifest.
 - The current runtime spawner creates representative traffic, not deterministic arrival-time scenarios.
 - The controller's arbitration delay, 1.25-second stop dwell, and priority logic are source-level only.
-- The following-distance probe is a simple sphere-cast prototype; it has not been tuned against Unity collider layouts or dense traffic.
+- The vehicle/obstacle probe is a simple sphere-cast prototype; it has not been tuned against Unity collider layouts or dense traffic.
+- Emergency priority is source-level only; there is no spawned emergency vehicle, siren/light behavior, or dispatch-to-agent activation yet.
 - The lane-specific test junction now uses a 22 m road width, three 3.4 m inbound movement lanes per approach, cubic Bezier turn paths, and two queued vehicles per lane (24 total). Route geometry and outbound lane alignment remain unverified in Unity.
 - No compilation, Play Mode, physics, or iPhone runtime test has been run.
 - A deterministic deadlock fallback is a prototype continuity safeguard, not a statement of Florida statutory right-of-way.
