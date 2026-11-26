@@ -47,6 +47,4 @@ namespace SheriffAmericanLife
             occupants.Clear();
         }
     }
-
-    public sealed class CountyPedestrianCrossingAgent : MonoBehaviour { }
 }
