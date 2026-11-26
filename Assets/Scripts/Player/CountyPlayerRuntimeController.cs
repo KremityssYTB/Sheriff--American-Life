@@ -14,6 +14,7 @@ namespace SheriffAmericanLife
         private CountyTrafficVehicleAgent nearbyTrafficVehicle;
         private CountyTrafficVehicleAgent activeTrafficStop;
         private TrafficStopDriverProfile activeDriverProfile;
+        private TrafficStopDriverBehavior activeDriverBehavior;
         private IncidentReportBook reportBook;
         private bool trafficStopDecisionRecorded;
         private readonly Collider[] trafficBuffer = new Collider[48];
@@ -227,7 +228,22 @@ namespace SheriffAmericanLife
                     GUI.Label(new Rect(padding, padding + 116f * scale, 300f * scale, 24f * scale),
                         "PLATE: " + activeDriverProfile.PlateNumber, statusStyle);
 
-                    float checkY = padding + 198f * scale;
+                    if (activeDriverBehavior != null)
+                    {
+                        GUI.Label(new Rect(padding, padding + 144f * scale, 300f * scale, 24f * scale),
+                            "DRIVER: " + activeDriverBehavior.Disposition.ToString().ToUpperInvariant(), statusStyle);
+                        GUI.Label(new Rect(padding, padding + 168f * scale, 300f * scale, 38f * scale),
+                            activeDriverBehavior.LatestResponse, statusStyle);
+                        if (!activeDriverBehavior.OfficerSpoke)
+                        {
+                            if (GUI.Button(new Rect(padding, padding + 208f * scale, 104f * scale, 36f * scale),
+                                "CALM APPROACH", buttonStyle)) RespondToDriver(true);
+                            if (GUI.Button(new Rect(padding + 108f * scale, padding + 208f * scale, 104f * scale, 36f * scale),
+                                "FIRM APPROACH", buttonStyle)) RespondToDriver(false);
+                        }
+                    }
+
+                    float checkY = padding + 250f * scale;
                     if (!activeDriverProfile.LicenseChecked &&
                         GUI.Button(new Rect(x, checkY, 112f * scale, 38f * scale), "CHECK LICENSE", buttonStyle))
                         CheckTrafficLicense();
@@ -285,10 +301,22 @@ namespace SheriffAmericanLife
 
             activeTrafficStop = nearbyTrafficVehicle;
             activeDriverProfile = activeTrafficStop.GetComponent<TrafficStopDriverProfile>();
+            activeDriverBehavior = activeTrafficStop.GetComponent<TrafficStopDriverBehavior>();
             if (activeDriverProfile != null) activeDriverProfile.ResetChecks();
             trafficStopDecisionRecorded = false;
             nearbyTrafficVehicle = null;
             lightbar.SetLightbarEnabled(true);
+        }
+
+        private void RespondToDriver(bool calmApproach)
+        {
+            if (activeTrafficStop == null || !activeTrafficStop.IsPulledOver ||
+                activeDriverBehavior == null || dutyState == null || !dutyState.IsOnDuty ||
+                activeDriverBehavior.OfficerSpoke) return;
+
+            string response = activeDriverBehavior.RespondToOfficer(calmApproach);
+            RecordTrafficStopAction(calmApproach ? "Calm driver contact" : "Firm driver contact", response);
+            Debug.Log(response);
         }
 
         private void CheckTrafficLicense()
@@ -349,6 +377,7 @@ namespace SheriffAmericanLife
             if (activeTrafficStop != null) activeTrafficStop.ResumeTraffic();
             activeTrafficStop = null;
             activeDriverProfile = null;
+            activeDriverBehavior = null;
             trafficStopDecisionRecorded = false;
             if (lightbar != null) lightbar.SetLightbarEnabled(false);
         }
