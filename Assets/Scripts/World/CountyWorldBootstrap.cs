@@ -123,7 +123,7 @@ namespace SheriffAmericanLife
             Transform workB = CreateWaypoint("Civilian B Work", new Vector3(-22, 0, -72));
             Transform parkB = CreateWaypoint("Civilian B Park", new Vector3(20, 0, -170));
 
-            CivilianCharacter firstResident = CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock, statements, reporter,
+            CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock, statements, reporter,
                 new CivilianRoutineAgent.RoutineStop[] {
                     Stop(7, 0, workA, "Commuting to work"),
                     Stop(17, 0, shopA, "Shopping after work"),
