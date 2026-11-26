@@ -45,6 +45,11 @@ namespace SheriffAmericanLife
                 CountyIntersectionRules.Approach.South, "South", CountyIntersectionRules.Movement.Right);
             AddStopApproach(junctionRoot, center, Vector3.right,
                 CountyIntersectionRules.Approach.West, "West", CountyIntersectionRules.Movement.Straight);
+
+            AddCrosswalkSensor(junctionRoot, center, Vector3.back, "North");
+            AddCrosswalkSensor(junctionRoot, center, Vector3.left, "East");
+            AddCrosswalkSensor(junctionRoot, center, Vector3.forward, "South");
+            AddCrosswalkSensor(junctionRoot, center, Vector3.right, "West");
         }
 
         private void AddStopApproach(Transform parent, Vector3 center, Vector3 forward,
@@ -98,6 +103,25 @@ namespace SheriffAmericanLife
             CountyTrafficVehicleAgent agent = car.AddComponent<CountyTrafficVehicleAgent>();
             agent.Configure(route, reporter, vehicleSpeed);
             agent.ConfigureFourWayStop(controller, approach, movement, stop, exit);
+        }
+
+        private void AddCrosswalkSensor(Transform parent, Vector3 center, Vector3 approachForward, string label)
+        {
+            Vector3 position = center - approachForward * 17f;
+            GameObject zone = new GameObject(label + " Pedestrian Crosswalk Trigger");
+            zone.transform.SetParent(parent, false);
+            zone.transform.localPosition = position - center + Vector3.up * 0.9f;
+            CountyPedestrianCrossingSensor sensor = zone.AddComponent<CountyPedestrianCrossingSensor>();
+            sensor.Configure(controller, new Vector3(roadWidth * 0.82f, 1.8f, 3.2f));
+
+            Vector3 side = Vector3.Cross(Vector3.up, approachForward).normalized;
+            for (int i = -3; i <= 3; i++)
+            {
+                Vector3 stripePosition = position - center + side * (i * 1.45f) + Vector3.up * 0.035f;
+                Make(parent, label + " Crosswalk Stripe " + i, PrimitiveType.Cube,
+                    stripePosition, new Vector3(0.72f, 0.035f, 2.6f), Color.white,
+                    Quaternion.LookRotation(side, Vector3.up));
+            }
         }
 
         private void CreateStopSign(Transform parent, string signName, Vector3 localPosition,
