@@ -1,7 +1,8 @@
 using UnityEngine;
 
-namespace SheriffAmericanLife
+namespace SheriffAmericanLife.Legacy
 {
+    // Retained for the original greybox bootstrap. New gameplay should use Systems.CameraModeController.
     public class CameraModeController : MonoBehaviour
     {
         [SerializeField] private Vector3 thirdPersonOffset = new Vector3(0, 3.2f, -6f);
