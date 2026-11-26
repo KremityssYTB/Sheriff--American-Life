@@ -15,6 +15,8 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 | Two pedestrians overlap | Two IDs enter; first exits while second remains | Gate remains closed until second exits |
 | Same-approach queue | Two vehicles approach in one inbound lane | Rear vehicle maintains a safe gap, does not overlap the lead vehicle, and reaches the stop line only after the lead vehicle clears |
 | Following-distance response | Lead vehicle slows or stops before the junction | Rear vehicle reduces speed using headway and braking limits without contacting the lead vehicle |
+| Stop-line bumper clearance | Vehicle completes a stop at the stop bar | Front bumper remains behind the stop bar |
+| Crosswalk bumper clearance | Pedestrian occupies the crossing and vehicle stops | Front bumper remains behind the crosswalk yield line |
 | Junction transform | Move or rotate the test junction root | Stop-line, clearance, and crosswalk reference points remain aligned with the junction |
 | Occupant cleanup | Waiting or occupying vehicle is disabled | Its queue entry or reservation is removed |
 | Gridlock fallback | All approaches form a circular simultaneous priority conflict | Stable fallback selects a non-earlier-arrival vehicle without overriding an oncoming left-turn conflict |
