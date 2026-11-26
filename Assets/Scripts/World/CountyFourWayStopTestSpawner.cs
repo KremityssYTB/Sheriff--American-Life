@@ -183,6 +183,10 @@ namespace SheriffAmericanLife
                 CountyEmergencyLightbar lightbar = car.AddComponent<CountyEmergencyLightbar>();
                 lightbar.Configure(redLight.GetComponent<Renderer>(),
                     blueLight.GetComponent<Renderer>(), 2.5f);
+                CountyEmergencySiren siren = car.AddComponent<CountyEmergencySiren>();
+                CountyEmergencyResponseUnit responseUnit =
+                    car.AddComponent<CountyEmergencyResponseUnit>();
+                responseUnit.Configure("OCALA-1", lightbar, siren);
             }
 
             Vector3 crosswalkStop = center - forward * 24f + (stop - (center - forward * 10f));
