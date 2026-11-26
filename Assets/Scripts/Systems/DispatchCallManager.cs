@@ -48,6 +48,9 @@ namespace SheriffAmericanLife
         [SerializeField] private bool createCallsFromWorldIncidents = true;
         private readonly List<DispatchCall> calls = new List<DispatchCall>();
         private readonly Dictionary<string, DispatchCall> callsByIncident = new Dictionary<string, DispatchCall>();
+        private IncidentReportBook reportBook;
+
+        public void Configure(IncidentReportBook reports) => reportBook = reports;
 
         public IReadOnlyList<DispatchCall> Calls => calls;
         public event Action<DispatchCall> CallCreated;
@@ -111,6 +114,10 @@ namespace SheriffAmericanLife
             if (call == null || call.status != DispatchCallStatus.OnScene) return false;
             call.status = DispatchCallStatus.Resolved;
             call.disposition = disposition;
+            if (reportBook != null)
+                reportBook.AddReport("Dispatch resolution", call.title, "Responded to call", disposition,
+                    "Call " + call.callId + " resolved by " + call.assignedUnit + ". " + call.description,
+                    call.sourceIncidentId);
             CallUpdated?.Invoke(call);
             return true;
         }
@@ -122,6 +129,9 @@ namespace SheriffAmericanLife
                 call.status == DispatchCallStatus.Cancelled) return false;
             call.status = DispatchCallStatus.Cancelled;
             call.disposition = reason;
+            if (reportBook != null)
+                reportBook.AddReport("Dispatch cancellation", call.title, "Cancel call", reason,
+                    "Call " + call.callId + " was cancelled. " + call.description, call.sourceIncidentId);
             CallUpdated?.Invoke(call);
             return true;
         }
