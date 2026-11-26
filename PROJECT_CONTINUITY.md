@@ -1,6 +1,6 @@
 # Project Continuity Handoff
 
-Last updated: 2026-11-26
+Last updated: 2026-11-26 (traffic obstacle/emergency priority pass)
 
 This file is the durable handoff for continuing SHERIFF: AMERICAN LIFE across ChatGPT conversations. The GitHub repository on `main` is the source of truth; inspect current file contents and SHAs before every edit.
 
@@ -43,6 +43,8 @@ Florida-inspired multi-county open-world law-enforcement and civilian-life simul
 - `8bbdb284bece15ee02812f703f2a241d56ef934d` — four-way-stop controller docs.
 - `3bff77cbcadb47c10fd00ad3f1356a339c87476f` — manual validation matrix.
 - `fcb59ece86074c832898efca1e915f82222f257f` — README update.
+- `2d7f889a72631ba2fc0e1a5199e98cc2e0d542fd` — move stop signs out of vehicle probe paths.
+- `d4b9725930be9494bfb131e8fca0aca5fbfc7de0` — README continuity link.
  
 ## Key source and documentation files
 
