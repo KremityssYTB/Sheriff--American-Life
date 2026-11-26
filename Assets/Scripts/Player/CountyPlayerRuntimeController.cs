@@ -48,6 +48,7 @@ namespace SheriffAmericanLife
             patrolVehicle.transform.localScale = new Vector3(2.1f, 1.45f, 4.4f);
             patrolVehicle.GetComponent<Renderer>().material.color = new Color(.08f,.1f,.14f);
             vehicle = patrolVehicle.AddComponent<PatrolVehicleController>();
+            vehicle.SetControlsEnabled(false);
 
             footThird = MakeAnchor(player.transform, "Third Person Camera", new Vector3(0,2.7f,-5.2f));
             footFirst = MakeAnchor(player.transform, "First Person Camera", new Vector3(0,1.55f,.12f));
@@ -95,7 +96,7 @@ namespace SheriffAmericanLife
             GUI.Label(new Rect(pad, pad, 260*s, 30*s), dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY", statusStyle);
             if (GUI.Button(new Rect(Screen.width-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
                 ToggleVehicle();
-            if (GUI.Button(new Rect(Screen.width-112*s,pad+50*s,100*s,42*s), onDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
+            if (GUI.Button(new Rect(Screen.width-112*s,pad+50*s,100*s,42*s), dutyState != null && dutyState.IsOnDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
                 dutyState.ToggleDuty();
             if (GUI.Button(new Rect(Screen.width-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
                 cameraModes.ToggleCameraMode();
@@ -107,7 +108,7 @@ namespace SheriffAmericanLife
                 if (GUI.RepeatButton(new Rect(pad+w+4*s,Screen.height-h-pad,w,h), "▼", buttonStyle)) moveInput.y = -1;
                 if (GUI.RepeatButton(new Rect(pad,Screen.height-h-pad,w,h), "◀", buttonStyle)) moveInput.x = -1;
                 if (GUI.RepeatButton(new Rect(pad+w*2+8*s,Screen.height-h-pad,w,h), "▶", buttonStyle)) moveInput.x = 1;
-                if (GUI.Button(new Rect(pad+w*2+8*s,Screen.height-h*2-pad,w,h), "SPRINT", buttonStyle))
+                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,Screen.height-h*2-pad,w,h), "SPRINT", buttonStyle))
                     walker.SetSprint(true);
                 else walker.SetSprint(false);
                 throttle = 0f; steering = 0f;
