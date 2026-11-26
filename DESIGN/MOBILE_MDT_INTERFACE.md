@@ -6,6 +6,10 @@ The Mobile Data Terminal (MDT) is the deputy's in-vehicle and handheld computer.
 
 ## Current implementation
 
+`Assets/Scripts/Systems/MobileMdtScreen.cs` builds a runtime Canvas interface and touch controls. It creates an EventSystem with the Input System UI module when the scene does not already have one. The screen is landscape-first and rearranges the call list and case panel for portrait orientation. A floating MDT button opens the panel; the panel can be closed from its header.
+
+The current screen uses a simple active-call list and three case tabs: details, witnesses, and reports. Five action buttons invoke the controller's validated dispatch transitions. The call list and details refresh when the MDT controller receives data events.
+
 `Assets/Scripts/Systems/MobileMdtController.cs` is the presentation-facing controller.
 
 - Reads calls from `DispatchCallManager`.
@@ -84,4 +88,4 @@ Street addresses and real road routing are not implemented yet.
 
 ## Data and persistence limitations
 
-All calls, reports, and witness statements are currently session-only. No save/load, server CAD, multiplayer unit synchronization, GPS routing, or rendered MDT screen exists yet. The controller is a backend integration point for a future Canvas or UI Toolkit screen.
+All calls, reports, and witness statements are currently session-only. No save/load, server CAD, multiplayer unit synchronization, GPS routing, or rendered MDT screen exists yet. The screen remains a prototype: it has no county map rendering, address lookup, route guidance, radio audio, custom icons, saved case data, or multiplayer synchronization. Visual sizing and touch behavior still require testing on an actual iPhone.
