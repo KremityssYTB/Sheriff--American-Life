@@ -19,6 +19,11 @@ namespace SheriffAmericanLife
         private TrafficCitationBook citationBook;
         private TrafficDriverHistoryBook driverHistoryBook;
         private ArrestBookingBook arrestBookingBook;
+        private Transform worldRoot;
+        private CivilianCharacter escortedPrisoner;
+        private string escortedBookingId;
+        private Vector3 escortedPrisonerOriginalScale;
+        private bool prisonerSeated;
         private readonly Vector3 jailIntakePosition = new Vector3(-102f, 0f, -15f);
         private bool trafficStopDecisionRecorded;
         private readonly Collider[] trafficBuffer = new Collider[48];
@@ -43,13 +48,18 @@ namespace SheriffAmericanLife
 
         public void Initialize(Transform worldRoot)
         {
+            this.worldRoot = worldRoot;
             dutyState = gameObject.AddComponent<CountyDutyState>();
             reportBook = worldRoot.GetComponent<IncidentReportBook>();
             citationBook = worldRoot.GetComponent<TrafficCitationBook>();
             driverHistoryBook = worldRoot.GetComponent<TrafficDriverHistoryBook>();
             arrestBookingBook = worldRoot.GetComponent<ArrestBookingBook>();
             interactions = worldRoot.GetComponent<OfficerInteractionController>();
-            if (interactions != null) interactions.ConfigureDutyState(dutyState);
+            if (interactions != null)
+            {
+                interactions.ConfigureDutyState(dutyState);
+                interactions.ArrestCompleted += HandleArrestCompleted;
+            }
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             player.name = "Player Deputy";
             player.transform.SetParent(worldRoot, false);
@@ -106,6 +116,7 @@ namespace SheriffAmericanLife
         {
             RefreshCivilianFocus();
             RefreshTrafficTarget();
+            UpdatePrisonerEscort();
             if (walker && !inVehicle) walker.SetMoveInput(moveInput);
             if (vehicle)
             {
@@ -300,6 +311,83 @@ namespace SheriffAmericanLife
             }
         }
 
+        private void HandleArrestCompleted(CivilianCharacter civilian)
+        {
+            if (civilian == null || arrestBookingBook == null) return;
+            if (escortedPrisoner != null && escortedPrisoner != civilian)
+            {
+                Debug.LogWarning("Only one prisoner can be escorted at a time in this prototype.");
+                return;
+            }
+
+            ArrestBookingRecord booking = null;
+            foreach (ArrestBookingRecord record in arrestBookingBook.Records)
+            {
+                if (record != null && record.status == BookingStatus.AwaitingTransport &&
+                    record.identificationNumber == civilian.IdentificationNumber)
+                {
+                    booking = record;
+                    break;
+                }
+            }
+            if (booking == null) return;
+
+            escortedPrisoner = civilian;
+            escortedBookingId = booking.bookingId;
+            escortedPrisonerOriginalScale = civilian.transform.localScale;
+            CivilianRoutineAgent routine = civilian.GetComponent<CivilianRoutineAgent>();
+            if (routine != null) routine.enabled = false;
+            prisonerSeated = false;
+            Debug.Log("Prisoner escort started: " + escortedBookingId);
+        }
+
+        private void UpdatePrisonerEscort()
+        {
+            if (escortedPrisoner == null) return;
+
+            if (inVehicle)
+            {
+                if (!prisonerSeated) SeatEscortedPrisoner();
+                return;
+            }
+
+            if (prisonerSeated) UnseatEscortedPrisoner();
+            if (player == null) return;
+
+            Vector3 followPosition = player.transform.position -
+                player.transform.forward * 1.35f + player.transform.right * .45f;
+            followPosition.y = escortedPrisoner.transform.position.y;
+            escortedPrisoner.transform.position = Vector3.MoveTowards(
+                escortedPrisoner.transform.position, followPosition, 1.8f * Time.deltaTime);
+
+            Vector3 direction = player.transform.position - escortedPrisoner.transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > .05f)
+                escortedPrisoner.transform.rotation = Quaternion.RotateTowards(
+                    escortedPrisoner.transform.rotation,
+                    Quaternion.LookRotation(direction), 240f * Time.deltaTime);
+        }
+
+        private void SeatEscortedPrisoner()
+        {
+            if (escortedPrisoner == null || patrolVehicle == null) return;
+            escortedPrisoner.transform.SetParent(patrolVehicle.transform, false);
+            escortedPrisoner.transform.localPosition = new Vector3(.58f, .88f, .12f);
+            escortedPrisoner.transform.localRotation = Quaternion.identity;
+            escortedPrisoner.transform.localScale = escortedPrisonerOriginalScale * .68f;
+            prisonerSeated = true;
+        }
+
+        private void UnseatEscortedPrisoner()
+        {
+            if (escortedPrisoner == null) return;
+            escortedPrisoner.transform.SetParent(worldRoot, true);
+            escortedPrisoner.transform.position = player.transform.position +
+                player.transform.right * 1.1f;
+            escortedPrisoner.transform.localScale = escortedPrisonerOriginalScale;
+            prisonerSeated = false;
+        }
+
         private void DrawPrisonerTransportHud(float scale, float padding)
         {
             if (!inVehicle || arrestBookingBook == null || dutyState == null || !dutyState.IsOnDuty)
@@ -341,6 +429,15 @@ namespace SheriffAmericanLife
                 return;
 
             if (!arrestBookingBook.MarkBooked(booking.bookingId)) return;
+            if (escortedPrisoner != null && escortedBookingId == booking.bookingId)
+            {
+                escortedPrisoner.transform.SetParent(worldRoot, true);
+                escortedPrisoner.transform.position = jailIntakePosition + new Vector3(0f, 1f, 5f);
+                escortedPrisoner.transform.localScale = escortedPrisonerOriginalScale;
+                escortedPrisoner = null;
+                escortedBookingId = null;
+                prisonerSeated = false;
+            }
             if (reportBook != null)
                 reportBook.AddReport("Jail intake", booking.personName, "Prisoner transport",
                     "Transport completed at Marion County jail intake. Booking " + booking.bookingId + " received.",
@@ -549,6 +646,7 @@ namespace SheriffAmericanLife
                 player.GetComponent<Renderer>().enabled = false;
                 vehicle.SetControlsEnabled(true);
                 cameraModes.Configure(Camera.main, vehicleThird, vehicleFirst);
+                SeatEscortedPrisoner();
             }
             else
             {
@@ -564,6 +662,7 @@ namespace SheriffAmericanLife
                 characterController.enabled = true;
                 walker.SetMovementEnabled(true);
                 cameraModes.Configure(Camera.main, footThird, footFirst);
+                UnseatEscortedPrisoner();
                 moveInput = Vector2.zero;
                 throttle = 0f; steering = 0f;
             }
