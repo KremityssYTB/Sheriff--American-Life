@@ -15,11 +15,11 @@ A Florida open-world law-enforcement and civilian life simulator. Target device:
 - **World incident event channel** for gameplay systems to publish disturbances, collisions, thefts, fires, and emergencies
 - **Session-only witness statement collection** ready for a future MDT/investigation screen
 - **Incident-driven dispatch prototype** that converts published world events into CAD calls with priority and lifecycle tracking
-- **Mobile MDT controller foundation** for call selection, status actions, linked witness statements, and incident reports
+- **Mobile MDT controller and runtime touch-screen prototype** for call selection, status actions, linked witness statements, and incident reports
 - Ocala first-playable system plan
 - Mobile MDT interface design and controller foundation
 
-The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. Dispatch automatically creates a call when a gameplay system publishes a world incident. No crime simulation currently publishes incidents on its own; gameplay systems must call the incident reporter. Dispatch calls, reports, and witness statements are session-only. The MDT is currently a data/controller layer; a rendered touch-screen Canvas/UI Toolkit interface is not yet implemented. Dispatch resolution and cancellation now create reports linked to the originating incident, allowing the MDT to show a call's related records.
+The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. Dispatch automatically creates a call when a gameplay system publishes a world incident. No crime simulation currently publishes incidents on its own; gameplay systems must call the incident reporter. Dispatch calls, reports, and witness statements are session-only. The MDT now includes a runtime-generated Canvas screen with active calls, case details, witness/report tabs, status actions, and a floating open/close button. Dispatch resolution and cancellation now create reports linked to the originating incident, allowing the MDT to show a call's related records.
 
 ## World direction
 
