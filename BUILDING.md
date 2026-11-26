@@ -1,34 +1,45 @@
 # Cloud build notes
 
-This repository is being prepared for a phone-managed GitHub Actions workflow.
+## Recommended cloud build path: Unity Build Automation
 
-## Current pipeline
+Use Unity's hosted Build Automation service from the Unity Cloud Dashboard. This is the preferred $0 route for the phone-only workflow; it avoids renting a remote Windows PC and does not require placing a Unity Personal `.ulf` in GitHub Actions secrets for the Unity-managed build path.
 
-- Unity editor: 6000.3.25f1 (Unity 6.3 LTS)
-- Build action: GameCI Unity Builder
-- Target: iOS
-- Output: an Xcode project, not a signed IPA
-- Trigger: Actions > Unity iOS Xcode Export > Run workflow
+- Unity Editor: 6000.3.25f1 (Unity 6.3 LTS)
+- URP: 17.3.0
+- Source: GitHub `KremityssYTB/Sheriff--American-Life`, branch `main`
+- Project root: repository root (leave project subfolder blank)
+- Build target: iOS
+- Builder: macOS
+- Unity version: auto-detect from `ProjectSettings/ProjectVersion.txt`
+- Free allowance: Unity's 2026 pricing page lists 100 Mac build minutes per month for iOS/macOS builds. Free-tier access is blocked when limits are exhausted if no payment method is on file. Do not add billing details or enable pay-as-you-go.
 
-## Required before the first successful run
+### One-time owner setup in Unity Cloud
 
-1. A complete Unity project, including at least one enabled scene in Build Settings.
-2. A valid Unity Personal license file stored as the repository Actions secret named `UNITY_LICENSE`.
-3. The repository must have GitHub Actions enabled.
+1. Sign in at https://cloud.unity.com/ using the Unity ID for the project.
+2. Open DevOps / Build Automation and create or launch the free Unity Cloud Personal project.
+3. Connect GitHub and select `KremityssYTB/Sheriff--American-Life`.
+4. Configure the iOS target as above. Start with manual builds.
+5. Run the first build and inspect its log before enabling automatic builds.
 
-Never commit a Unity license file, Apple certificate, private key, or provisioning profile into the repository. Store credentials only as GitHub Actions secrets.
+Unity's GitHub connection requires a token. For manual builds of this public repo, use the minimum public-repository read permission. If a fine-grained token is used, grant `Contents: Read-only` only for this repo. Automatic builds also require webhook write permission, so do not enable them until the manual build is successful. Create and enter the token directly in Unity's dashboard; never share it in chat.
 
-## IPA and signing
+References:
+- Free allowance: https://unity.com/products/pricing-updates
+- GitHub connection: https://docs.unity.com/en-us/build-automation/get-started-with-build-automation/connect-your-version-control-system
+- Build configuration: https://docs.unity.com/en-us/build-automation/basic-build-configuration/overview
+- Supported Unity versions: https://docs.unity.com/en-us/build-automation/reference/supported-unity-versions
 
-Unity's iOS build step exports an Xcode project. Creating a distributable IPA is a separate Xcode/signing step. This workflow intentionally does not sign the app or embed anyone's Apple certificate. Players can use their own signing credentials in a separate, compatible signing workflow.
+### iOS output limitation
 
-## Phone-only limitation
+Unity's iOS build step generates an Xcode project. Xcode then builds that project into an app. A distributable/installable IPA requires a separate Xcode packaging and Apple signing step. Do not call the Xcode project an IPA, and do not claim a signed or installable build until verified.
 
-GitHub Actions can run cloud builds, but a Unity Personal license still has to be activated and supplied to the build environment. This workflow cannot create or bypass a Unity license. If the license file cannot be obtained without a desktop Unity Hub activation, the build will stop at the license check.
+## Existing GitHub Actions / GameCI workflow
 
+The existing manual workflow at `.github/workflows/build-ios-export.yml` is an alternative path. It requires the GitHub Actions secret `UNITY_LICENSE` containing a valid Unity Personal license. That secret is not configured yet. Unity Personal activation must be performed through Unity Hub; the old manual `.alf` route is not supported for Personal.
 
-## Browser preview
+## Project readiness and validation
 
-The repository includes a separate 2D mobile browser preview in `web-demo/index.html`. It does not require Unity or a Unity license to serve as a static website. The GitHub Pages workflow is `.github/workflows/deploy-web-demo.yml`. The initial deployment attempts confirmed that Pages is not enabled and the connected GitHub integration cannot create the Pages site. The repository owner must open Settings → Pages → Build and deployment and select “GitHub Actions” as the source, then rerun the workflow. A successful Actions deployment is required before the preview can be called live or tested on the iPhone.
-
-The browser preview is not an iOS IPA, is not the Unity game, and does not validate Unity runtime code.
+- The project targets Unity 6.3 (6000.3.25f1) and URP 17.3.0.
+- `Assets/Editor/ProjectSetup.cs` generates the URP assets and `Assets/Scenes/Main.unity` when invoked.
+- A pre-build hook is being added so cloud builds create the generated scene and iOS settings before building.
+- No Unity compile, UBA build, Xcode build, device install, or runtime test is claimed until that exact step has completed successfully.
