@@ -117,7 +117,7 @@ namespace SheriffAmericanLife
             Vector3 side = Vector3.Cross(Vector3.up, approachForward).normalized;
             for (int i = -3; i <= 3; i++)
             {
-                Vector3 stripePosition = position - center + side * (i * 1.45f) + Vector3.up * 0.035f;
+                Vector3 stripePosition = position - center + approachForward * (i * 0.45f) + Vector3.up * 0.035f;
                 Make(parent, label + " Crosswalk Stripe " + i, PrimitiveType.Cube,
                     stripePosition, new Vector3(0.72f, 0.035f, 2.6f), Color.white,
                     Quaternion.LookRotation(side, Vector3.up));
