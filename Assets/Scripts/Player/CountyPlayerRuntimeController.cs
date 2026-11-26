@@ -259,7 +259,7 @@ namespace SheriffAmericanLife
                     if (activeDriverProfile.AllDocumentsChecked)
                     {
                         string result = activeDriverProfile.HasViolation ? "DOCUMENT ISSUE FOUND" : "ALL DOCUMENTS VALID";
-                        GUI.Label(new Rect(padding, padding + 144f * scale, 300f * scale, 26f * scale),
+                        GUI.Label(new Rect(padding, padding + 250f * scale, 300f * scale, 26f * scale),
                             result, statusStyle);
                         if (!trafficStopDecisionRecorded && activeDriverProfile.HasViolation)
                         {
@@ -270,12 +270,12 @@ namespace SheriffAmericanLife
                         }
                         else if (!trafficStopDecisionRecorded)
                         {
-                            GUI.Label(new Rect(padding, padding + 170f * scale, 300f * scale, 24f * scale),
+                            GUI.Label(new Rect(padding, padding + 276f * scale, 300f * scale, 24f * scale),
                                 "No document violation found.", statusStyle);
                         }
                         else
                         {
-                            GUI.Label(new Rect(padding, padding + 170f * scale, 300f * scale, 24f * scale),
+                            GUI.Label(new Rect(padding, padding + 276f * scale, 300f * scale, 24f * scale),
                                 "STOP DECISION RECORDED", statusStyle);
                         }
                     }
