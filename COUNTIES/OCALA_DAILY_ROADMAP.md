@@ -46,11 +46,11 @@ Every development day:
 ## Day 1 — Immediate playable preview and build blockers
 
 - [x] Audit current Unity player runtime prototype and cloud build status.
-- [ ] Fix the player HUD's unresolved duty-state variable.
-- [ ] Provide a phone-browser preview with walk/drive, enter/exit, duty toggle, dispatch call, and location interactions.
-- [ ] Add a Pages deployment workflow and verify deployment.
-- [ ] Keep the Unity project as the main game; browser preview is a temporary playtest companion, not a Unity build.
-- [ ] Verify the Unity cloud workflow's missing license secret and scene/build configuration blockers.
+- [x] Fix the player HUD's unresolved duty-state variable.
+- [x] Add a phone-browser preview source with walk/drive, enter/exit, duty toggle, dispatch call, and location interactions.
+- [x] Add a Pages deployment workflow. Deployment still needs the owner to enable Pages in repository Settings.
+- [x] Keep the Unity project as the main game; browser preview is a temporary playtest companion, not a Unity build.
+- [x] Verify the Unity cloud workflow's missing license secret and missing scene/build configuration blockers.
 
 ## Day 2 — Ocala blockout and map sectors
 
@@ -94,3 +94,13 @@ Every development day:
 - Core vehicle roster works.
 - Ocala districts connect by drivable roads.
 - Build succeeds and is tested on target hardware before declaring a release.
+
+
+### Day 1 deployment gate (verified)
+
+- Browser preview source exists at `web-demo/index.html`.
+- Deployment workflow exists at `.github/workflows/deploy-web-demo.yml`.
+- First deployment attempt failed because GitHub Pages was not enabled for the repository.
+- A second attempt with automatic enablement failed because the connected GitHub integration is not authorized to create the Pages site.
+- **Owner action required:** in repository Settings → Pages → Build and deployment, select **GitHub Actions** as the source. Then rerun the “Deploy Ocala browser preview” workflow from the Actions tab.
+- Do not call the browser preview live until the deployment workflow succeeds and the page is opened on the iPhone.
