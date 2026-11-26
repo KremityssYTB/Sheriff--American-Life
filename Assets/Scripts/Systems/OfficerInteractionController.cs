@@ -10,10 +10,12 @@ namespace SheriffAmericanLife
     {
         [SerializeField] private CivilianCharacter focusedCivilian;
         [SerializeField] private IncidentReportBook reportBook;
+        private CountyDutyState dutyState;
 
         public CivilianCharacter FocusedCivilian => focusedCivilian;
 
         public void Configure(IncidentReportBook reports) => reportBook = reports;
+        public void ConfigureDutyState(CountyDutyState state) => dutyState = state;
 
         public void SetFocusedCivilian(CivilianCharacter civilian) => focusedCivilian = civilian;
 
@@ -33,42 +35,42 @@ namespace SheriffAmericanLife
 
         public void RequestIdentification()
         {
-            if (!HasTarget()) return;
+            if (!HasTarget() || !RequireOnDuty("Request identification")) return;
             focusedCivilian.ProvideIdentification();
             Record("Identity check", "Request identification", "Identification provided");
         }
 
         public void IssueWarning()
         {
-            if (!HasTarget()) return;
+            if (!HasTarget() || !RequireOnDuty("Issue a warning")) return;
             focusedCivilian.Warn();
             Record("Enforcement", "Verbal warning", "Warning issued");
         }
 
         public void IssueCitation()
         {
-            if (!HasTarget()) return;
+            if (!HasTarget() || !RequireOnDuty("Issue a citation")) return;
             focusedCivilian.Cite();
             Record("Traffic / ordinance", "Citation", "Citation issued");
         }
 
         public void Detain()
         {
-            if (!HasTarget()) return;
+            if (!HasTarget() || !RequireOnDuty("Detain a person")) return;
             bool success = focusedCivilian.Detain();
             Record("Investigation", "Detain", success ? "Subject detained" : "Action not permitted");
         }
 
         public void Arrest()
         {
-            if (!HasTarget()) return;
+            if (!HasTarget() || !RequireOnDuty("Make an arrest")) return;
             bool success = focusedCivilian.Arrest();
             Record("Arrest", "Arrest", success ? "Arrest completed" : "Subject must be detained first");
         }
 
         public void Release()
         {
-            if (!HasTarget()) return;
+            if (!HasTarget() || !RequireOnDuty("Release a detained person")) return;
             focusedCivilian.Release();
             Record("Investigation", "Release", "Subject released if previously detained");
         }
@@ -77,6 +79,13 @@ namespace SheriffAmericanLife
         {
             if (focusedCivilian != null) return true;
             Debug.Log("No civilian is currently selected.");
+            return false;
+        }
+
+        private bool RequireOnDuty(string action)
+        {
+            if (dutyState != null && dutyState.IsOnDuty) return true;
+            Debug.LogWarning(action + " is only available while on duty.");
             return false;
         }
 
