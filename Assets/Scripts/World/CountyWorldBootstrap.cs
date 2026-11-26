@@ -25,6 +25,7 @@ namespace SheriffAmericanLife
             Make("Ground", PrimitiveType.Plane, new Vector3(0,-.2f,0), new Vector3(70,1,70), new Color(.23f,.38f,.2f));
             Make("Highway", PrimitiveType.Cube, new Vector3(0,0,80), new Vector3(18,.12f,700), new Color(.12f,.12f,.12f));
             Make("Main Street", PrimitiveType.Cube, new Vector3(0,.02f,-80), new Vector3(280,.14f,14), new Color(.16f,.16f,.16f));
+            Make("Cross Street", PrimitiveType.Cube, new Vector3(0,.03f,-80), new Vector3(14,.15f,280), new Color(.16f,.16f,.16f));
 
             for (int x=-4; x<=4; x++)
             for (int z=-3; z<=2; z++)
@@ -133,6 +134,9 @@ namespace SheriffAmericanLife
 
         private void SpawnCountyTraffic(WorldIncidentReporter reporter)
         {
+            TrafficSignalController signals = root.gameObject.AddComponent<TrafficSignalController>();
+            signals.Configure();
+
             Transform[] eastbound = new Transform[] {
                 CreateWaypoint("Traffic Eastbound End", new Vector3(132,.1f,-83)),
                 CreateWaypoint("Traffic Eastbound Start", new Vector3(-132,.1f,-83))
@@ -141,22 +145,36 @@ namespace SheriffAmericanLife
                 CreateWaypoint("Traffic Westbound End", new Vector3(-132,.1f,-77)),
                 CreateWaypoint("Traffic Westbound Start", new Vector3(132,.1f,-77))
             };
+            Transform[] northbound = new Transform[] {
+                CreateWaypoint("Traffic Northbound End", new Vector3(-3,.1f,58)),
+                CreateWaypoint("Traffic Northbound Start", new Vector3(-3,.1f,-218))
+            };
+            Transform[] southbound = new Transform[] {
+                CreateWaypoint("Traffic Southbound End", new Vector3(3,.1f,-218)),
+                CreateWaypoint("Traffic Southbound Start", new Vector3(3,.1f,58))
+            };
 
-            SpawnTrafficVehicle("Civilian Sedan East 1", new Vector3(-108,.8f,-83), eastbound, reporter, 7.5f, new Color(.2f,.3f,.42f));
-            SpawnTrafficVehicle("Civilian Sedan East 2", new Vector3(-55,.8f,-83), eastbound, reporter, 6.5f, new Color(.55f,.55f,.58f));
-            SpawnTrafficVehicle("Civilian Sedan West 1", new Vector3(108,.8f,-77), westbound, reporter, 7f, new Color(.42f,.25f,.18f));
-            SpawnTrafficVehicle("Civilian Sedan West 2", new Vector3(55,.8f,-77), westbound, reporter, 6f, new Color(.18f,.38f,.28f));
+            SpawnTrafficVehicle("Civilian Sedan East 1", new Vector3(-108,.8f,-83), eastbound, reporter, 7.5f, new Color(.2f,.3f,.42f), signals, true, new Vector3(-10,0,-83));
+            SpawnTrafficVehicle("Civilian Sedan East 2", new Vector3(-55,.8f,-83), eastbound, reporter, 6.5f, new Color(.55f,.55f,.58f), signals, true, new Vector3(-10,0,-83));
+            SpawnTrafficVehicle("Civilian Sedan West 1", new Vector3(108,.8f,-77), westbound, reporter, 7f, new Color(.42f,.25f,.18f), signals, true, new Vector3(10,0,-77));
+            SpawnTrafficVehicle("Civilian Sedan West 2", new Vector3(55,.8f,-77), westbound, reporter, 6f, new Color(.18f,.38f,.28f), signals, true, new Vector3(10,0,-77));
+
+            SpawnTrafficVehicle("Civilian Sedan North 1", new Vector3(-3,.8f,-198), northbound, reporter, 6.8f, new Color(.32f,.4f,.5f), signals, false, new Vector3(-3,0,-90));
+            SpawnTrafficVehicle("Civilian Sedan North 2", new Vector3(-3,.8f,-145), northbound, reporter, 6f, new Color(.6f,.48f,.24f), signals, false, new Vector3(-3,0,-90));
+            SpawnTrafficVehicle("Civilian Sedan South 1", new Vector3(3,.8f,38), southbound, reporter, 7f, new Color(.25f,.45f,.32f), signals, false, new Vector3(3,0,-70));
+            SpawnTrafficVehicle("Civilian Sedan South 2", new Vector3(3,.8f,-15), southbound, reporter, 5.8f, new Color(.48f,.3f,.3f), signals, false, new Vector3(3,0,-70));
         }
 
         private void SpawnTrafficVehicle(string vehicleName, Vector3 position, Transform[] route,
-            WorldIncidentReporter reporter, float speed, Color color)
+            WorldIncidentReporter reporter, float speed, Color color, TrafficSignalController signals,
+            bool eastWest, Vector3 stopLine)
         {
             GameObject vehicle = Make(vehicleName, PrimitiveType.Cube, position,
                 new Vector3(4.2f,1.25f,1.9f), color);
             Rigidbody body = vehicle.AddComponent<Rigidbody>();
             body.mass = 1150f;
             CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
-            agent.Configure(route, reporter, speed);
+            agent.Configure(route, reporter, speed, signals, eastWest, stopLine);
         }
 
         private Transform CreateWaypoint(string waypointName, Vector3 position)
