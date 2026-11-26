@@ -194,3 +194,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - If no safe candidate is found, the player remains in the vehicle; the controller does not force an unsafe exit.
 - This has only been checked at source level. Unity compilation, Play Mode physics behavior, and iPhone testing remain outstanding.
 - Next source milestone: connect the player focus/interaction path to nearby civilians, then build the first traffic-stop encounter. Do not expand to another county before the Ocala gameplay loop is coherent.
+
+
+## Civilian focus and mobile interaction update (2026-11-26)
+
+- Added player-centered civilian focus in `CountyPlayerRuntimeController`: nearest civilian collider within 5.5 m becomes the active contact; focus clears while driving.
+- Added touch HUD actions: greet, questions, request ID, warning, citation, detain, arrest, and release.
+- `OfficerInteractionController` now receives the player's `CountyDutyState`; ID and enforcement actions require on-duty status. Greeting and questions remain available off duty.
+- Added a downtown contact civilian near the initial spawn so the loop can be exercised immediately in the first county greybox.
+- Source changes are committed to `main`; no Unity compile, Play Mode, iPhone input, or runtime tests have been run.
+- Next: build a traffic-stop encounter from an actual traffic vehicle, including safe pull-over, driver contact, document check, warning/citation decision, and report linkage.
