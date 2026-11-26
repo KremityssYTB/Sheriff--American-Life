@@ -65,15 +65,15 @@ namespace SheriffAmericanLife
 
             if (blockedByRightSideArrival)
             {
-                // Detect a true circular right-side-yield cycle. Do not mistake a
-                // left-turn conflict for a deadlock that can be overridden.
-                bool everyArrivalHasRightSideBlocker = true;
+                // Detect a genuine priority deadlock. The fallback never selects a
+                // vehicle with an earlier-arrival or oncoming left-turn conflict.
+                bool everyArrivalHasPriorityConflict = true;
                 int fallbackWinnerId = 0;
                 int fallbackWinnerApproach = int.MaxValue;
 
                 foreach (Arrival candidate in waiting.Values)
                 {
-                    bool candidateHasRightSideBlocker = false;
+                    bool candidateHasPriorityConflict = false;
                     bool candidateHasEarlierArrival = false;
                     bool candidateHasOncomingConflict = false;
 
@@ -85,14 +85,17 @@ namespace SheriffAmericanLife
                         if (CountyIntersectionRules.MustYieldAtFourWayStop(candidate.approach,
                             candidate.stoppedAt, other.approach, other.stoppedAt,
                             simultaneousArrivalTolerance))
-                            candidateHasRightSideBlocker = true;
+                            candidateHasPriorityConflict = true;
                         if (CountyIntersectionRules.MustYieldForOncomingTraffic(candidate.approach,
                             candidate.movement, other.approach, other.movement))
+                        {
                             candidateHasOncomingConflict = true;
+                            candidateHasPriorityConflict = true;
+                        }
                     }
 
-                    if (!candidateHasRightSideBlocker)
-                        everyArrivalHasRightSideBlocker = false;
+                    if (!candidateHasPriorityConflict && !candidateHasEarlierArrival)
+                        everyArrivalHasPriorityConflict = false;
 
                     if (!candidateHasEarlierArrival && !candidateHasOncomingConflict &&
                         (int)candidate.approach < fallbackWinnerApproach)
@@ -108,7 +111,7 @@ namespace SheriffAmericanLife
                     }
                 }
 
-                if (!everyArrivalHasRightSideBlocker || fallbackWinnerId == 0 ||
+                if (!everyArrivalHasPriorityConflict || fallbackWinnerId == 0 ||
                     fallbackWinnerId != vehicleId)
                     return false;
             }
