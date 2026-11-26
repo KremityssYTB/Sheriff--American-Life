@@ -2,54 +2,52 @@
 
 Last reviewed: 2026-11-26
 
-## Findings from the current main branch
+## Current integration status
 
-The repository already contains early player and mobile-control components, but they are split between an older greybox implementation and newer folder-organized components.
+The runtime county bootstrap now spawns a first mobile-oriented player/vehicle source prototype through `CountyPlayerRuntimeController`.
 
-| Area | Existing source | Current limitation |
+| Area | Source | Status and limits |
 |---|---|---|
-| On-foot movement | `Assets/Scripts/Player/ThirdPersonWalker.cs` | Has camera-relative movement, sprint, and a public movement-input API; not yet wired by `CountyWorldBootstrap` |
-| Vehicle movement | `Assets/Scripts/Vehicle/PatrolVehicleController.cs` | Has public throttle/steering methods; no enter/exit ownership or player handoff |
-| Camera modes | `Assets/Scripts/Systems/CameraModeController.cs` | Supports first/third-person anchor transforms and mode selection; not wired into the current bootstrap |
-| Touch bridge | `Assets/Scripts/UI/MobileControls.cs` | Exposes movement, sprint, driving, camera, and test-dispatch methods; no generated touch HUD or bootstrap wiring yet |
-| Civilian interaction | `Assets/Scripts/Systems/OfficerInteractionController.cs` | Supports focused-civilian actions and reports; not yet connected to a player focus/interaction loop |
-| Current bootstrap | `Assets/Scripts/CountyWorldBootstrap.cs` | Still creates the older keyboard-only greybox player, camera, dispatch placeholder, and patrol vehicle |
+| Player spawn | `Assets/Scripts/Player/CountyPlayerRuntimeController.cs` | Spawns one deputy capsule in the Ocala greybox |
+| On-foot movement | `Assets/Scripts/Player/ThirdPersonWalker.cs` | Camera-relative movement and sprint; runtime input is routed by the new controller |
+| Touch controls | `CountyPlayerRuntimeController.OnGUI` | Temporary IMGUI directional and sprint buttons; not a polished joystick and not device-tested |
+| Patrol vehicle | `Assets/Scripts/Vehicle/PatrolVehicleController.cs` | Transform-based throttle/steering; not Rigidbody vehicle physics |
+| Enter/exit | `CountyPlayerRuntimeController.ToggleVehicle` | Distance-gated enter, hides player, disables on-foot controller, routes drive input, exits beside SUV; no exit obstruction test |
+| Camera | `Assets/Scripts/Systems/CameraModeController.cs` | Runtime-configured first/third-person anchors; no collision avoidance |
+| Duty state | `Assets/Scripts/Systems/CountyDutyState.cs` | Session state/event and HUD toggle; not yet connected to dispatch/equipment gating |
+| Existing civilian actions | `Assets/Scripts/Systems/OfficerInteractionController.cs` | Exists, but player focus/raycast and interaction HUD are not connected |
+| Bootstrap | `Assets/Scripts/World/CountyWorldBootstrap.cs` | Adds the player runtime controller after county, incident, traffic, and civilian setup |
 
-## Compile hygiene correction
+## Recent source integration
 
-Four root-level scripts and their newer folder-organized counterparts declared identical class names in the same `SheriffAmericanLife` namespace:
+- Added `CountyPlayerRuntimeController` and called it from the runtime Ocala bootstrap.
+- Added `CountyDutyState` with `IsOnDuty`, `SetDuty`, `ToggleDuty`, and `OnDutyChanged`.
+- Added public camera configuration to the camera-mode controller.
+- Added camera assignment and movement enable/disable methods to the walker.
+- Added vehicle control enable/disable and immediate-stop methods to the patrol vehicle controller.
+- The older root-level keyboard controllers remain isolated under `SheriffAmericanLife.Legacy`.
 
-- `CameraModeController`
-- `DispatchCallSystem`
-- `PatrolVehicleController`
-- `ThirdPersonWalker`
+## Integration gaps and next tasks
 
-That creates duplicate type declarations in a normal Unity assembly. The root-level versions have now been moved into `SheriffAmericanLife.Legacy`. The existing bootstrap explicitly references those legacy types so its old greybox behavior remains isolated. The newer implementations retain the primary `SheriffAmericanLife` type names in their organized folders.
+1. Compile and run in Unity; resolve all C# and scene/bootstrap errors.
+2. Verify IMGUI touch controls on an iPhone; replace with a proper joystick and hold-based touch buttons if unreliable.
+3. Improve driving physics, collision handling, vehicle entry/exit animation, and safe exit-position checks.
+4. Subscribe dispatch, MDT, uniforms/equipment, and duty-only interactions to `CountyDutyState.OnDutyChanged`.
+5. Add player-centered civilian focus/raycast and connect `OfficerInteractionController`.
+6. Implement traffic stop interaction, suspect AI response, detain/cuff/search/arrest, and prisoner transport.
+7. Add one usable store/gas station and one home/interior for off-duty gameplay.
 
-This is a source-level namespace correction, not proof that the project compiles. Other duplicate types or unrelated compile errors may still exist.
+## Acceptance checks
 
-## Integration order
-
-1. Replace the bootstrap's legacy player with `Player.ThirdPersonWalker` and provide a CharacterController without leaving the primitive capsule collider active.
-2. Bind camera-relative movement to a generated, touch-friendly virtual joystick and sprint control; connect camera anchors and a first/third-person toggle.
-3. Add a player vehicle interaction component that finds a compatible nearby patrol vehicle, enters only when within a safe interaction distance, disables on-foot movement while driving, transfers camera focus, and exits at a safe side/rear offset.
-4. Route mobile throttle and steering only to the currently occupied vehicle. Ensure input is cleared on enter, exit, disable, and loss of focus.
-5. Add an explicit duty-state service. Going off duty must not delete the player's character or disable ordinary movement, driving, stores, or home interactions; it should gate only duty-specific dispatch/equipment/actions.
-6. Connect civilian focus and interaction to the same player interaction system.
-7. Build the first traffic-stop interaction loop, then one usable store and one home interior.
-
-## Acceptance checks for the first player slice
-
-- Player spawns once and has one movement controller.
-- No duplicate class declarations remain in the shared gameplay namespace.
-- Touch movement and sprint work without a physical keyboard.
-- First/third-person toggle moves between valid camera anchors without camera clipping through the player.
+- One player and one player camera spawn in the Ocala bootstrap.
+- On-foot movement, sprint, and camera toggle respond to touch.
 - Player can approach, enter, drive, stop, and exit the patrol SUV.
-- On-foot input cannot move the player while seated/driving; vehicle input cannot continue after exit.
-- Duty state visibly changes between ON DUTY and OFF DUTY and gates only duty-only actions.
-- Mobile input remains responsive at iPhone portrait/landscape safe areas.
-- No claim of success until Unity compilation and Play Mode checks have actually been run.
+- On-foot controls cannot move the player while seated; vehicle controls stop on exit.
+- Duty toggle changes state and raises the duty-state event.
+- Off-duty state leaves ordinary movement and driving available.
+- No camera clipping or unsafe vehicle exit placement.
+- No errors or warnings that prevent Play Mode.
 
 ## Verification limits
 
-The audit inspected GitHub source and directory contents. It did not run Unity, compile C#, inspect a live scene in the Editor, or test on an iPhone. The current bootstrap still uses the legacy keyboard-only player and vehicle path. The newer mobile-oriented components are not yet integrated into that bootstrap.
+Only GitHub source was inspected and committed. No Unity compilation, Play Mode test, iPhone touch test, physics validation, performance profiling, iOS export, or IPA installation has been performed. The temporary IMGUI controls and all runtime behavior remain unverified. This document is an implementation audit, not a passed test report.
