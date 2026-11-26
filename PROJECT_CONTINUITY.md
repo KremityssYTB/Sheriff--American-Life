@@ -286,3 +286,14 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The MDT BOOKINGS tab now displays awaiting-transport instructions instead of allowing the deputy to bypass the vehicle transport step. Release remains an MDT action after booking.
 - This is a prototype vehicle-to-record custody transfer. The arrested civilian is not physically seated in the SUV, and there is no animated escort, prisoner AI, collision restraint, jail interior navigation, or real justice-system connection.
 - Source inspection only; Unity compilation, scene layout, vehicle handling, persistence round-trip, and iPhone runtime remain untested.
+
+
+## Physical prisoner escort update (2026-11-26)
+
+- `OfficerInteractionController` now emits a successful-arrest event only after a booking record has been created.
+- `CountyPlayerRuntimeController` binds the new arrestee to the matching awaiting-transport booking, disables the civilian's scheduled routine, and follows the deputy on foot.
+- Entering the patrol SUV seats the civilian in a visible passenger position. The passenger collider is disabled while seated to avoid interfering with the prototype vehicle; it is restored when the civilian exits the vehicle.
+- Exiting the SUV returns the civilian to a following position. Completing transport places the civilian at the jail intake staging area and advances only that civilian's matching booking to Booked.
+- The transport HUD now requires the currently escorted civilian and matching booking; older or unrelated pending records cannot be completed through the active escort.
+- Prototype limits: one escorted prisoner at a time; no handcuff animation, escort hand-hold, seatbelt/restraint animation, prisoner AI, rear-seat door interaction, jail interior navigation, or persistence of the live NPC's world position. Booking data remains local and persistent; NPC placement is session-only.
+- Source inspection only. Unity compilation, animation, collider/vehicle interaction, scene layout, save/load, and iPhone runtime remain untested.
