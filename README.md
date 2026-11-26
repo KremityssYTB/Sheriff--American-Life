@@ -33,8 +33,9 @@ See [Core Gameplay Scope](DESIGN/CORE_GAMEPLAY_SCOPE.md) for the complete requir
 - **Florida intersection priority rules and four-way-stop entry controller** with stopped-vehicle registration, arrival-order/right-side priority checks, simultaneous opposing left-turn conflict checks, exclusive intersection reservation with a short simultaneous-arrival arbitration window, and a pedestrian-conflict gate (integrated into the isolated four-way-stop test junction; the original signalized junction remains separate)
 - Ocala first-playable system plan
 - Mobile MDT interface design and controller foundation
+- **First runtime player slice (source prototype):** spawns a deputy and patrol SUV in the Ocala greybox, provides a simple touch-oriented IMGUI control surface for walking/sprinting and driving, first/third-person camera switching, vehicle enter/exit with input handoff, and a session duty-state toggle
 
-The repository contains newer mobile-oriented movement, vehicle, camera, and touch-input components, but they are not yet connected to the runtime greybox bootstrap. The current bootstrap still uses isolated legacy keyboard-only controllers. The four duplicate root-level controller type names have been moved into the `SheriffAmericanLife.Legacy` namespace to prevent collisions with the newer folder-organized classes. See [Player Vertical-Slice Architecture Audit](DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md) for the exact source inventory, integration gaps, and acceptance checks.
+The runtime Ocala bootstrap now adds `CountyPlayerRuntimeController`, which creates the player, patrol SUV, camera anchors, simple touch-oriented controls, enter/exit handoff, and a session-level `CountyDutyState`. The older keyboard-only controllers remain isolated in `SheriffAmericanLife.Legacy`. This is a source integration prototype only: the IMGUI controls, camera, vehicle physics, and duty behavior have not been tested in Unity or on iPhone. Duty state currently changes and reports its state; dispatch/equipment gating is not yet connected. See [Player Vertical-Slice Architecture Audit](DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md) for current status and gaps.
 
 The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. Dispatch automatically creates a call when a gameplay system publishes a world incident. The ambient scenario director now publishes timed sample reports, and civilian 911 call sources expose callable report methods. Ambient incidents now spawn visible greybox scene actors before dispatch publication. They are static placeholders: traffic currently uses eight test vehicles at one greybox signalized intersection and 24 at a separate four-way-stop test junction, including one marked emergency test sedan. The stop-sign junction now includes representative straight, left-turn, and right-turn routes, but three inbound movement lanes per approach (left-turn, through, right-turn), with two vehicles queued longitudinally in each lane; four looping pedestrian actors now exercise the crosswalk triggers; actors wait at the curb while a vehicle occupies the junction, and approaching test vehicles brake before an occupied crosswalk, and rear vehicles reduce speed to maintain a braking- and headway-based gap behind traffic ahead; stop and crosswalk stopping offsets account for the vehicle's front bumper. Stop-line, clearance, and crosswalk reference points are converted through the junction transform. This is source-level behavior and remains uncompiled/untested; the individual STOP signs are placed roadside outside the forward vehicle probe paths. Adaptive signals, steering/lane-change obstacle avoidance, dispatch-to-emergency activation beyond the single OCALA-1 test unit, and vehicle occupant injuries are not implemented. A Florida intersection-priority policy helper, four-way-stop reservation controller, optional traffic-agent integration, and isolated four-approach test junction now exist. The original greybox junction remains signalized; the new stop-sign junction is active as a separate test area. Fire spread/extinguishing, patient treatment, suspect AI, EMS/firefighter AI, and civilian phone UI are also still not implemented. Dispatch calls, reports, and witness statements are session-only. The MDT now includes a runtime-generated Canvas screen with active calls, case details, witness/report tabs, status actions, and a floating open/close button. Dispatch resolution and cancellation now create reports linked to the originating incident, allowing the MDT to show a call's related records.
 
@@ -70,7 +71,7 @@ The 30 × 30 km multi-county world is a long-term target. Development starts wit
 1. Open with Unity Editor 6000.3.25f1 and allow packages to resolve.
 2. Run **SHERIFF → Setup Mobile URP Project**.
 3. Open Assets/Scenes/Main.unity and press Play.
-4. Current keyboard prototype controls are documented in the relevant controller scripts; touch-first HUD work remains in progress.
+4. The current source prototype creates a basic touch-oriented control surface at runtime; verify it in Unity before treating it as usable.
 
 ## iOS build
 
@@ -88,11 +89,12 @@ An unsigned IPA is not directly installable. It must be signed with a compatible
 
 ## Development priorities
 
-1. Integrate the newer mobile player movement, camera, and touch-input components into the runtime bootstrap; remove the old keyboard-only player path.
-2. Implement safe patrol-vehicle enter/exit, player/vehicle input handoff, and camera target switching.
-3. Add persistent on-duty/off-duty state that gates duty-only systems but leaves free-roam, stores, homes, and personal driving available.
-4. Build one complete traffic-stop interaction and lawful suspect/arrest flow.
-5. Add one usable store/gas station and one home/interior to prove civilian off-duty gameplay.
-6. Return to traffic simulation validation and expansion after the player vertical slice is controllable on touch.
+1. Compile and run the new runtime player slice; fix any Unity API, input, collider, or camera issues.
+2. Replace temporary IMGUI controls with a polished touch HUD and add a real joystick/hold controls.
+3. Improve vehicle physics, safe exit placement, collision handling, and camera transitions.
+4. Connect duty state to dispatch, MDT, equipment, and duty-only interactions while preserving off-duty free roam.
+5. Build a focused civilian interaction/traffic-stop encounter and lawful suspect/arrest flow.
+6. Add one usable store/gas station and one home/interior to prove off-duty civilian gameplay.
+7. Return to traffic simulation validation and expansion after the player vertical slice is stable.
 
 All art, audio, and models must be original or properly licensed.
