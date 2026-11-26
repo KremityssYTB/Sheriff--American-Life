@@ -15,7 +15,7 @@ The runtime county bootstrap now spawns a first mobile-oriented player/vehicle s
 | Enter/exit | `CountyPlayerRuntimeController.ToggleVehicle` | Distance-gated enter; exit now searches four nearby positions, checks ground and capsule clearance, and keeps the player seated if all positions are blocked |
 | Camera | `Assets/Scripts/Systems/CameraModeController.cs` | Runtime-configured first/third-person anchors; no collision avoidance |
 | Duty state | `Assets/Scripts/Systems/CountyDutyState.cs` | Session state/event and HUD toggle; not yet connected to dispatch/equipment gating |
-| Existing civilian actions | `Assets/Scripts/Systems/OfficerInteractionController.cs` | Exists, but player focus/raycast and interaction HUD are not connected |
+| Civilian focus/actions | `CountyPlayerRuntimeController` + `OfficerInteractionController` | Player-centered 5.5 m overlap focus, mobile interaction buttons, session report logging; enforcement actions require on-duty state |
 | Bootstrap | `Assets/Scripts/World/CountyWorldBootstrap.cs` | Adds the player runtime controller after county, incident, traffic, and civilian setup |
 
 ## Recent source integration
@@ -33,7 +33,7 @@ The runtime county bootstrap now spawns a first mobile-oriented player/vehicle s
 2. Verify IMGUI touch controls on an iPhone; replace with a proper joystick and hold-based touch buttons if unreliable.
 3. Improve driving physics, collision handling, and vehicle entry/exit animation; safe exit-position checks are now present in source but need runtime validation.
 4. Subscribe dispatch, MDT, uniforms/equipment, and duty-only interactions to `CountyDutyState.OnDutyChanged`.
-5. Add player-centered civilian focus/raycast and connect `OfficerInteractionController`.
+5. Replace the current proximity focus with a proper view/line-of-sight selection system and add dialogue/response depth.
 6. Implement traffic stop interaction, suspect AI response, detain/cuff/search/arrest, and prisoner transport.
 7. Add one usable store/gas station and one home/interior for off-duty gameplay.
 
@@ -59,3 +59,13 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - Each candidate must have ground beneath it and enough capsule clearance for the player.
 - If every candidate is blocked or lacks ground, the player stays seated rather than being placed inside an obstacle.
 - This is a source-level safeguard only. Physics behavior, trigger/layer interactions, and iPhone use have not been tested in Unity.
+
+
+## Civilian interaction source update (2026-11-26)
+
+- The player runtime now searches a 5.5 m sphere around the deputy and focuses the nearest civilian collider.
+- A mobile HUD exposes greet, questions, ID, warning, citation, detain, arrest, and release actions for the focused civilian.
+- Identification and enforcement actions are blocked while off duty; ordinary greeting and questions remain available.
+- A downtown contact resident is spawned near the initial player location so the first interaction can be reached without travelling across the greybox.
+- Interaction actions continue to write to the session-only incident report book.
+- This is source-level integration only. Unity compilation, touch layout, interaction range, and runtime behavior have not been tested.
