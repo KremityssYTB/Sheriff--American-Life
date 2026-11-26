@@ -15,7 +15,7 @@ Ambient incident scenarios now create visible greybox scene actors before their 
 - Assault / disturbance: two person placeholders.
 - Other incident types: a simple scene marker.
 
-Ambient and manually triggered scenarios use the same actor-spawning path. The dispatch report is still published through `WorldIncidentReporter`, so the existing CAD and MDT receive the event.
+All calls through `WorldIncidentReporter` now use the same actor-spawning path, including ambient scenarios, manual scenario triggers, and civilian 911 reports. The actor is spawned before the incident is published to the dispatch event bus, so CAD and the MDT receive the same incident location.
 
 ## Important limitations
 
