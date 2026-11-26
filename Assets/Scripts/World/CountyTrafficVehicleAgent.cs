@@ -43,6 +43,11 @@ namespace SheriffAmericanLife
         private static readonly RaycastHit[] FollowingHits = new RaycastHit[16];
         private bool stopRegistered;
         private bool hasStopReservation;
+        private bool trafficStopRequested;
+        private bool pulledOver;
+        private Vector3 trafficStopPosition;
+        public bool IsPulledOver => pulledOver;
+        public bool HasActiveTrafficStop => trafficStopRequested;
         private float stopDwellStartedAt;
 
         private Rigidbody body;
@@ -95,9 +100,34 @@ namespace SheriffAmericanLife
             stopDwellStartedAt = 0f;
         }
 
+        public bool RequestTrafficStop(Vector3 shoulderPosition)
+        {
+            if (body == null) body = GetComponent<Rigidbody>();
+            if (body == null || trafficStopRequested) return false;
+            trafficStopPosition = shoulderPosition;
+            trafficStopPosition.y = transform.position.y;
+            trafficStopRequested = true;
+            pulledOver = false;
+            body.WakeUp();
+            return true;
+        }
+
+        public void ResumeTraffic()
+        {
+            trafficStopRequested = false;
+            pulledOver = false;
+            if (body != null) body.WakeUp();
+        }
+
         private void FixedUpdate()
         {
-            if (route == null || route.Length == 0 || body == null) return;
+            if (body == null) return;
+            if (trafficStopRequested)
+            {
+                ProcessTrafficStop();
+                return;
+            }
+            if (route == null || route.Length == 0) return;
             Transform target = route[waypointIndex];
             if (target == null) { AdvanceWaypoint(); return; }
 
@@ -190,6 +220,43 @@ namespace SheriffAmericanLife
 
             Vector3 lateral = Vector3.Project(body.velocity, transform.right);
             body.AddForce(-lateral * 1.8f, ForceMode.Acceleration);
+        }
+
+        private void ProcessTrafficStop()
+        {
+            Vector3 offset = trafficStopPosition - transform.position;
+            offset.y = 0f;
+            float distance = offset.magnitude;
+            float currentSpeed = Vector3.Dot(body.velocity, transform.forward);
+
+            if (distance > 0.35f)
+            {
+                Vector3 direction = offset.normalized;
+                Quaternion desiredRotation = Quaternion.LookRotation(direction, Vector3.up);
+                body.MoveRotation(Quaternion.RotateTowards(
+                    body.rotation, desiredRotation, steeringRate * Time.fixedDeltaTime));
+            }
+
+            float desiredSpeed = distance > 1.4f
+                ? Mathf.Min(4.5f, Mathf.Sqrt(2f * braking * Mathf.Max(0f, distance - 1.4f)))
+                : 0f;
+            float speedError = desiredSpeed - currentSpeed;
+
+            if (speedError >= 0f)
+                body.AddForce(transform.forward * Mathf.Min(acceleration, speedError * 2f), ForceMode.Acceleration);
+            else
+                body.AddForce(-transform.forward * Mathf.Min(braking, -speedError * 2f), ForceMode.Acceleration);
+
+            Vector3 lateral = Vector3.Project(body.velocity, transform.right);
+            body.AddForce(-lateral * 2.2f, ForceMode.Acceleration);
+
+            if (distance <= 1.4f && Mathf.Abs(currentSpeed) <= 0.35f)
+            {
+                pulledOver = true;
+                body.velocity = Vector3.zero;
+                body.angularVelocity = Vector3.zero;
+                body.Sleep();
+            }
         }
 
         private float CalculateFollowingSpeedLimit(float currentSpeed)
