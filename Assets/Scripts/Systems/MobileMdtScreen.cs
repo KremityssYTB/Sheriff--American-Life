@@ -91,12 +91,12 @@ namespace SheriffAmericanLife
             callList = list.content;
 
             Transform right = window.transform.Find("Case Panel");
-            MakeButton("DETAILS", right, new Vector2(.015f,.91f), new Vector2(.205f,.99f), () => SetTab("DETAILS"));
-            MakeButton("WITNESSES", right, new Vector2(.21f,.91f), new Vector2(.405f,.99f), () => SetTab("WITNESSES"));
-            MakeButton("REPORTS", right, new Vector2(.41f,.91f), new Vector2(.595f,.99f), () => SetTab("REPORTS"));
-            MakeButton("TICKETS", right, new Vector2(.60f,.91f), new Vector2(.785f,.99f), () => SetTab("TICKETS"));
-            MakeButton("HISTORY", right, new Vector2(.665f,.91f), new Vector2(.82f,.99f), () => SetTab("HISTORY"));
-            MakeButton("BOOKINGS", right, new Vector2(.825f,.91f), new Vector2(.985f,.99f), () => SetTab("BOOKINGS"));
+            MakeButton("DETAILS", right, new Vector2(.015f,.91f), new Vector2(.175f,.99f), () => SetTab("DETAILS"));
+            MakeButton("WITNESSES", right, new Vector2(.18f,.91f), new Vector2(.34f,.99f), () => SetTab("WITNESSES"));
+            MakeButton("REPORTS", right, new Vector2(.345f,.91f), new Vector2(.505f,.99f), () => SetTab("REPORTS"));
+            MakeButton("TICKETS", right, new Vector2(.51f,.91f), new Vector2(.67f,.99f), () => SetTab("TICKETS"));
+            MakeButton("HISTORY", right, new Vector2(.675f,.91f), new Vector2(.83f,.99f), () => SetTab("HISTORY"));
+            MakeButton("BOOKINGS", right, new Vector2(.835f,.91f), new Vector2(.985f,.99f), () => SetTab("BOOKINGS"));
             ScrollArea detail = CreateScrollArea(right, new Vector2(.025f,.16f), new Vector2(.975f,.89f));
             detailsContent = detail.content;
             CreateActionButtons(right);
