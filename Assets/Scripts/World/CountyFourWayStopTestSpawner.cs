@@ -104,23 +104,22 @@ namespace SheriffAmericanLife
             Vector3 stopLane = stop + inboundOffset;
             Make(parent, label + " " + laneName + " Stop Bar", PrimitiveType.Cube,
                 stopLane - center, new Vector3(laneWidth * 0.88f, .025f, .45f),
-                Color.white, Quaternion.LookRotation(side, Vector3.up));
+                Color.white, Quaternion.LookRotation(forward, Vector3.up));
             CreateStopSign(parent, label + " " + laneName + " STOP Sign",
                 stopLane - center - forward * 5f,
                 Quaternion.LookRotation(-forward, Vector3.up));
 
-            Vector3[] routePoints = new Vector3[7];
-            routePoints[0] = stopLane;
-            for (int i = 1; i <= 5; i++)
+            Vector3[] routePoints = new Vector3[6];
+            for (int i = 0; i < 5; i++)
             {
-                float t = i / 5f;
+                float t = (i + 1) / 5f;
                 float u = 1f - t;
                 routePoints[i] = u * u * u * p0 +
                     3f * u * u * t * p1 +
                     3f * u * t * t * p2 +
                     t * t * t * p3;
             }
-            routePoints[6] = exit + exitDirection * 28f + exitOffset;
+            routePoints[5] = exit + exitDirection * 28f + exitOffset;
 
             AddStopVehicle(parent, center, start, stopLane, routePoints,
                 loopA, loopB, side, forward, exitDirection, approach, movement,
