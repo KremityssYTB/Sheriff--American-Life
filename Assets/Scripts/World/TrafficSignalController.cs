@@ -5,7 +5,7 @@ namespace SheriffAmericanLife
     /// <summary>Two-phase signal controller for the prototype four-way intersection.</summary>
     public sealed class TrafficSignalController : MonoBehaviour
     {
-        public enum Phase { EastWestGreen, EastWestAmber, NorthSouthGreen, NorthSouthAmber }
+        public enum Phase { EastWestGreen, EastWestAmber, AllRed, NorthSouthGreen, NorthSouthAmber }
 
         [SerializeField] private float greenSeconds = 16f;
         [SerializeField] private float amberSeconds = 3f;
@@ -15,6 +15,7 @@ namespace SheriffAmericanLife
         private Phase phase;
         private Renderer[] eastWestLamps;
         private Renderer[] northSouthLamps;
+        private bool nextGreenEastWest;
 
         public Phase CurrentPhase => phase;
         public bool CanProceed(bool eastWest) =>
@@ -38,11 +39,15 @@ namespace SheriffAmericanLife
                 case Phase.EastWestGreen:
                     phase = Phase.EastWestAmber; phaseTimer = amberSeconds; break;
                 case Phase.EastWestAmber:
-                    phase = Phase.NorthSouthGreen; phaseTimer = allRedSeconds + greenSeconds; break;
+                    phase = Phase.AllRed; nextGreenEastWest = false; phaseTimer = allRedSeconds; break;
                 case Phase.NorthSouthGreen:
                     phase = Phase.NorthSouthAmber; phaseTimer = amberSeconds; break;
+                case Phase.NorthSouthAmber:
+                    phase = Phase.AllRed; nextGreenEastWest = true; phaseTimer = allRedSeconds; break;
                 default:
-                    phase = Phase.EastWestGreen; phaseTimer = allRedSeconds + greenSeconds; break;
+                    phase = nextGreenEastWest ? Phase.EastWestGreen : Phase.NorthSouthGreen;
+                    phaseTimer = greenSeconds;
+                    break;
             }
             RefreshLights();
         }
