@@ -88,3 +88,13 @@ Only GitHub source was inspected and committed. No Unity compilation, Play Mode 
 - Each check is added to the session incident report book. After all three checks, a document issue permits a warning or citation decision; clear records show no document violation.
 - The stop can then be ended, which resumes the vehicle and turns off the lightbar.
 - These are fictional gameplay records and not connected to real Florida DMV, insurance, or law-enforcement databases. Source-only verification; Unity compilation and gameplay testing remain outstanding.
+
+
+## Driver disposition and traffic-stop dialogue update (2026-11-26)
+
+- Added `TrafficStopDriverBehavior` with four fictional dispositions: cooperative, nervous, argumentative, and fleeing.
+- County traffic spawns receive weighted randomized dispositions: 50% cooperative, 25% nervous, 17% argumentative, and 8% fleeing.
+- Fleeing drivers make a brief 1.8-second forward escape attempt before the existing pull-over steering/braking behavior resumes. This is a bounded prototype, not a pursuit system.
+- Once stopped, the mobile HUD shows the driver's disposition and offers a calm or firm approach. The selected response is written to the session incident report.
+- Ending the stop resets the behavior state. No real-world databases or external services are used.
+- Source inspection only: Unity compilation, vehicle physics, UI layout, and iPhone runtime tests remain outstanding.
