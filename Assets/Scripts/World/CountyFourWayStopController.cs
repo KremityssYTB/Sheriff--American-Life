@@ -119,6 +119,7 @@ namespace SheriffAmericanLife
                         fallbackWinnerId = candidate.vehicleId;
                     }
                     else if (!candidateHasEarlierArrival && !candidateHasOncomingConflict &&
+                        !candidateHasEmergencyConflict &&
                         (int)candidate.approach == fallbackWinnerApproach &&
                         (fallbackWinnerId == 0 || candidate.vehicleId < fallbackWinnerId))
                     {
