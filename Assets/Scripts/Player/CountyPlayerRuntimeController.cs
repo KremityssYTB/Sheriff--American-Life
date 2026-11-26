@@ -16,6 +16,7 @@ namespace SheriffAmericanLife
         private TrafficStopDriverProfile activeDriverProfile;
         private TrafficStopDriverBehavior activeDriverBehavior;
         private IncidentReportBook reportBook;
+        private TrafficCitationBook citationBook;
         private bool trafficStopDecisionRecorded;
         private readonly Collider[] trafficBuffer = new Collider[48];
         private CameraModeController cameraModes;
@@ -41,6 +42,7 @@ namespace SheriffAmericanLife
         {
             dutyState = gameObject.AddComponent<CountyDutyState>();
             reportBook = worldRoot.GetComponent<IncidentReportBook>();
+            citationBook = worldRoot.GetComponent<TrafficCitationBook>();
             interactions = worldRoot.GetComponent<OfficerInteractionController>();
             if (interactions != null) interactions.ConfigureDutyState(dutyState);
             player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -359,6 +361,18 @@ namespace SheriffAmericanLife
                 ? "Citation issued after document discrepancy review."
                 : "Verbal warning issued; driver advised to correct document issue.";
             RecordTrafficStopAction(action, outcome);
+            if (issueCitation && citationBook != null)
+            {
+                Vector3 stopPosition = activeTrafficStop.transform.position;
+                string location = "Marion County road, grid X " + stopPosition.x.ToString("0") +
+                    " / Z " + stopPosition.z.ToString("0");
+                TrafficCitation citation = citationBook.Issue(activeDriverProfile, location, "OCALA-1");
+                if (citation != null)
+                {
+                    RecordTrafficStopAction("Citation " + citation.citationNumber,
+                        "Citation created for $" + citation.fineAmount + ". " + citation.violations);
+                }
+            }
             trafficStopDecisionRecorded = true;
         }
 
