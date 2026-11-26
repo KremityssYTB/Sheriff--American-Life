@@ -135,7 +135,10 @@ namespace SheriffAmericanLife
                     Stop(16, 30, parkB, "Visiting the park"),
                     Stop(18, 0, homeB, "At home")
                 });
-            interactionController.SetFocusedCivilian(firstResident);
+            // A nearby resident makes the first civilian-contact loop reachable immediately.
+            CreateCivilian("Resident - Downtown Contact", new Vector3(-10f, 1f, -23f),
+                new Color(.35f, .58f, .42f), clock, statements, reporter,
+                new CivilianRoutineAgent.RoutineStop[0]);
         }
 
 
