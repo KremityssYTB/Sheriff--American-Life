@@ -111,10 +111,12 @@ namespace SheriffAmericanLife
             GameObject zone = new GameObject(label + " Pedestrian Crosswalk Trigger");
             zone.transform.SetParent(parent, false);
             zone.transform.localPosition = position - center + Vector3.up * 0.9f;
+            Vector3 side = Vector3.Cross(Vector3.up, approachForward).normalized;
+            zone.transform.localRotation = Quaternion.LookRotation(side, Vector3.up);
             CountyPedestrianCrossingSensor sensor = zone.AddComponent<CountyPedestrianCrossingSensor>();
             sensor.Configure(controller, new Vector3(roadWidth * 0.82f, 1.8f, 3.2f));
 
-            Vector3 side = Vector3.Cross(Vector3.up, approachForward).normalized;
+            SpawnPedestrian(parent, position, side, label);
             for (int i = -3; i <= 3; i++)
             {
                 Vector3 stripePosition = position - center + approachForward * (i * 0.45f) + Vector3.up * 0.035f;
@@ -122,6 +124,29 @@ namespace SheriffAmericanLife
                     stripePosition, new Vector3(0.72f, 0.035f, 2.6f), Color.white,
                     Quaternion.LookRotation(side, Vector3.up));
             }
+        }
+
+        private void SpawnPedestrian(Transform parent, Vector3 crossingCenter, Vector3 crossingDirection, string label)
+        {
+            Vector3 start = crossingCenter - crossingDirection * 10f + Vector3.up * 0.9f;
+            Vector3 finish = crossingCenter + crossingDirection * 10f + Vector3.up * 0.9f;
+            GameObject actor = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            actor.name = label + " Crosswalk Pedestrian Test Actor";
+            actor.transform.SetParent(parent, false);
+            actor.transform.position = start;
+            actor.transform.localScale = new Vector3(0.48f, 0.9f, 0.48f);
+            Renderer renderer = actor.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                Material material = new Material(shader);
+                material.color = new Color(0.78f, 0.62f, 0.42f);
+                renderer.sharedMaterial = material;
+            }
+            actor.AddComponent<Rigidbody>().isKinematic = true;
+            CountyPedestrianCrossingAgent agent = actor.AddComponent<CountyPedestrianCrossingAgent>();
+            agent.Configure(start, finish, 1.2f);
         }
 
         private void CreateStopSign(Transform parent, string signName, Vector3 localPosition,
