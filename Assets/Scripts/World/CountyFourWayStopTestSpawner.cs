@@ -59,7 +59,8 @@ namespace SheriffAmericanLife
 
             Make(parent, label + " Stop Bar", PrimitiveType.Cube,
                 stop - center, new Vector3(roadWidth * .72f, .025f, .45f),
-                Color.white, Quaternion.LookRotation(side, Vector3.up));
+                Color.white, (approach == CountyIntersectionRules.Approach.East || approach == CountyIntersectionRules.Approach.West)
+                    ? Quaternion.Euler(0f, 90f, 0f) : Quaternion.identity);
             CreateStopSign(parent, label + " STOP Sign", stop - center - forward * 5f,
                 Quaternion.LookRotation(-forward, Vector3.up));
 
@@ -100,7 +101,7 @@ namespace SheriffAmericanLife
             text.alignment = TextAlignment.Center;
             text.color = Color.white;
             text.transform.SetParent(plate.transform, false);
-            text.transform.localPosition = new Vector3(0f, 0f, -.08f);
+            text.transform.localPosition = new Vector3(0f, 0f, .08f);
             text.transform.localRotation = Quaternion.identity;
         }
 
