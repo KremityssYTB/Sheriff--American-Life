@@ -22,6 +22,7 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 | Static obstacle response | Place a raised static obstacle in a vehicle's lane | Vehicle reduces speed and stops with the configured clearance; it must not treat the road surface as an obstacle |
 | Non-blocking ground geometry | Place a low ground-level collider near the lane | Vehicle ignores low ground geometry and continues |
 | Emergency priority | North through-lane lead sedan (marked with static red/blue lightbar) and ordinary vehicles arrive at the stop | Emergency vehicle receives priority after its stop dwell; ordinary traffic waits |
+| Emergency lightbar | Observe the marked North through-lane lead sedan | Red and blue roof blocks alternate at the configured flash rate without adding realtime Light components |
 | Emergency safety gate | Keep another vehicle in the junction or a pedestrian in the crosswalk | Emergency vehicle cannot pre-empt an occupant or bypass pedestrian occupancy |
 | Following-distance response | Lead vehicle slows or stops before the junction | Rear vehicle reduces speed using headway and braking limits without contacting the lead vehicle |
 | Full-stop dwell | Vehicle reaches the stop line and remains below the stopped-speed threshold | Reservation is not requested until 1.25 seconds of continuous stopped time has elapsed |
@@ -48,7 +49,7 @@ This is the manual validation checklist for the isolated Ocala greybox junction.
 - The current runtime spawner creates representative traffic, not deterministic arrival-time scenarios.
 - The controller's arbitration delay, 1.25-second stop dwell, and priority logic are source-level only.
 - The vehicle/obstacle probe is a simple sphere-cast prototype; it has not been tuned against Unity collider layouts or dense traffic.
-- Emergency priority is source-level only; one marked emergency test sedan is spawned with a static lightbar; flashing, siren/audio, and dispatch-to-agent activation are not implemented.
+- Emergency priority is source-level only; one marked emergency test sedan is spawned with an alternating renderer-only red/blue lightbar; siren/audio and dispatch-to-agent activation are not implemented.
 - The lane-specific test junction now uses a 22 m road width, three 3.4 m inbound movement lanes per approach, cubic Bezier turn paths, and two queued vehicles per lane (24 total). Route geometry and outbound lane alignment remain unverified in Unity.
 - No compilation, Play Mode, physics, or iPhone runtime test has been run.
 - A deterministic deadlock fallback is a prototype continuity safeguard, not a statement of Florida statutory right-of-way.
