@@ -14,6 +14,7 @@ namespace SheriffAmericanLife
         public string outcome;
         public string narrative;
         public string recordedAt;
+        public string relatedIncidentId;
     }
 
     /// <summary>Session-only incident log. Persistent save storage will be added later.</summary>
@@ -23,7 +24,7 @@ namespace SheriffAmericanLife
         public IReadOnlyList<IncidentReport> Reports => reports;
         public event Action<IncidentReport> ReportAdded;
 
-        public IncidentReport AddReport(string category, string subject, string action, string outcome, string narrative)
+        public IncidentReport AddReport(string category, string subject, string action, string outcome, string narrative, string relatedIncidentId = null)
         {
             var report = new IncidentReport {
                 incidentNumber = "OC-" + (reports.Count + 1).ToString("0000"),
@@ -32,7 +33,8 @@ namespace SheriffAmericanLife
                 actionTaken = action,
                 outcome = outcome,
                 narrative = narrative,
-                recordedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                recordedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                relatedIncidentId = relatedIncidentId
             };
             reports.Add(report);
             ReportAdded?.Invoke(report);
