@@ -34,6 +34,8 @@ See [Core Gameplay Scope](DESIGN/CORE_GAMEPLAY_SCOPE.md) for the complete requir
 - Ocala first-playable system plan
 - Mobile MDT interface design and controller foundation
 
+The repository contains newer mobile-oriented movement, vehicle, camera, and touch-input components, but they are not yet connected to the runtime greybox bootstrap. The current bootstrap still uses isolated legacy keyboard-only controllers. The four duplicate root-level controller type names have been moved into the `SheriffAmericanLife.Legacy` namespace to prevent collisions with the newer folder-organized classes. See [Player Vertical-Slice Architecture Audit](DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md) for the exact source inventory, integration gaps, and acceptance checks.
+
 The current world blockout is still placeholder geometry. It is not yet an accurate Ocala map, and the clock, civilian, and witness scripts have not yet been profiled on an iPhone. Civilian routines currently use direct waypoint movement. Witness detection is a simple distance/field-of-view prototype: sound obstruction, visual line-of-sight, memory decay, interviews, and persistent records remain future work. Dispatch automatically creates a call when a gameplay system publishes a world incident. The ambient scenario director now publishes timed sample reports, and civilian 911 call sources expose callable report methods. Ambient incidents now spawn visible greybox scene actors before dispatch publication. They are static placeholders: traffic currently uses eight test vehicles at one greybox signalized intersection and 24 at a separate four-way-stop test junction, including one marked emergency test sedan. The stop-sign junction now includes representative straight, left-turn, and right-turn routes, but three inbound movement lanes per approach (left-turn, through, right-turn), with two vehicles queued longitudinally in each lane; four looping pedestrian actors now exercise the crosswalk triggers; actors wait at the curb while a vehicle occupies the junction, and approaching test vehicles brake before an occupied crosswalk, and rear vehicles reduce speed to maintain a braking- and headway-based gap behind traffic ahead; stop and crosswalk stopping offsets account for the vehicle's front bumper. Stop-line, clearance, and crosswalk reference points are converted through the junction transform. This is source-level behavior and remains uncompiled/untested; the individual STOP signs are placed roadside outside the forward vehicle probe paths. Adaptive signals, steering/lane-change obstacle avoidance, dispatch-to-emergency activation beyond the single OCALA-1 test unit, and vehicle occupant injuries are not implemented. A Florida intersection-priority policy helper, four-way-stop reservation controller, optional traffic-agent integration, and isolated four-approach test junction now exist. The original greybox junction remains signalized; the new stop-sign junction is active as a separate test area. Fire spread/extinguishing, patient treatment, suspect AI, EMS/firefighter AI, and civilian phone UI are also still not implemented. Dispatch calls, reports, and witness statements are session-only. The MDT now includes a runtime-generated Canvas screen with active calls, case details, witness/report tabs, status actions, and a floating open/close button. Dispatch resolution and cancellation now create reports linked to the originating incident, allowing the MDT to show a call's related records.
 
 ## World direction
@@ -55,8 +57,10 @@ The 30 × 30 km multi-county world is a long-term target. Development starts wit
 
 - [Project continuity handoff](PROJECT_CONTINUITY.md) — current implemented systems, recent commits, verification limits, and next development steps for resuming work across conversations.
 
-## Traffic prototype documentation
+## Design and validation documents
 
+- [Core Gameplay Scope](DESIGN/CORE_GAMEPLAY_SCOPE.md)
+- [Player Vertical-Slice Architecture Audit](DESIGN/PLAYER_VERTICAL_SLICE_AUDIT.md)
 - [Four-way-stop controller](DESIGN/FOUR_WAY_STOP_CONTROLLER.md)
 - [Four-way-stop manual validation matrix](DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md)
 - [Traffic queue and following-distance prototype](DESIGN/TRAFFIC_QUEUE_AND_FOLLOWING.md)
@@ -84,11 +88,11 @@ An unsigned IPA is not directly installable. It must be signed with a compatible
 
 ## Development priorities
 
-1. Accurate Ocala district blockout and roads
-2. Run the manual cases in DESIGN/FOUR_WAY_STOP_TEST_MATRIX.md in Unity, validate crosswalk and simultaneous-arrival behavior, validate longitudinal queue spacing and following behavior, verify the full-stop dwell and rolled-stop reset, expand the stop-junction route matrix, validate the new three-lane turn geometry and 24-vehicle traffic behavior, then validate static-obstacle braking, emergency priority, and OCALA-1 MDT activation/siren/lightbar transitions, then implement safe obstacle steering and lane changes; add suspect/pedestrian AI, patient treatment, fire response, and civilian 911 phone UI
-3. Connect dispatch resolution to reports, evidence, and legal grounds
-4. Build the rendered mobile radio/MDT screen from `DESIGN/MOBILE_MDT_INTERFACE.md`
-5. Mobile controls, animation, audio, and performance profiling
-6. Expand county-by-county
+1. Integrate the newer mobile player movement, camera, and touch-input components into the runtime bootstrap; remove the old keyboard-only player path.
+2. Implement safe patrol-vehicle enter/exit, player/vehicle input handoff, and camera target switching.
+3. Add persistent on-duty/off-duty state that gates duty-only systems but leaves free-roam, stores, homes, and personal driving available.
+4. Build one complete traffic-stop interaction and lawful suspect/arrest flow.
+5. Add one usable store/gas station and one home/interior to prove civilian off-duty gameplay.
+6. Return to traffic simulation validation and expansion after the player vertical slice is controllable on touch.
 
 All art, audio, and models must be original or properly licensed.
