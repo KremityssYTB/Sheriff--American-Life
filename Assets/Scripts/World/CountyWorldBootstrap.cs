@@ -9,6 +9,7 @@ namespace SheriffAmericanLife
         private Transform root;
         private IncidentReportBook reportBook;
         private OfficerInteractionController interactionController;
+        private WitnessStatementBook witnessStatementBook;
 
         private void Start() { if (generateOnStart) GenerateWorld(); }
 
@@ -44,12 +45,15 @@ namespace SheriffAmericanLife
             var clock = root.gameObject.AddComponent<WorldClockSystem>();
             clock.SetSun(sun);
             reportBook = root.gameObject.AddComponent<IncidentReportBook>();
+            witnessStatementBook = root.gameObject.AddComponent<WitnessStatementBook>();
+            var incidentReporter = root.gameObject.AddComponent<WorldIncidentReporter>();
+            incidentReporter.Configure(clock);
             interactionController = root.gameObject.AddComponent<OfficerInteractionController>();
             interactionController.Configure(reportBook);
-            SpawnTestCivilians(clock);
+            SpawnTestCivilians(clock, witnessStatementBook);
         }
 
-        private void SpawnTestCivilians(WorldClockSystem clock)
+        private void SpawnTestCivilians(WorldClockSystem clock, WitnessStatementBook statements)
         {
             Transform homeA = CreateWaypoint("Civilian A Home", new Vector3(-28, 0, -112));
             Transform workA = CreateWaypoint("Civilian A Work", new Vector3(18, 0, -72));
@@ -58,13 +62,13 @@ namespace SheriffAmericanLife
             Transform workB = CreateWaypoint("Civilian B Work", new Vector3(-22, 0, -72));
             Transform parkB = CreateWaypoint("Civilian B Park", new Vector3(20, 0, -170));
 
-            CivilianCharacter firstResident = CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock,
+            CivilianCharacter firstResident = CreateCivilian("Resident - Worker", new Vector3(-28, 1, -112), new Color(.22f,.42f,.72f), clock, statements,
                 new CivilianRoutineAgent.RoutineStop[] {
                     Stop(7, 0, workA, "Commuting to work"),
                     Stop(17, 0, shopA, "Shopping after work"),
                     Stop(18, 0, homeA, "At home")
                 });
-            CreateCivilian("Resident - Local", new Vector3(72, 1, -30), new Color(.72f,.48f,.25f), clock,
+            CreateCivilian("Resident - Local", new Vector3(72, 1, -30), new Color(.72f,.48f,.25f), clock, statements,
                 new CivilianRoutineAgent.RoutineStop[] {
                     Stop(8, 0, workB, "Heading to work"),
                     Stop(16, 30, parkB, "Visiting the park"),
@@ -82,11 +86,13 @@ namespace SheriffAmericanLife
         }
 
         private CivilianCharacter CreateCivilian(string civilianName, Vector3 position, Color color, WorldClockSystem clock,
-            CivilianRoutineAgent.RoutineStop[] schedule)
+            WitnessStatementBook statements, CivilianRoutineAgent.RoutineStop[] schedule)
         {
             GameObject civilian = Make(civilianName, PrimitiveType.Capsule, position, new Vector3(.8f, 1f, .8f), color);
             civilian.AddComponent<CivilianRoutineAgent>().Configure(clock, schedule);
-            return civilian.AddComponent<CivilianCharacter>();
+            CivilianCharacter character = civilian.AddComponent<CivilianCharacter>();
+            civilian.AddComponent<CivilianWitnessAgent>().Configure(statements);
+            return character;
         }
 
         private CivilianRoutineAgent.RoutineStop Stop(int hour, int minute, Transform destination, string activity)
