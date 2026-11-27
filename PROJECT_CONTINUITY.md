@@ -325,3 +325,9 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Next: replace procedural car parts with original/licensed production meshes and PBR textures; add interior geometry and wheel animation only after basic runtime validation.
 
 - Follow-up commit `9096c0ba0be33664d7a94ed7a5e62223348050d8` adds first-pass patrol SUV cabin geometry: dashboard, instrument hood, center display/console, shifter, steering column/wheel, front seats/headrests, rear seating, and footwells. These details have not been inspected in Unity; verify visibility through the glazing and check for intersections before further refinement.
+
+
+## Lighting and weather refinement (2026-11-27)
+
+- Commit `a00aa680236aa8319cefc6372bc84b6b7c8deba8` updates `WorldClockSystem`: active sun is assigned to `RenderSettings.sun`, soft shadows and bias/strength are configured, and weather fog now uses Exponential Squared mode with color-tinted, lower-density haze for Fog/Rain.
+- No Unity compile or visual/performance validation has been performed. Soft shadows may be expensive on older supported devices and will need quality-tier tuning after profiling.
