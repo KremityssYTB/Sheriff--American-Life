@@ -416,3 +416,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `ab82099a87ce8d7ec43eedc9de0ffdbbc239ca73` adds Performance, Balanced, and High graphics preset buttons to the in-game Settings panel. The buttons call `MobilePerformanceBootstrap.SetPreset`; quality and frame-rate preferences remain separate.
 - Commit `0a6ae549ca8e558e5997bf0a4dbfc3d00ed79911` makes Settings modal while open (so gameplay controls are not processed behind it) and scales the panel against short screen heights.
 - Current settings UI is still IMGUI prototype code. Static source checks only; no Unity compile, layout inspection, touch test, or device profiling has been completed.
+
+
+## Input-release safety pass (2026-11-27)
+
+- Commit `8db4deeef0bae5415071440f80f5a1854d4077e7` clears walking, sprint, throttle, and steering inputs while the Settings modal is open. This prevents a held sprint/gas input from remaining active behind the modal.
+- The same change adds `OnDisable` cleanup to release movement and vehicle inputs when the player runtime controller is disabled.
+- Static source checks only; Unity compilation and actual touch-input behavior remain unverified.
