@@ -381,3 +381,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `47709ae53f7f7fba29783bf8444dc02f859af2bb` changes procedural civilian vehicles to share paint/glass/tire/trim/alloy/lamp materials and use per-renderer material property blocks for unique paint colors. Commit `57123039542119eacf1f3733d6e2e3a2e6f19c56` releases the shared traffic materials when the county world is regenerated; commit `626b19cc1d99156bf438646a34a210bcb7bb93a2` releases them when the county bootstrap is destroyed. Commit `3b4e1772806b9684dd57d0d14d7205449f51b76b` adds teardown cleanup for procedural patrol SUV materials. These changes reduce duplicate material allocations; no frame-time or memory measurement exists yet.
 
 - Follow-up commit `1abd53e77c9d2ffc44cfabb38c1cd21d9f88a08b` makes the runtime bootstrap apply shadow distance/cascade values directly to the active `UniversalRenderPipelineAsset` (with QualitySettings fallback), so the runtime shadow budget is not dependent on built-in-pipeline settings.
+
+
+## Production vehicle art pipeline (2026-11-27)
+
+- Commit `fd284e4149c577c146bba7ebeb943bc18d7e6cc5` adds `Assets/Editor/VehiclePrefabValidator.cs`, an editor-only menu validator for all `VehicleModelCatalog` assets and a selected vehicle prefab. It reports missing prefabs as warnings (procedural fallback is intentional), and checks renderer presence, missing mesh/material references, LODGroup presence, renderer/material-slot budgets, root scale, and recommended wheel/light/interior anchors.
+- Adds `DESIGN/VEHICLE_VISUAL_ASSET_STANDARD.md` defining legal asset provenance, prefab axes/hierarchy, wheel and optional light/interior anchors, LOD expectations, mobile budgets, and integration steps. Vehicle art must be original or properly licensed for commercial use and redistribution.
+- The validator is source-only and has not been run in Unity. It does not validate license rights, visual quality, model dimensions, UVs, wheel placement, or actual mobile performance. No real vehicle model has been added; the catalog still falls back to procedural visuals until a valid prefab is assigned.
