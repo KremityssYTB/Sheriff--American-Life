@@ -155,9 +155,6 @@ namespace SheriffAmericanLife
             if (GUI.Button(new Rect(Screen.width-112*s,pad+150*s,100*s,42*s), "SETTINGS", buttonStyle))
                 settingsOpen = !settingsOpen;
 
-            if (settingsOpen)
-                DrawSettingsPanel(s);
-
             DrawCivilianInteractionHud(s, pad);
             DrawTrafficStopHud(s, pad);
             DrawPrisonerTransportHud(s, pad);
@@ -184,6 +181,9 @@ namespace SheriffAmericanLife
                 else if (GUI.RepeatButton(new Rect(Screen.width-w-pad,Screen.height-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
                 else throttle = 0;
             }
+
+            if (settingsOpen)
+                DrawSettingsPanel(s);
         }
 
         private void DrawSettingsPanel(float scale)
