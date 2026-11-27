@@ -89,7 +89,6 @@ namespace SheriffAmericanLife
             int msaaSamples;
             float renderScale;
             bool hdr;
-            int frameRate;
 
             switch (preset)
             {
@@ -100,7 +99,6 @@ namespace SheriffAmericanLife
                     msaaSamples = 2;
                     renderScale = 0.85f;
                     hdr = false;
-                    frameRate = 30;
                     break;
 
                 case MobileVisualQualityPreset.High:
@@ -110,7 +108,6 @@ namespace SheriffAmericanLife
                     msaaSamples = 4;
                     renderScale = 1f;
                     hdr = true;
-                    frameRate = 60;
                     break;
 
                 default:
@@ -125,7 +122,6 @@ namespace SheriffAmericanLife
                     break;
             }
 
-            Application.targetFrameRate = frameRate;
             QualitySettings.lodBias = lodBias;
             QualitySettings.shadowDistance = shadowDistance;
             QualitySettings.shadowCascades = shadowCascades;
