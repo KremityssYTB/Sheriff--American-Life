@@ -4,6 +4,14 @@ using UnityEngine.Rendering.Universal;
 
 namespace SheriffAmericanLife
 {
+    public enum MobileFrameRateMode
+    {
+        Fps30 = 30,
+        Fps60 = 60,
+        Fps120 = 120,
+        Unlimited = 0
+    }
+
     public enum MobileVisualQualityPreset
     {
         Performance = 0,
@@ -19,11 +27,14 @@ namespace SheriffAmericanLife
     public sealed class MobilePerformanceBootstrap : MonoBehaviour
     {
         private const string QualityPreferenceKey = "Sheriff.MobileVisualQuality";
+        private const string FrameRatePreferenceKey = "Sheriff.MobileFrameRate";
 
         [SerializeField] private MobileVisualQualityPreset defaultPreset = MobileVisualQualityPreset.Balanced;
+        [SerializeField] private MobileFrameRateMode defaultFrameRateMode = MobileFrameRateMode.Fps120;
         [SerializeField, Min(64f)] private float streamingMemoryBudgetMb = 256f;
 
         public MobileVisualQualityPreset CurrentPreset { get; private set; }
+        public MobileFrameRateMode CurrentFrameRateMode { get; private set; }
 
         private void Awake()
         {
@@ -37,6 +48,11 @@ namespace SheriffAmericanLife
                 saved = (int)defaultPreset;
 
             ApplyPreset((MobileVisualQualityPreset)saved, false);
+
+            int savedFrameRate = PlayerPrefs.GetInt(FrameRatePreferenceKey, (int)defaultFrameRateMode);
+            if (!System.Enum.IsDefined(typeof(MobileFrameRateMode), savedFrameRate))
+                savedFrameRate = (int)defaultFrameRateMode;
+            SetFrameRateMode((MobileFrameRateMode)savedFrameRate, false);
         }
 
         /// <summary>
@@ -45,6 +61,22 @@ namespace SheriffAmericanLife
         public void SetPreset(MobileVisualQualityPreset preset)
         {
             ApplyPreset(preset, true);
+        }
+
+        public void SetFrameRateMode(MobileFrameRateMode mode)
+        {
+            SetFrameRateMode(mode, true);
+        }
+
+        private void SetFrameRateMode(MobileFrameRateMode mode, bool save)
+        {
+            CurrentFrameRateMode = mode;
+            Application.targetFrameRate = mode == MobileFrameRateMode.Unlimited ? -1 : (int)mode;
+            if (save)
+            {
+                PlayerPrefs.SetInt(FrameRatePreferenceKey, (int)mode);
+                PlayerPrefs.Save();
+            }
         }
 
         private void ApplyPreset(MobileVisualQualityPreset preset, bool save)
