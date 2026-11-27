@@ -437,3 +437,18 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `7272dee6b3cc7b9ab4cb85a16d2428eac53551f1` adds smoothed unscaled frame-time sampling to `MobilePerformanceBootstrap`, exposing measured FPS and milliseconds per frame without allocating per sample.
 - Commit `1e0939b7f109cb5da2828d1b4a3f0f6c812c9f2c` displays the live FPS/frame-time readout in the Settings panel and expands the panel slightly to fit it.
 - These are runtime diagnostics, not a performance guarantee or a substitute for Unity Profiler CPU/GPU/memory/thermal captures. Metrics have not been verified in a Unity player or on devices.
+
+
+## Three.js browser playtest companion (2026-11-27)
+
+- Replaced the previous 2D web-demo/index.html preview with a standalone Three.js 0.180.0 ES-module scene rendered through WebGL.
+- The preview is designed for mobile Safari on iPhone/iPad and responsive desktop browsers. It uses viewport-fit cover, safe-area insets, pointer/touch controls, adaptive renderer sizing, and a capped device-pixel ratio.
+- The scene includes a schematic Ocala/Marion test district, road grid and lane markings, procedural buildings, trees/palms, civilian traffic, a patrol SUV with red/blue light emitters, a deputy avatar, a third-person follow camera, and camera drag look.
+- Playtest actions include on/off duty, enter/exit patrol SUV, walk/sprint, basic driving/steering, emergency lights, location interaction prompts, dispatch call generation, and clearing a call by reaching its marker.
+- A basic FPS readout is included for rough browser-side observation. It is not a benchmark or substitute for Safari/Web Inspector or Unity Profiler measurements.
+- Three.js is loaded from the jsDelivr CDN; an internet connection is required. WebGL 2 support is required. The preview has not yet been verified in mobile Safari, on iPadOS, or on desktop browsers.
+- The browser project is a separate prototype companion. It does not compile Unity C# into WebGL, share Unity runtime state, produce an IPA, or replace the native Unity iOS/iPadOS target.
+- The browser map and art are schematic procedural placeholders, not an accurate GIS map or production-quality art. The browser driving model is intentionally simplified and is not the Unity Rigidbody vehicle implementation.
+- The previous preview script contained a stale null element lookup for carInteract; replacing the page also removes that broken handler.
+- GitHub Pages still requires repository Settings → Pages → Build and deployment → Source = GitHub Actions. The workflow must succeed before the expected URL can be called live: https://kremityssytb.github.io/Sheriff--American-Life/
+- Source/documentation checks only. No successful Pages deployment, real browser launch, WebGL runtime test, touch test, or device performance test has yet been confirmed.
