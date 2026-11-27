@@ -364,3 +364,14 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 
 - Commit `d1ca0c1bad928bc76b0f17a82cc7e8d86ccd910c` replaces direct Transform movement in `PatrolVehicleController` with a required Rigidbody and FixedUpdate-based arcade movement. It configures interpolation, continuous collision detection, mass, and frozen roll/pitch; exposes acceleration, speed, steering, coast drag, and lateral grip tuning.
 - Commit `498ad0c798baa5fbeb9f5dca6c148349ceba7e09` updates beta acceptance gates to require actual patrol vehicle collision/handling tuning. This does not yet provide WheelColliders, suspension, production vehicle meshes, or verified driving feel. Unity compile and device validation remain outstanding.
+
+
+## Visual quality and mobile optimization pass (2026-11-27)
+
+- No production vehicle models are integrated. The vehicle catalog contains real make/model/year metadata, but built-in entries have no visual prefabs; current traffic and patrol SUV art remain procedural placeholders.
+- Commit `dc2f7b963dd0891ce0932cf0c7b11871a8692c85` removes the extra `Florida Sun` created by editor scene setup. `CountyWorldBootstrap` creates and assigns the single county sun to `WorldClockSystem`.
+- Commit `3b17e8f5d120ae2e124cb4403b972fe562d80335` removes colliders from decorative Ocala dressing primitives and destroys the component-owned shared materials when the dressing component is destroyed. Gameplay collision remains on the base world geometry.
+- Commit `0566b1bb0a3482afd09dc787f7e5452efc9cec51` throttles dynamic sun updates to a 0.15-second interval and applies shadow configuration when the sun is assigned rather than rewriting it each lighting tick.
+- Commit `747c0a3e60036b9cced6a230d1806fa2b68a0b9b` adds `MobilePerformanceBootstrap`, a provisional 60 FPS/VSync-off baseline with LOD bias 1.0, 45 m global shadow distance, two cascades, background loading priority, and 256 MB mipmap-streaming budget. It is attached by `CountyWorldBootstrap` in commit `ceb2dedd9ae46bbf5fd4e3086b5931e112f4f5f7`.
+- Commit `f547be738a9cfb97e02f565368cda0fe8b38407c` adds `DESIGN/MOBILE_VISUAL_QUALITY_BUDGET.md`, covering production art requirements, URP settings to inspect, profiling, and device quality tiers.
+- Important: the generated URP asset still needs inspection/tuning in Unity 6.3.25f1. These source changes have not been compiled, visually inspected, profiled, or tested on iPhone/iPad. The 60 FPS value is a target cap, not a measured result.
