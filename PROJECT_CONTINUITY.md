@@ -395,3 +395,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `41c40494ad6fe8fd7629eca6af257d7f12c9db38` updates `MobilePerformanceBootstrap` with saved Performance, Balanced (default), and High presets. Presets apply frame-rate caps, LOD bias, shadow distance/cascades, MSAA, render scale, and HDR on the active URP asset; selection persists with PlayerPrefs.
 - Adds `DESIGN/MOBILE_QUALITY_PRESETS.md` with the provisional preset matrix and required profiling/validation gates.
 - No visible Settings UI is connected yet. Values are provisional; no compile, renderer validation, frame-time capture, thermal test, or iPhone/iPad test has been performed. Do not claim any preset achieves its target FPS.
+
+
+## Frame-rate settings and ProMotion (2026-11-27)
+
+- Commit `816c6e92577ca5642848ef7f6ed2090834f08220` introduces `MobileFrameRateMode` with 30, 60, 120 FPS, and Unlimited modes, saved separately from the visual-quality preset. Unlimited maps to Unity's `Application.targetFrameRate = -1`; it does not mean hardware can render infinitely fast.
+- Commit `60d53841929e2bda9439f98855bb76082683219d` decouples the frame-rate choice from the visual-quality preset so changing graphics quality no longer overwrites the user's selected cap.
+- Commit `166ea0f3703daac0d087327137d52710e986d6ee` adds a Settings button and in-game Frame Rate panel to the current prototype HUD. The panel exposes 30, 60, 120, and Unlimited and displays the selected mode.
+- Commit `ae99b9657ec71b87e417b1068f7c72b9dc50d8eb` adds an iOS build postprocessor that sets `CADisableMinimumFrameDurationOnPhone=true` in the generated Info.plist. This is required for high refresh rates on supported ProMotion iPhones; iPad Pro does not require the key, but it is harmless.
+- Unity's iOS behavior still follows device refresh support. The primary iPhone 16e target has a 60 Hz display, so it cannot physically show 120 FPS. ProMotion iPhones/iPad Pro models may support up to 120 Hz when enabled, but actual sustained game FPS is not guaranteed. Unlimited requests the platform's native maximum, not infinite rendering.
+- The current HUD is still an immediate-mode prototype, not production UI. These changes have not been compiled or tested in Unity, exported to Xcode, or measured on hardware.
