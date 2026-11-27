@@ -21,6 +21,7 @@ namespace SheriffAmericanLife
             if (root != null) Destroy(root.gameObject);
             root = new GameObject("Marion_County_Ocala_Blockout").transform;
             root.SetParent(transform, false);
+            root.gameObject.AddComponent<MobilePerformanceBootstrap>();
             Random.InitState(seed);
 
             Make("Ground", PrimitiveType.Plane, new Vector3(0,-.2f,0), new Vector3(70,1,70), new Color(.23f,.38f,.2f));
