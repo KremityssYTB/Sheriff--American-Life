@@ -56,7 +56,7 @@ namespace SheriffAmericanLife
         }
 
         /// <summary>
-        /// Called by the future Settings UI. Saves the user's choice when requested.
+        /// Called by the runtime Settings panel. Saves the user's choice when requested.
         /// </summary>
         public void SetPreset(MobileVisualQualityPreset preset)
         {
@@ -118,7 +118,6 @@ namespace SheriffAmericanLife
                     msaaSamples = 2;
                     renderScale = 1f;
                     hdr = true;
-                    frameRate = 60;
                     break;
             }
 
