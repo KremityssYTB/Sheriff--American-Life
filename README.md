@@ -87,6 +87,12 @@ The iOS build process generates an Xcode project; Xcode then builds it into an a
 
 The older GitHub Actions/GameCI workflow remains an alternative, but it requires a valid Unity Personal license secret named `UNITY_LICENSE`. That secret is not configured. Unity Personal activation is through Unity Hub; do not attempt manual `.alf` activation.
 
+## Visual quality and mobile optimization
+
+- See [Mobile Visual Quality and Performance Plan](DESIGN/MOBILE_VISUAL_QUALITY_BUDGET.md) for the art target, URP tuning gates, runtime baseline, and profiling requirements.
+- Current vehicle art remains procedural placeholder geometry. The vehicle catalog has no production meshes assigned yet.
+- The mobile baseline is provisional and has not been profiled or tested on iPhone/iPad.
+
 ## iOS configuration
 
 - Bundle identifier: com.kremityss.sheriffamericanlife
