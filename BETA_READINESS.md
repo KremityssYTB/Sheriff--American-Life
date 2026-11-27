@@ -18,7 +18,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 
 ### 2. Core patrol loop
 - [ ] Player can spawn, walk, sprint, enter/exit patrol SUV, drive, and change camera modes.
-- [ ] Touch controls remain usable at supported screen sizes and safe areas; validate modal input release and controller disable cleanup on device.
+- [ ] Touch controls remain usable at supported screen sizes and safe areas; source now lays out the prototype HUD inside `Screen.safeArea`, but orientation, iPad multitasking, hit targets, modal input release, and controller-disable cleanup still need device validation.
 - [ ] Player cannot become stuck in vehicle or on foot after repeated enter/exit.
 - [ ] Duty state and basic officer interaction behave consistently.
 - [ ] Traffic stop: approach, initiate stop, interact with driver, inspect documents/history, issue citation or warning, and close stop.
@@ -58,11 +58,11 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - Optional downloadable-content metadata exists, but no live content browser/downloader/CDN is implemented.
 - The iOS pre-build hook previously overrode the project setup's iPhone+iPad setting with iPhone-only. It has now been corrected to iPhoneAndiPad.
 - Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
-- Editor setup configures a provisional URP baseline with HDR, 2x MSAA, 1.0 render scale, SRP Batcher, 45 m shadows, two cascades, 2048 main-light shadow map, no additional-light shadows, and no depth/opaque textures by default. `MobilePerformanceBootstrap` now supports saved Performance, Balanced (default), and High presets with different frame caps, LOD bias, shadow distance/cascades, MSAA, render scale, and HDR. See `DESIGN/MOBILE_QUALITY_PRESETS.md`. These are provisional settings, not measured performance results; the presets are not yet connected to a visible Settings UI.
+- Editor setup configures a provisional URP baseline with HDR, 2x MSAA, 1.0 render scale, SRP Batcher, 45 m shadows, two cascades, 2048 main-light shadow map, no additional-light shadows, and no depth/opaque textures by default. `MobilePerformanceBootstrap` now supports saved Performance, Balanced (default), and High presets with different frame caps, LOD bias, shadow distance/cascades, MSAA, render scale, and HDR. See `DESIGN/MOBILE_QUALITY_PRESETS.md`. These are provisional settings, not measured performance results; the IMGUI prototype Settings panel exposes the presets but is not a production interface.
 - Decorative world-dressing colliders are removed, their owned materials are cleaned up, the duplicate editor-created sun is removed, and world-clock lighting updates are throttled. Civilian traffic shares common materials and uses property blocks for paint; patrol SUV materials are released on teardown.
 - An editor-only vehicle prefab validator is now in source at `Assets/Editor/VehiclePrefabValidator.cs`. It checks catalog prefabs for renderers, missing meshes/materials, LODGroup, root scale, renderer/material-slot budgets, and recommended hierarchy anchors. It has not yet been run in Unity.
 - `DESIGN/VEHICLE_VISUAL_ASSET_STANDARD.md` defines asset licensing/provenance, prefab hierarchy, axes, wheel/light/interior anchors, LODs, material budgets, and the integration sequence. No production vehicle model is integrated yet.
-- The new Settings panel, frame-rate persistence, and iOS ProMotion postprocessor are source-only changes. No Unity compilation, editor validation run, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
+- The Settings panel, safe-area HUD layout, frame-rate persistence, and iOS ProMotion postprocessor are source-only changes. No Unity compilation, editor validation run, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
 
 ## Release discipline
 
