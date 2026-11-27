@@ -123,6 +123,7 @@ namespace SheriffAmericanLife
             interactionController.Configure(reportBook);
             interactionController.ConfigureBookingBook(arrestBookingBook);
             SpawnTestCivilians(clock, witnessStatementBook, incidentReporter);
+            root.gameObject.AddComponent<OcalaVisualDressing>().Build(root);
             root.gameObject.AddComponent<CountyPlayerRuntimeController>().Initialize(root);
         }
 
