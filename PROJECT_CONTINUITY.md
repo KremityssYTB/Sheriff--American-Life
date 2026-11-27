@@ -409,3 +409,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Follow-up commit `f60687a58cc18cc43f060fa6cd43f47cd547025a` removes the final legacy frame-cap assignment from visual preset selection, so switching Performance/Balanced/High no longer overrides the separately selected frame-rate mode.
 - Follow-up commit `e7831d15c883a658f162e7b147122a2a10898a54` moves the Settings panel draw call to the end of the prototype HUD pass so it renders above gameplay controls.
 - Static source checks after these commits found balanced braces in all three changed C# files, all four frame-rate options wired, persistence present, Unlimited mapped to -1, and the ProMotion Info.plist key present. This is not a Unity compile or runtime test.
+
+
+## Settings panel graphics controls (2026-11-27)
+
+- Commit `ab82099a87ce8d7ec43eedc9de0ffdbbc239ca73` adds Performance, Balanced, and High graphics preset buttons to the in-game Settings panel. The buttons call `MobilePerformanceBootstrap.SetPreset`; quality and frame-rate preferences remain separate.
+- Commit `0a6ae549ca8e558e5997bf0a4dbfc3d00ed79911` makes Settings modal while open (so gameplay controls are not processed behind it) and scales the panel against short screen heights.
+- Current settings UI is still IMGUI prototype code. Static source checks only; no Unity compile, layout inspection, touch test, or device profiling has been completed.
