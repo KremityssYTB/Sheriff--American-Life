@@ -145,6 +145,11 @@ namespace SheriffAmericanLife
             }
             float s = Mathf.Clamp(Screen.width / 390f, .8f, 1.25f);
             float w = 66f*s, h = 58f*s, pad = 12f*s;
+            if (settingsOpen)
+            {
+                DrawSettingsPanel(s);
+                return;
+            }
             GUI.Label(new Rect(pad, pad, 260*s, 30*s), dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY", statusStyle);
             if (GUI.Button(new Rect(Screen.width-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
                 ToggleVehicle();
@@ -182,12 +187,11 @@ namespace SheriffAmericanLife
                 else throttle = 0;
             }
 
-            if (settingsOpen)
-                DrawSettingsPanel(s);
         }
 
         private void DrawSettingsPanel(float scale)
         {
+            scale = Mathf.Min(scale, Mathf.Max(.6f, (Screen.height - 20f) / 330f));
             float width = 330f * scale;
             float height = 330f * scale;
             float x = (Screen.width - width) * .5f;
