@@ -91,7 +91,7 @@ The older GitHub Actions/GameCI workflow remains an alternative, but it requires
 
 - See [Mobile Visual Quality and Performance Plan](DESIGN/MOBILE_VISUAL_QUALITY_BUDGET.md) for the art target, URP tuning gates, runtime baseline, and profiling requirements.
 - Current vehicle art remains procedural placeholder geometry. The vehicle catalog has no production meshes assigned yet.
-- The mobile baseline is provisional and has not been profiled or tested on iPhone/iPad.
+- Editor setup applies a provisional URP baseline (HDR, 2x MSAA, SRP Batcher, 45 m/two-cascade main shadows, no additional-light shadows, and no unused depth/opaque textures). Runtime frame pacing targets 60 FPS. These settings have not been profiled or tested on iPhone/iPad.
 
 ## iOS configuration
 
