@@ -130,7 +130,7 @@ namespace SheriffAmericanLife.Editor
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS,
                 "com.kremityss.sheriffamericanlife");
             PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS, ScriptingImplementation.IL2CPP);
-            PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneOnly;
+            PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneAndiPad;
             PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
             PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.iOS, false);
             PlayerSettings.SetGraphicsAPIs(BuildTarget.iOS, new[] { GraphicsDeviceType.Metal });
