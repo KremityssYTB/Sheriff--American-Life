@@ -37,6 +37,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - [ ] No crash during a 30-minute patrol session.
 - [ ] No unbounded growth in active traffic, civilians, incident actors, materials, or UI objects.
 - [ ] Profile CPU, GPU, memory, thermal behavior, and frame pacing on the lowest supported iPhone and iPad.
+- [ ] Inspect the generated URP asset and renderer in Unity; validate SRP Batcher, HDR/MSAA, shadow settings, render scale, and texture streaming on target devices.
 - [ ] Inspect the generated URP asset/renderer in Unity and validate SRP Batcher, main-light shadows, additional-light policy, render scale, MSAA, and texture streaming settings against device captures.
 - [ ] Verify quality settings and frame-rate cap for target devices.
 - [ ] Test low-storage behavior and interrupted app suspension/resume.
@@ -57,6 +58,8 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - Optional downloadable-content metadata exists, but no live content browser/downloader/CDN is implemented.
 - The iOS pre-build hook previously overrode the project setup's iPhone+iPad setting with iPhone-only. It has now been corrected to iPhoneAndiPad.
 - Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
+- Editor setup now configures the generated URP asset for HDR, 2x MSAA, 1.0 render scale, SRP Batcher, 45 m shadows, two cascades, 2048 main-light shadow map, soft main-light shadows, no additional-light shadows, up to two additional lights per object, and no depth/opaque textures by default. Runtime baseline sets a 60 FPS target, disables VSync, uses LOD bias 1.0, and enables a 256 MB mipmap-streaming budget. These are provisional settings, not measured performance results.
+- Decorative world-dressing colliders are removed, their owned materials are cleaned up, the duplicate editor-created sun is removed, and world-clock lighting updates are throttled.
 - No Unity compilation, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
 
 ## Release discipline
