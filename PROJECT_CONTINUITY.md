@@ -405,3 +405,7 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `ae99b9657ec71b87e417b1068f7c72b9dc50d8eb` adds an iOS build postprocessor that sets `CADisableMinimumFrameDurationOnPhone=true` in the generated Info.plist. This is required for high refresh rates on supported ProMotion iPhones; iPad Pro does not require the key, but it is harmless.
 - Unity's iOS behavior still follows device refresh support. The primary iPhone 16e target has a 60 Hz display, so it cannot physically show 120 FPS. ProMotion iPhones/iPad Pro models may support up to 120 Hz when enabled, but actual sustained game FPS is not guaranteed. Unlimited requests the platform's native maximum, not infinite rendering.
 - The current HUD is still an immediate-mode prototype, not production UI. These changes have not been compiled or tested in Unity, exported to Xcode, or measured on hardware.
+
+- Follow-up commit `f60687a58cc18cc43f060fa6cd43f47cd547025a` removes the final legacy frame-cap assignment from visual preset selection, so switching Performance/Balanced/High no longer overrides the separately selected frame-rate mode.
+- Follow-up commit `e7831d15c883a658f162e7b147122a2a10898a54` moves the Settings panel draw call to the end of the prototype HUD pass so it renders above gameplay controls.
+- Static source checks after these commits found balanced braces in all three changed C# files, all four frame-rate options wired, persistence present, Unlimited mapped to -1, and the ProMotion Info.plist key present. This is not a Unity compile or runtime test.
