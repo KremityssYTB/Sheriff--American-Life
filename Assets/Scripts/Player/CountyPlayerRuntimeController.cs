@@ -188,31 +188,58 @@ namespace SheriffAmericanLife
 
         private void DrawSettingsPanel(float scale)
         {
-            float width = 310f * scale;
-            float height = 250f * scale;
+            float width = 330f * scale;
+            float height = 330f * scale;
             float x = (Screen.width - width) * .5f;
             float y = (Screen.height - height) * .5f;
             GUI.Box(new Rect(x, y, width, height), "GAME SETTINGS");
-            GUI.Label(new Rect(x + 16f * scale, y + 38f * scale, width - 32f * scale, 26f * scale),
-                "FRAME RATE", statusStyle);
 
-            float buttonY = y + 72f * scale;
+            GUI.Label(new Rect(x + 14f * scale, y + 34f * scale, width - 28f * scale, 24f * scale),
+                "GRAPHICS QUALITY", statusStyle);
+            float qualityY = y + 62f * scale;
+            float qualityGap = 5f * scale;
+            float qualityWidth = (width - 38f * scale - qualityGap * 2f) / 3f;
+            DrawQualityButton(x + 14f * scale, qualityY, qualityWidth, "PERFORMANCE",
+                MobileVisualQualityPreset.Performance, scale);
+            DrawQualityButton(x + 19f * scale + qualityWidth, qualityY, qualityWidth, "BALANCED",
+                MobileVisualQualityPreset.Balanced, scale);
+            DrawQualityButton(x + 24f * scale + qualityWidth * 2f, qualityY, qualityWidth, "HIGH",
+                MobileVisualQualityPreset.High, scale);
+
+            GUI.Label(new Rect(x + 14f * scale, y + 112f * scale, width - 28f * scale, 24f * scale),
+                "FRAME RATE", statusStyle);
+            float buttonY = y + 142f * scale;
             float buttonWidth = (width - 40f * scale) * .5f;
             DrawFrameRateButton(x + 14f * scale, buttonY, buttonWidth, "30 FPS", MobileFrameRateMode.Fps30, scale);
             DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY, buttonWidth, "60 FPS", MobileFrameRateMode.Fps60, scale);
-            DrawFrameRateButton(x + 14f * scale, buttonY + 48f * scale, buttonWidth, "120 FPS", MobileFrameRateMode.Fps120, scale);
-            DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY + 48f * scale, buttonWidth, "UNLIMITED", MobileFrameRateMode.Unlimited, scale);
+            DrawFrameRateButton(x + 14f * scale, buttonY + 46f * scale, buttonWidth, "120 FPS", MobileFrameRateMode.Fps120, scale);
+            DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY + 46f * scale, buttonWidth, "UNLIMITED", MobileFrameRateMode.Unlimited, scale);
 
-            string active = performanceSettings != null
+            string quality = performanceSettings != null
+                ? "GRAPHICS: " + performanceSettings.CurrentPreset.ToString().ToUpperInvariant()
+                : "GRAPHICS SETTINGS UNAVAILABLE";
+            string frameRate = performanceSettings != null
                 ? performanceSettings.CurrentFrameRateMode == MobileFrameRateMode.Unlimited
-                    ? "ACTIVE: UNLIMITED"
-                    : "ACTIVE: " + (int)performanceSettings.CurrentFrameRateMode + " FPS"
+                    ? "FRAME RATE: UNLIMITED"
+                    : "FRAME RATE: " + (int)performanceSettings.CurrentFrameRateMode + " FPS"
                 : "FRAME RATE SETTINGS UNAVAILABLE";
-            GUI.Label(new Rect(x + 14f * scale, buttonY + 104f * scale, width - 28f * scale, 26f * scale),
-                active, statusStyle);
-            if (GUI.Button(new Rect(x + width - 104f * scale, y + height - 48f * scale,
-                90f * scale, 34f * scale), "CLOSE", buttonStyle))
+            GUI.Label(new Rect(x + 14f * scale, y + 240f * scale, width - 28f * scale, 22f * scale),
+                quality, statusStyle);
+            GUI.Label(new Rect(x + 14f * scale, y + 264f * scale, width - 28f * scale, 22f * scale),
+                frameRate, statusStyle);
+            if (GUI.Button(new Rect(x + width - 104f * scale, y + height - 46f * scale,
+                90f * scale, 32f * scale), "CLOSE", buttonStyle))
                 settingsOpen = false;
+        }
+
+        private void DrawQualityButton(float x, float y, float width, string label,
+            MobileVisualQualityPreset preset, float scale)
+        {
+            bool selected = performanceSettings != null && performanceSettings.CurrentPreset == preset;
+            string caption = selected ? "SELECTED\n" + label : label;
+            if (GUI.Button(new Rect(x, y, width, 42f * scale), caption, buttonStyle) &&
+                performanceSettings != null)
+                performanceSettings.SetPreset(preset);
         }
 
         private void DrawFrameRateButton(float x, float y, float width, string label,
