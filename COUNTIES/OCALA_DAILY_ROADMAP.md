@@ -117,3 +117,9 @@ Every development day:
 - [ ] Open and test on iPhone Safari and iPadOS Safari.
 - [ ] Validate orientation changes, touch controls, sustained FPS, memory, and background/resume.
 - The browser scene is a schematic test district and not a Unity WebGL export or an accurate real-world map.
+
+
+### Day 1 browser deployment result
+- [x] GitHub Pages workflow run #8 completed successfully for the 3D browser preview.
+- Published URL: https://kremityssytb.github.io/Sheriff--American-Life/
+- [ ] Real iPhone Safari and iPadOS Safari launch, WebGL, touch, orientation, and performance tests remain pending.
