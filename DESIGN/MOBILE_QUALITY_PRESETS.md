@@ -36,3 +36,8 @@ Before beta:
 5. Adjust or remove any preset that fails stability or sustained-performance targets.
 
 Do not select a device preset based only on screen resolution or model-name heuristics. Profile real workloads first.
+
+
+## Runtime diagnostics
+
+The Settings panel displays a smoothed FPS estimate and milliseconds per frame, sampled from `Time.unscaledDeltaTime` by `MobilePerformanceBootstrap`. This is a lightweight runtime indicator only. It does not identify CPU versus GPU bottlenecks, report memory pressure, or measure thermal state. Use Unity Profiler and real-device captures for beta performance acceptance.
