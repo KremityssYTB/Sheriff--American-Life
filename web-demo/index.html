@@ -82,7 +82,7 @@ function setup(){renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:
  for(let i=0;i<5;i++){const stripe=new THREE.Mesh(new THREE.BoxGeometry(.15,.03,5),materials.white);stripe.position.set(-119+i*4,.08,-17);scene.add(stripe)}
  for(let i=0;i<55;i++){const x=((i*47)%280)-140,z=((i*71)%210)-105;if(Math.abs(z)<12||Math.abs(x)<9||Math.abs(z+72)<8||Math.abs(z-73)<8)continue;if(i%4===0)makePalm(x,z);else makeTree(x,z,.7+(i%4)*.12)}
  for(let i=0;i<10;i++)addTraffic(-135+i*29,i%2?4:-4,i%2?Math.PI:0,['#d9dadd','#8d9ba3','#a58e73','#5f6d78'][i%4]);
- suv=makeSUV(-111,-8);player=makePlayer();player.position.set(-117,0,-1);suv.rotation.y=0;
+ suv=makeSUV(-111,-8);player=makePlayer();player.position.set(-117,0,-1);suv.rotation.y=Math.PI/2;
 }
 function notify(msg){ui.toast.textContent=msg;ui.toast.style.opacity='1';clearTimeout(toastTimer);toastTimer=setTimeout(()=>ui.toast.style.opacity='0',1900)}
 function actor(){return inCar?suv:player}
