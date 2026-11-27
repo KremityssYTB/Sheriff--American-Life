@@ -6,6 +6,7 @@ namespace SheriffAmericanLife
     {
         [SerializeField] private int seed = 352;
         [SerializeField] private bool generateOnStart = true;
+        [SerializeField] private VehicleModelCatalog vehicleCatalog;
         private Transform root;
         private IncidentReportBook reportBook;
         private OfficerInteractionController interactionController;
@@ -192,13 +193,29 @@ namespace SheriffAmericanLife
             WorldIncidentReporter reporter, float speed, Color color, TrafficSignalController signals,
             bool eastWest, Vector3 stopLine, TrafficVehicleStyle style)
         {
+            VehicleModelEntry selectedModel = VehicleModelCatalog.SelectRandom(vehicleCatalog);
+            if (selectedModel != null)
+            {
+                vehicleName = selectedModel.DisplayName;
+                style = selectedModel.style;
+                speed *= selectedModel.speedMultiplier;
+            }
+
             GameObject vehicle = Make(vehicleName, PrimitiveType.Cube, position,
                 new Vector3(4.2f,1.25f,1.9f), color);
-            // Keep the physics root at unit scale and use a lengthwise sedan collision box.
+            // Keep physics and traffic AI on this stable root; visual prefabs are render-only children.
             vehicle.transform.localScale = Vector3.one;
             BoxCollider vehicleCollider = vehicle.GetComponent<BoxCollider>();
             if (vehicleCollider != null) vehicleCollider.size = new Vector3(1.9f,1.25f,4.2f);
-            vehicle.AddComponent<TrafficVehicleVisuals>().Build(color, style);
+            if (selectedModel != null && selectedModel.visualPrefab != null)
+            {
+                GameObject modelVisual = Instantiate(selectedModel.visualPrefab, vehicle.transform, false);
+                modelVisual.name = selectedModel.DisplayName + " Visual";
+            }
+            else
+            {
+                vehicle.AddComponent<TrafficVehicleVisuals>().Build(color, style);
+            }
             Rigidbody body = vehicle.AddComponent<Rigidbody>();
             body.mass = 1150f;
             CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
