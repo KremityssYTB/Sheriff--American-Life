@@ -352,3 +352,9 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `61824b55c3be24cee7ae2f663f6267e9f5bbc25a` adds `DESIGN/DOWNLOADABLE_CONTENT_ARCHITECTURE.md`. Target model: compact core game plus optional vehicle collections, county expansions, departments, interiors/businesses, gameplay systems, and audio/visual packs. It defines storage checks, integrity verification, dependencies, streaming, Wi-Fi preference, and safe uninstall requirements.
 - The catalog/manifest are foundations only. No CDN, hosted bundles, remote manifest, in-game store/browser, actual downloader, resume logic, storage reservation, SHA verification pipeline, or pack install/uninstall workflow exists yet. Actual car meshes and other pack assets must still be imported and packaged.
 - Source changes are committed but have not been compiled in Unity or tested in Play Mode/iOS on device.
+
+## Beta preparation update (2026-11-27)
+
+- Commit `641ea989535cb07a98725f7f71c012d2a9feace9` fixes a conflicting iOS build setting in `Assets/Editor/EnsureProjectSetupBeforeBuild.cs`: the pre-build hook was overriding the iPhone+iPad setting from `ProjectSetup` and forcing iPhone-only. It now sets `iOSTargetDevice.iPhoneAndiPad`.
+- Commit `aabfd3c3b8974af4cd2b256bfaf8028c7e1780d3` adds `BETA_READINESS.md` with explicit acceptance gates for project import/compile, iOS export/build/sign/install, the patrol gameplay loop, world/traffic, performance/stability, and beta operations.
+- Current source has core prototype systems, but the scene remains a generated blockout and the mobile HUD is still an immediate-mode GUI prototype. No Unity compilation, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device tests have been completed in this work session. Treat all unchecked beta gates as unverified.
