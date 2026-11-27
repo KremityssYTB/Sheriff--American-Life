@@ -217,3 +217,12 @@ All art, audio, and models must be original or properly licensed.
 - The pickup has a separate open bed and rails; the SUV has a taller cabin and lower cladding; the muscle-style car has a hood scoop and rear spoiler; the exotic has a lower/wider profile, splitter, diffuser, and rear engine cover.
 - These are generic unbranded placeholder designs inspired by broad real-world vehicle categories. They are not licensed Ford, Dodge, Toyota, or Lamborghini models and do not use manufacturer logos. Exact branded vehicles require properly licensed or original production 3D models and permission for associated marks.
 - Source changes are committed but not Unity-compiled or runtime-tested. Vehicle proportions, road clearance, collider fit, wheel contact, and mobile performance still require Play Mode and iPhone/iPad validation.
+
+
+## Expandable vehicle catalog and downloadable content (2026-11-27)
+
+- Added `VehicleModelCatalog` with a representative historical lineup spanning early classics through modern vehicles, including Ford, Dodge, Toyota, Chevrolet, Honda, Nissan, Volkswagen, Jeep, Tesla, and Lamborghini examples. It supports assigning original or properly licensed visual prefabs per model. The built-in entries currently have no production meshes assigned, so traffic still uses generic procedural silhouettes until assets are imported.
+- Updated the traffic spawner to select a catalog entry and preserve the existing traffic actor root, Rigidbody, driver records, and waypoint AI. The current sample traffic count remains eight; the catalog is an expandable source, not a claim that every catalog entry is simultaneously present on roads.
+- Added `ContentPackCatalog` metadata and `DESIGN/DOWNLOADABLE_CONTENT_ARCHITECTURE.md` for a small core install with optional vehicle, county, department, interior, gameplay, and audio/visual packs.
+- The content manifest is not yet a functioning downloader/store. CDN hosting, remote manifest service, platform-built AssetBundles/Addressables, download UI, pause/resume, hash verification during downloads, install/uninstall handling, storage checks, and device testing remain outstanding.
+- Source committed only; Unity compilation, Play Mode, iOS builds, and iPhone/iPad runtime tests have not been performed.
