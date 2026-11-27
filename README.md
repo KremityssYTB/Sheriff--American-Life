@@ -177,3 +177,12 @@ All art, audio, and models must be original or properly licensed.
 - The transport HUD now requires the currently escorted civilian and matching booking; older or unrelated pending records cannot be completed through the active escort.
 - Prototype limits: one escorted prisoner at a time; no handcuff animation, escort hand-hold, seatbelt/restraint animation, prisoner AI, rear-seat door interaction, jail interior navigation, or persistence of the live NPC's world position. Booking data remains local and persistent; NPC placement is session-only.
 - Source inspection only. Unity compilation, animation, collider/vehicle interaction, scene layout, save/load, and iPhone runtime remain untested.
+
+
+## Ocala visual foundation update (2026-11-27)
+
+- Added `OcalaVisualDressing` and wired it into the runtime county bootstrap after the greybox town and civilian layout are generated.
+- The first-pass dressing adds road center/edge markings, crosswalk stripes, sidewalks and curbs, building roof caps and facade windows/doors, a simple gas-station canopy and pump islands, street lamps, utility cabinets, Florida palms, broad-canopy trees, and distant rural tree belts.
+- Materials use the URP Lit shader when available, with authored roughness/smoothness and limited metallic/emissive values. The pass reuses shared materials within the dressing component.
+- This is a procedural blockout enhancement, not GTA 6-level art: buildings, vehicles, people, foliage, and many details are still primitive geometry; no photogrammetry, high-resolution texture sets, advanced reflections, or production lighting have been added.
+- The new geometry has not been profiled. It may need batching/LOD/visibility work before mobile release. Unity compilation, Play Mode, visual inspection, and iPhone performance tests remain outstanding.
