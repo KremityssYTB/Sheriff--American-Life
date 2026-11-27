@@ -208,3 +208,12 @@ All art, audio, and models must be original or properly licensed.
 ## Lighting and weather refinement (2026-11-27)
 
 - Updated `WorldClockSystem` to configure the active directional sun as the scene sun, use soft shadows with tuned strength/bias, and apply subtle Exponential Squared fog colors/densities for Fog and Rain weather. This is a code-level lighting pass; visual appearance and shadow cost must be checked in Unity on target devices.
+
+
+## Civilian vehicle variety pass (2026-11-27)
+
+- Added distinct procedural traffic classes: full-size pickup, family SUV, midsize/compact sedan, American muscle-style sedan, and low exotic sports-car silhouettes.
+- Each spawned vehicle now receives a selected body style while preserving the existing traffic root, Rigidbody, driver profile, collision box, and waypoint AI.
+- The pickup has a separate open bed and rails; the SUV has a taller cabin and lower cladding; the muscle-style car has a hood scoop and rear spoiler; the exotic has a lower/wider profile, splitter, diffuser, and rear engine cover.
+- These are generic unbranded placeholder designs inspired by broad real-world vehicle categories. They are not licensed Ford, Dodge, Toyota, or Lamborghini models and do not use manufacturer logos. Exact branded vehicles require properly licensed or original production 3D models and permission for associated marks.
+- Source changes are committed but not Unity-compiled or runtime-tested. Vehicle proportions, road clearance, collider fit, wheel contact, and mobile performance still require Play Mode and iPhone/iPad validation.
