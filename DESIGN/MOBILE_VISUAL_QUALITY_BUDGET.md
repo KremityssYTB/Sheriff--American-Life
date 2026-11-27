@@ -2,7 +2,7 @@
 
 ## Current truth
 
-The project is Unity 6.3.25f1 with URP 17.3.0 and targets iPhone and iPad. The current county and vehicle visuals are procedural blockout geometry. The vehicle catalog contains identity metadata only; no production vehicle meshes are assigned. The generated URP asset is created by editor setup rather than committed as a tuned asset, so its final serialized rendering settings still need inspection in Unity.
+The project is Unity 6.3.25f1 with URP 17.3.0 and targets iPhone and iPad. The current county and vehicle visuals are procedural blockout geometry. The vehicle catalog contains identity metadata only; no production vehicle meshes are assigned. The generated URP asset is created by editor setup rather than committed as a serialized asset. Editor setup now applies a balanced mobile baseline, but the generated asset and renderer still need inspection in Unity.
 
 ## Visual target
 
@@ -18,6 +18,10 @@ Aim for a grounded, high-detail Florida county presentation while preserving rea
 - Use baked lighting for static environment elements where it produces a better mobile cost/quality balance. Keep real-time lights limited and intentional.
 - Use reflection probes selectively around important interiors and vehicle presentation areas rather than covering the whole map with expensive probes.
 - Add authored sky, color grading, exposure, and restrained post-processing only after a real device profile confirms the cost.
+
+## URP asset baseline added
+
+Editor setup now configures the generated URP asset with HDR enabled, 2x MSAA, render scale 1.0, SRP Batcher enabled, dynamic batching disabled, 45 m shadow distance, two cascades, 2048 main-light shadow map, soft main-light shadows, additional-light shadows disabled, at most two additional lights per object, and depth/opaque textures disabled until a feature requires them. These are starting values and still require generated-asset inspection and device profiling.
 
 ## Runtime baseline added
 
