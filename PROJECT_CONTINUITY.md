@@ -452,3 +452,9 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The previous preview script contained a stale null element lookup for carInteract; replacing the page also removes that broken handler.
 - GitHub Pages still requires repository Settings → Pages → Build and deployment → Source = GitHub Actions. The workflow must succeed before the expected URL can be called live: https://kremityssytb.github.io/Sheriff--American-Life/
 - Source/documentation checks only. No successful Pages deployment, real browser launch, WebGL runtime test, touch test, or device performance test has yet been confirmed.
+
+
+### GitHub Pages deployment confirmation (2026-11-27)
+- The browser-preview workflow run #8 completed successfully for commit de0e4a142792d6d3fbee67a1ce5a045938e93f7a. GitHub Actions reported the Configure GitHub Pages, upload, and Deploy steps successful.
+- Published preview URL: https://kremityssytb.github.io/Sheriff--American-Life/
+- The deployment result confirms the workflow completed; it does not confirm that the page has been opened or that Three.js/WebGL works on a real iPhone or iPad. Those device checks remain outstanding.
