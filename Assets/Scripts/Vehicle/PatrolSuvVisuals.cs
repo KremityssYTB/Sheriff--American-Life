@@ -147,8 +147,8 @@ namespace SheriffAmericanLife
             Part("Hood Center Accent", PrimitiveType.Cube, new Vector3(0,.47f,1.34f),
                 new Vector3(.06f,.015f,.8f), dark);
 
-            AddLabel("SHERIFF", new Vector3(0,.08f,2.19f), Quaternion.Euler(0,180,0), .18f, gold);
-            AddLabel("MARION COUNTY", new Vector3(0,.11f,-2.19f), Quaternion.identity, .12f, gold);
+            AddLabel("SHERIFF", new Vector3(0,.08f,2.19f), Quaternion.identity, .18f, gold);
+            AddLabel("MARION COUNTY", new Vector3(0,.11f,-2.19f), Quaternion.Euler(0,180,0), .12f, gold);
             for (int side=-1;side<=1;side+=2)
             {
                 AddLabel("SHERIFF", new Vector3(side*1.04f,.1f,-.08f),
