@@ -245,6 +245,28 @@ namespace SheriffAmericanLife
             return part;
         }
 
+        private void OnDestroy()
+        {
+            Release(body);
+            Release(dark);
+            Release(glass);
+            Release(rubber);
+            Release(alloy);
+            Release(chrome);
+            Release(redLens);
+            Release(blueLens);
+            Release(gold);
+            Release(white);
+            Release(black);
+        }
+
+        private static void Release(Material material)
+        {
+            if (material == null) return;
+            if (Application.isPlaying) Destroy(material);
+            else DestroyImmediate(material);
+        }
+
         private Material Mat(string name, Color color, float metallic, float smoothness, bool emission = false)
         {
             Shader shader = Shader.Find("Universal Render Pipeline/Lit");
