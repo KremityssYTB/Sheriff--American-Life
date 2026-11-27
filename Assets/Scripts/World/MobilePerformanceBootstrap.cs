@@ -35,6 +35,24 @@ namespace SheriffAmericanLife
 
         public MobileVisualQualityPreset CurrentPreset { get; private set; }
         public MobileFrameRateMode CurrentFrameRateMode { get; private set; }
+        public float MeasuredFramesPerSecond { get; private set; }
+        public float MeasuredFrameTimeMilliseconds { get; private set; }
+
+        private float smoothedFrameDelta;
+        private const float FrameTimeSmoothing = 0.12f;
+
+        private void Update()
+        {
+            float frameDelta = Time.unscaledDeltaTime;
+            if (frameDelta <= 0f) return;
+
+            smoothedFrameDelta = smoothedFrameDelta <= 0f
+                ? frameDelta
+                : Mathf.Lerp(smoothedFrameDelta, frameDelta, FrameTimeSmoothing);
+
+            MeasuredFramesPerSecond = 1f / smoothedFrameDelta;
+            MeasuredFrameTimeMilliseconds = smoothedFrameDelta * 1000f;
+        }
 
         private void Awake()
         {
