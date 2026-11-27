@@ -18,13 +18,13 @@ These values are not promises of achieved frame rate, battery life, or visual qu
 
 ## Runtime integration
 
-`MobilePerformanceBootstrap` applies the saved preset at startup. The default is Balanced. The current prototype HUD exposes a Frame Rate panel with 30 FPS, 60 FPS, 120 FPS, and Unlimited. The saved frame-rate mode is independent of the visual-quality preset. Code can call:
+`MobilePerformanceBootstrap` applies the saved preset at startup. The default is Balanced. The current prototype HUD exposes a Settings panel with Performance, Balanced, and High graphics presets plus 30 FPS, 60 FPS, 120 FPS, and Unlimited frame-rate choices. The saved frame-rate mode is independent of the visual-quality preset. Code can call:
 
 - `SetPreset(MobileVisualQualityPreset.Performance)`
 - `SetPreset(MobileVisualQualityPreset.Balanced)`
 - `SetPreset(MobileVisualQualityPreset.High)`
 
-The quality choice and frame-rate choice are stored separately in PlayerPrefs. The default visual preset is Balanced; the default frame-rate mode is 120 FPS. The current Settings panel is an immediate-mode prototype and needs replacement with production mobile UI.
+The quality choice and frame-rate choice are stored separately in PlayerPrefs. The default visual preset is Balanced; the default frame-rate mode is 120 FPS. The current Settings panel is an immediate-mode prototype, scales to fit shorter screens, and blocks gameplay controls while open. It still needs replacement with production mobile UI and safe-area/device validation.
 
 ## Validation gate
 
