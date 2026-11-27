@@ -388,3 +388,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `fd284e4149c577c146bba7ebeb943bc18d7e6cc5` adds `Assets/Editor/VehiclePrefabValidator.cs`, an editor-only menu validator for all `VehicleModelCatalog` assets and a selected vehicle prefab. It reports missing prefabs as warnings (procedural fallback is intentional), and checks renderer presence, missing mesh/material references, LODGroup presence, renderer/material-slot budgets, root scale, and recommended wheel/light/interior anchors.
 - Adds `DESIGN/VEHICLE_VISUAL_ASSET_STANDARD.md` defining legal asset provenance, prefab axes/hierarchy, wheel and optional light/interior anchors, LOD expectations, mobile budgets, and integration steps. Vehicle art must be original or properly licensed for commercial use and redistribution.
 - The validator is source-only and has not been run in Unity. It does not validate license rights, visual quality, model dimensions, UVs, wheel placement, or actual mobile performance. No real vehicle model has been added; the catalog still falls back to procedural visuals until a valid prefab is assigned.
+
+
+## Runtime mobile visual presets (2026-11-27)
+
+- Commit `41c40494ad6fe8fd7629eca6af257d7f12c9db38` updates `MobilePerformanceBootstrap` with saved Performance, Balanced (default), and High presets. Presets apply frame-rate caps, LOD bias, shadow distance/cascades, MSAA, render scale, and HDR on the active URP asset; selection persists with PlayerPrefs.
+- Adds `DESIGN/MOBILE_QUALITY_PRESETS.md` with the provisional preset matrix and required profiling/validation gates.
+- No visible Settings UI is connected yet. Values are provisional; no compile, renderer validation, frame-time capture, thermal test, or iPhone/iPad test has been performed. Do not claim any preset achieves its target FPS.
