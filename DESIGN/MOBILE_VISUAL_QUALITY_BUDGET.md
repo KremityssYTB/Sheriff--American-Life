@@ -60,6 +60,8 @@ Inspect the generated URP asset and renderer in Unity 6.3.25f1 before changing s
 - Generated scene setup no longer creates a second directional sun; the world clock owns the county sun.
 - Decorative visual-dressing primitives no longer retain primitive colliders. Gameplay collision remains on the underlying road/building geometry.
 - Dressing-created materials are destroyed when their owning visual-dressing component is destroyed, preventing repeated world regeneration from leaving those materials allocated.
+- Civilian traffic now shares its common URP materials across vehicles and uses per-renderer property blocks for paint colors, rather than creating a full set of duplicate materials per car. Shared materials are released when the county world is regenerated or unloaded.
+- Patrol SUV procedural materials are released when its visual component is destroyed.
 - Dynamic sun transform/color/intensity updates are throttled to a 0.15 second interval; shadow configuration is applied when the sun is assigned rather than rewritten on every lighting update.
 
 ## Required profiling and acceptance
