@@ -203,3 +203,8 @@ All art, audio, and models must be original or properly licensed.
 - This remains procedural placeholder geometry, not final vehicle art. No Unity compile, Play Mode, collision inspection, or iPhone performance test has been run.
 
 - Follow-up: added a first-pass SUV cabin interior with dashboard, instrument hood, center screen/console, gear selector, steering column/wheel, front bucket seats, rear seating, and footwells. This is visible placeholder geometry, not a finished cockpit; no interior materials/textures, functional instruments, or runtime validation yet.
+
+
+## Lighting and weather refinement (2026-11-27)
+
+- Updated `WorldClockSystem` to configure the active directional sun as the scene sun, use soft shadows with tuned strength/bias, and apply subtle Exponential Squared fog colors/densities for Fog and Rain weather. This is a code-level lighting pass; visual appearance and shadow cost must be checked in Unity on target devices.
