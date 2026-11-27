@@ -111,15 +111,15 @@ namespace SheriffAmericanLife
                 // Roof cap and parapet make the placeholder blocks read as buildings.
                 Part(building.name + " Roof Cap", PrimitiveType.Cube,
                     center + Vector3.up * (size.y * .52f), new Vector3(size.x + .5f,.35f,size.z + .5f),
-                    building.name == "Gas Station" ? trim : roof, building);
+                    building.name == "Gas Station" ? trim : roof);
 
                 if (building.name == "Gas Station")
                 {
                     Part("Gas Station Canopy", PrimitiveType.Cube, center + new Vector3(0,4.2f,13),
-                        new Vector3(24,.45f,10), trim, building);
+                        new Vector3(24,.45f,10), trim);
                     for (int x=-8; x<=8; x+=8)
                         Part("Fuel Pump Island", PrimitiveType.Cube, center + new Vector3(x,1.2f,13),
-                            new Vector3(1.2f,2.2f,1.2f), metal, building);
+                            new Vector3(1.2f,2.2f,1.2f), metal);
                     continue;
                 }
 
@@ -127,16 +127,16 @@ namespace SheriffAmericanLife
                 for (float x=-size.x*.34f; x<=size.x*.34f; x+=Mathf.Max(4f,size.x*.28f))
                 {
                     Part("Facade Window", PrimitiveType.Cube, center + new Vector3(x,windowY,-size.z*.505f),
-                        new Vector3(Mathf.Min(3.2f,size.x*.18f),2.1f,.12f), glass, building);
+                        new Vector3(Mathf.Min(3.2f,size.x*.18f),2.1f,.12f), glass);
                     Part("Facade Window", PrimitiveType.Cube, center + new Vector3(x,windowY,size.z*.505f),
-                        new Vector3(Mathf.Min(3.2f,size.x*.18f),2.1f,.12f), glass, building);
+                        new Vector3(Mathf.Min(3.2f,size.x*.18f),2.1f,.12f), glass);
                 }
                 Part("Main Entrance Door", PrimitiveType.Cube, center + new Vector3(0,-size.y*.22f,-size.z*.51f),
-                    new Vector3(1.5f,3f,.16f), metal, building);
+                    new Vector3(1.5f,3f,.16f), metal);
                 if (building.name == "Sheriff Office" || building.name == "Marion County Jail Intake")
                 {
                     Part("Facility Sign Panel", PrimitiveType.Cube, center + new Vector3(0,size.y*.28f,-size.z*.52f),
-                        new Vector3(Mathf.Min(size.x*.65f,18f),1.15f,.2f), trim, building);
+                        new Vector3(Mathf.Min(size.x*.65f,18f),1.15f,.2f), trim);
                 }
             }
         }
