@@ -50,6 +50,9 @@ namespace SheriffAmericanLife
         private MobilePerformanceBootstrap performanceSettings;
         private bool settingsOpen;
 
+        private float UiWidth => Screen.safeArea.width;
+        private float UiHeight => Screen.safeArea.height;
+
         public void Initialize(Transform worldRoot)
         {
             this.worldRoot = worldRoot;
@@ -155,12 +158,17 @@ namespace SheriffAmericanLife
 
         private void OnGUI()
         {
+            Rect safeArea = Screen.safeArea;
+            Matrix4x4 previousGuiMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Translate(new Vector3(
+                safeArea.xMin, Screen.height - safeArea.yMax, 0f)) * previousGuiMatrix;
+
             if (buttonStyle == null)
             {
                 buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 18, wordWrap = true };
                 statusStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, normal = { textColor = Color.white } };
             }
-            float s = Mathf.Clamp(Screen.width / 390f, .8f, 1.25f);
+            float s = Mathf.Clamp(UiWidth / 390f, .8f, 1.25f);
             float w = 66f*s, h = 58f*s, pad = 12f*s;
             if (settingsOpen)
             {
@@ -169,16 +177,17 @@ namespace SheriffAmericanLife
                 steering = 0f;
                 if (walker != null) walker.SetSprint(false);
                 DrawSettingsPanel(s);
+                GUI.matrix = previousGuiMatrix;
                 return;
             }
             GUI.Label(new Rect(pad, pad, 260*s, 30*s), dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY", statusStyle);
-            if (GUI.Button(new Rect(Screen.width-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
+            if (GUI.Button(new Rect(UiWidth-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
                 ToggleVehicle();
-            if (GUI.Button(new Rect(Screen.width-112*s,pad+50*s,100*s,42*s), dutyState != null && dutyState.IsOnDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
+            if (GUI.Button(new Rect(UiWidth-112*s,pad+50*s,100*s,42*s), dutyState != null && dutyState.IsOnDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
                 dutyState.ToggleDuty();
-            if (GUI.Button(new Rect(Screen.width-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
+            if (GUI.Button(new Rect(UiWidth-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
                 cameraModes.ToggleCameraMode();
-            if (GUI.Button(new Rect(Screen.width-112*s,pad+150*s,100*s,42*s), "SETTINGS", buttonStyle))
+            if (GUI.Button(new Rect(UiWidth-112*s,pad+150*s,100*s,42*s), "SETTINGS", buttonStyle))
                 settingsOpen = !settingsOpen;
 
             DrawCivilianInteractionHud(s, pad);
@@ -188,11 +197,11 @@ namespace SheriffAmericanLife
             if (!inVehicle)
             {
                 moveInput = Vector2.zero;
-                if (GUI.RepeatButton(new Rect(pad+w+4*s,Screen.height-h*2-pad,w,h), "▲", buttonStyle)) moveInput.y = 1;
-                if (GUI.RepeatButton(new Rect(pad+w+4*s,Screen.height-h-pad,w,h), "▼", buttonStyle)) moveInput.y = -1;
-                if (GUI.RepeatButton(new Rect(pad,Screen.height-h-pad,w,h), "◀", buttonStyle)) moveInput.x = -1;
-                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,Screen.height-h-pad,w,h), "▶", buttonStyle)) moveInput.x = 1;
-                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,Screen.height-h*2-pad,w,h), "SPRINT", buttonStyle))
+                if (GUI.RepeatButton(new Rect(pad+w+4*s,UiHeight-h*2-pad,w,h), "▲", buttonStyle)) moveInput.y = 1;
+                if (GUI.RepeatButton(new Rect(pad+w+4*s,UiHeight-h-pad,w,h), "▼", buttonStyle)) moveInput.y = -1;
+                if (GUI.RepeatButton(new Rect(pad,UiHeight-h-pad,w,h), "◀", buttonStyle)) moveInput.x = -1;
+                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,UiHeight-h-pad,w,h), "▶", buttonStyle)) moveInput.x = 1;
+                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,UiHeight-h*2-pad,w,h), "SPRINT", buttonStyle))
                     walker.SetSprint(true);
                 else walker.SetSprint(false);
                 throttle = 0f; steering = 0f;
@@ -200,23 +209,24 @@ namespace SheriffAmericanLife
             else
             {
                 moveInput = Vector2.zero;
-                if (GUI.RepeatButton(new Rect(pad,Screen.height-h-pad,w,h), "LEFT", buttonStyle)) steering = -1;
-                else if (GUI.RepeatButton(new Rect(pad+w+4*s,Screen.height-h-pad,w,h), "RIGHT", buttonStyle)) steering = 1;
+                if (GUI.RepeatButton(new Rect(pad,UiHeight-h-pad,w,h), "LEFT", buttonStyle)) steering = -1;
+                else if (GUI.RepeatButton(new Rect(pad+w+4*s,UiHeight-h-pad,w,h), "RIGHT", buttonStyle)) steering = 1;
                 else steering = 0;
-                if (GUI.RepeatButton(new Rect(Screen.width-w-pad,Screen.height-h-pad,w,h), "GAS", buttonStyle)) throttle = 1;
-                else if (GUI.RepeatButton(new Rect(Screen.width-w-pad,Screen.height-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
+                if (GUI.RepeatButton(new Rect(UiWidth-w-pad,UiHeight-h-pad,w,h), "GAS", buttonStyle)) throttle = 1;
+                else if (GUI.RepeatButton(new Rect(UiWidth-w-pad,UiHeight-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
                 else throttle = 0;
             }
 
+            GUI.matrix = previousGuiMatrix;
         }
 
         private void DrawSettingsPanel(float scale)
         {
-            scale = Mathf.Min(scale, Mathf.Max(.6f, (Screen.height - 20f) / 330f));
+            scale = Mathf.Min(scale, Mathf.Max(.6f, (UiHeight - 20f) / 330f));
             float width = 330f * scale;
             float height = 330f * scale;
-            float x = (Screen.width - width) * .5f;
-            float y = (Screen.height - height) * .5f;
+            float x = (UiWidth - width) * .5f;
+            float y = (UiHeight - height) * .5f;
             GUI.Box(new Rect(x, y, width, height), "GAME SETTINGS");
 
             GUI.Label(new Rect(x + 14f * scale, y + 34f * scale, width - 28f * scale, 24f * scale),
@@ -339,7 +349,7 @@ namespace SheriffAmericanLife
         {
             if (!inVehicle) return;
 
-            float x = Screen.width - 112f * scale;
+            float x = UiWidth - 112f * scale;
             float y = padding + 150f * scale;
             if (activeTrafficStop != null)
             {
@@ -407,7 +417,7 @@ namespace SheriffAmericanLife
                     }
                 }
 
-                if (GUI.Button(new Rect(x, Screen.height - 112f * scale, 112f * scale, 42f * scale),
+                if (GUI.Button(new Rect(x, UiHeight - 112f * scale, 112f * scale, 42f * scale),
                     activeTrafficStop.IsPulledOver ? "END STOP" : "CANCEL STOP", buttonStyle))
                     EndTrafficStop();
             }
@@ -519,7 +529,7 @@ namespace SheriffAmericanLife
             if (pending == null) return;
 
             float distance = Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition);
-            float x = Screen.width - 150f * scale;
+            float x = UiWidth - 150f * scale;
             float y = padding + 150f * scale;
             GUI.Label(new Rect(x, y, 145f * scale, 48f * scale),
                 "JAIL INTAKE  " + distance.ToString("0") + " m", statusStyle);
@@ -725,7 +735,7 @@ namespace SheriffAmericanLife
             float buttonWidth = 76f * scale;
             float buttonHeight = 36f * scale;
             float gap = 5f * scale;
-            float x = Screen.width - (buttonWidth * 2f + gap + padding);
+            float x = UiWidth - (buttonWidth * 2f + gap + padding);
             float y = padding + 150f * scale;
 
             if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "GREET", buttonStyle))
