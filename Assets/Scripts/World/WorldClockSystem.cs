@@ -74,6 +74,11 @@ namespace SheriffAmericanLife
                 float daylight = Mathf.Clamp01(Mathf.Sin(normalized * Mathf.PI * 2f - Mathf.PI * .5f) * .5f + .5f);
                 sun.intensity = sunIntensity.Evaluate(daylight) * (weather == FloridaWeather.Cloudy ? .55f : weather == FloridaWeather.Rain ? .38f : 1f);
                 sun.color = sunlight.Evaluate(daylight);
+                sun.shadows = LightShadows.Soft;
+                sun.shadowStrength = .82f;
+                sun.shadowBias = .045f;
+                sun.shadowNormalBias = .35f;
+                RenderSettings.sun = sun;
             }
         }
 
@@ -88,7 +93,14 @@ namespace SheriffAmericanLife
                 _ => clearAmbient
             };
             RenderSettings.fog = weather == FloridaWeather.Fog || weather == FloridaWeather.Rain;
-            RenderSettings.fogDensity = weather == FloridaWeather.Fog ? .012f : weather == FloridaWeather.Rain ? .004f : 0f;
+            RenderSettings.fogMode = FogMode.ExponentialSquared;
+            RenderSettings.fogColor = weather == FloridaWeather.Fog
+                ? new Color(.62f,.66f,.69f)
+                : weather == FloridaWeather.Rain
+                    ? new Color(.38f,.43f,.49f)
+                    : new Color(.68f,.73f,.78f);
+            // Keep weather haze subtle enough to preserve visibility on a small screen.
+            RenderSettings.fogDensity = weather == FloridaWeather.Fog ? .0035f : weather == FloridaWeather.Rain ? .0012f : 0f;
         }
 
         private static string FormatTime(float hour)
