@@ -59,7 +59,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - The iOS pre-build hook previously overrode the project setup's iPhone+iPad setting with iPhone-only. It has now been corrected to iPhoneAndiPad.
 - Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
 - Editor setup now configures the generated URP asset for HDR, 2x MSAA, 1.0 render scale, SRP Batcher, 45 m shadows, two cascades, 2048 main-light shadow map, soft main-light shadows, no additional-light shadows, up to two additional lights per object, and no depth/opaque textures by default. Runtime baseline sets a 60 FPS target, disables VSync, uses LOD bias 1.0, and enables a 256 MB mipmap-streaming budget. These are provisional settings, not measured performance results.
-- Decorative world-dressing colliders are removed, their owned materials are cleaned up, the duplicate editor-created sun is removed, and world-clock lighting updates are throttled.
+- Decorative world-dressing colliders are removed, their owned materials are cleaned up, the duplicate editor-created sun is removed, and world-clock lighting updates are throttled. Civilian traffic shares common materials and uses property blocks for paint; patrol SUV materials are released on teardown.
 - No Unity compilation, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
 
 ## Release discipline
