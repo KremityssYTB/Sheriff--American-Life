@@ -84,3 +84,8 @@ Treat each unchecked gate as unverified, not as complete. Prioritize build/insta
 - This browser preview is not a Unity WebGL build, not the native iOS/iPadOS game, and not an IPA. It loads Three.js from jsDelivr and requires network access and WebGL 2.
 - The map, buildings, traffic, and vehicle are procedural placeholders. Browser-side driving is simplified and does not validate Unity physics or C# systems.
 - Source is committed; Pages deployment and all browser/device tests remain unverified.
+
+
+- [x] GitHub Pages deployment workflow completed successfully for the Three.js preview (run #8, commit de0e4a142792d6d3fbee67a1ce5a045938e93f7a).
+- Published preview URL: https://kremityssytb.github.io/Sheriff--American-Life/
+- [ ] Confirm the published page loads and renders in iPhone Safari and iPadOS Safari; workflow success alone is not a device test.
