@@ -123,6 +123,23 @@ namespace SheriffAmericanLife
             if (interactions != null) interactions.ArrestCompleted -= HandleArrestCompleted;
         }
 
+        private void OnDisable()
+        {
+            moveInput = Vector2.zero;
+            throttle = 0f;
+            steering = 0f;
+            if (walker != null)
+            {
+                walker.SetMoveInput(Vector2.zero);
+                walker.SetSprint(false);
+            }
+            if (vehicle != null)
+            {
+                vehicle.SetThrottle(0f);
+                vehicle.SetSteering(0f);
+            }
+        }
+
         private void Update()
         {
             RefreshCivilianFocus();
@@ -147,6 +164,10 @@ namespace SheriffAmericanLife
             float w = 66f*s, h = 58f*s, pad = 12f*s;
             if (settingsOpen)
             {
+                moveInput = Vector2.zero;
+                throttle = 0f;
+                steering = 0f;
+                if (walker != null) walker.SetSprint(false);
                 DrawSettingsPanel(s);
                 return;
             }
