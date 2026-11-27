@@ -37,6 +37,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - [ ] No crash during a 30-minute patrol session.
 - [ ] No unbounded growth in active traffic, civilians, incident actors, materials, or UI objects.
 - [ ] Profile CPU, GPU, memory, thermal behavior, and frame pacing on the lowest supported iPhone and iPad.
+- [ ] Inspect the generated URP asset/renderer in Unity and validate SRP Batcher, main-light shadows, additional-light policy, render scale, MSAA, and texture streaming settings against device captures.
 - [ ] Verify quality settings and frame-rate cap for target devices.
 - [ ] Test low-storage behavior and interrupted app suspension/resume.
 - [ ] Resolve all reproducible critical/high-severity bugs before inviting external testers.
