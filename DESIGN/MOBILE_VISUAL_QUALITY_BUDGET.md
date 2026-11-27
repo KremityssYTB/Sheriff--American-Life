@@ -28,7 +28,7 @@ Editor setup now configures the generated URP asset with HDR enabled, 2x MSAA, r
 `MobilePerformanceBootstrap` now applies:
 - 60 FPS target with VSync disabled for mobile frame pacing.
 - LOD bias of 1.0.
-- 45 m global shadow distance and two cascades as a starting point.
+- 45 m shadow distance and two cascades applied directly to the active URP asset, with QualitySettings fallback if URP is not active.
 - Background loading priority below normal.
 - Mipmap streaming enabled with a 256 MB budget; this only helps textures authored with mipmap streaming enabled.
 
