@@ -39,7 +39,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - [ ] Profile CPU, GPU, memory, thermal behavior, and frame pacing on the lowest supported iPhone and iPad.
 - [ ] Inspect the generated URP asset and renderer in Unity; validate SRP Batcher, HDR/MSAA, shadow settings, render scale, and texture streaming on target devices.
 - [ ] Inspect the generated URP asset/renderer in Unity and validate SRP Batcher, main-light shadows, additional-light policy, render scale, MSAA, and texture streaming settings against device captures.
-- [ ] Verify quality settings and frame-rate cap for target devices.
+- [ ] Verify quality presets and 30/60/120/Unlimited frame-rate options on supported devices; confirm ProMotion plist output and sustained frame pacing.
 - [ ] Test low-storage behavior and interrupted app suspension/resume.
 - [ ] Resolve all reproducible critical/high-severity bugs before inviting external testers.
 
@@ -62,7 +62,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - Decorative world-dressing colliders are removed, their owned materials are cleaned up, the duplicate editor-created sun is removed, and world-clock lighting updates are throttled. Civilian traffic shares common materials and uses property blocks for paint; patrol SUV materials are released on teardown.
 - An editor-only vehicle prefab validator is now in source at `Assets/Editor/VehiclePrefabValidator.cs`. It checks catalog prefabs for renderers, missing meshes/materials, LODGroup, root scale, renderer/material-slot budgets, and recommended hierarchy anchors. It has not yet been run in Unity.
 - `DESIGN/VEHICLE_VISUAL_ASSET_STANDARD.md` defines asset licensing/provenance, prefab hierarchy, axes, wheel/light/interior anchors, LODs, material budgets, and the integration sequence. No production vehicle model is integrated yet.
-- No Unity compilation, editor validation run, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
+- The new Settings panel, frame-rate persistence, and iOS ProMotion postprocessor are source-only changes. No Unity compilation, editor validation run, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
 
 ## Release discipline
 
