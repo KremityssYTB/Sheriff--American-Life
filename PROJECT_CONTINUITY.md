@@ -342,3 +342,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Visual distinctions include pickup bed/rails, taller SUV cabin and cladding, muscle-car hood scoop/spoiler, and low/wide exotic body with front splitter, rear diffuser, and engine cover.
 - These are generic unbranded placeholder designs, not exact Ford, Dodge, Toyota, or Lamborghini vehicles. Exact branded models require licensed/original production meshes and rights to use associated trademarks.
 - No Unity compilation, Play Mode, collision/clearance inspection, or iPhone/iPad runtime test has been performed. Source-only milestone.
+
+
+## Vehicle catalog and downloadable content direction (2026-11-27)
+
+- Commit `013242228d25f32756319db7a2aff82f1feed96f` adds `Assets/Scripts/Vehicle/VehicleModelCatalog.cs`: an expandable historical vehicle catalog with model/year/manufacturer/style, traffic weight, speed multiplier, and optional visual prefab. Its representative built-in lineup spans early classics through modern models and includes Ford, Dodge, Toyota, Lamborghini, and other manufacturers. The built-in entries do not contain actual 3D models; until real original/properly licensed prefabs are assigned, the existing generic procedural silhouettes remain the fallback.
+- Commit `e347117be2b983d4c6eb3fad32082059725aa859` updates `CountyWorldBootstrap` to select a catalog entry for each spawned traffic actor, apply its style/speed profile, and instantiate an assigned visual prefab as a child while preserving the existing root physics and traffic AI. The current test scene still spawns only eight traffic actors.
+- Commit `481b13b20eb85264f027d57fe34776212fdfe4e4` adds `Assets/Scripts/Content/ContentPackCatalog.cs`, a ScriptableObject manifest for stable pack IDs, categories, versions, estimated sizes, HTTPS bundle URLs, SHA-256 metadata, dependencies, base-install inclusion, and removability.
+- Commit `61824b55c3be24cee7ae2f663f6267e9f5bbc25a` adds `DESIGN/DOWNLOADABLE_CONTENT_ARCHITECTURE.md`. Target model: compact core game plus optional vehicle collections, county expansions, departments, interiors/businesses, gameplay systems, and audio/visual packs. It defines storage checks, integrity verification, dependencies, streaming, Wi-Fi preference, and safe uninstall requirements.
+- The catalog/manifest are foundations only. No CDN, hosted bundles, remote manifest, in-game store/browser, actual downloader, resume logic, storage reservation, SHA verification pipeline, or pack install/uninstall workflow exists yet. Actual car meshes and other pack assets must still be imported and packaged.
+- Source changes are committed but have not been compiled in Unity or tested in Play Mode/iOS on device.
