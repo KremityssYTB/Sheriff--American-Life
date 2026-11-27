@@ -99,6 +99,7 @@ namespace SheriffAmericanLife.Editor
             pipeline.renderScale = 1f;
             pipeline.shadowDistance = 45f;
             pipeline.shadowCascadeCount = 2;
+            pipeline.mainLightShadowmapResolution = 2048;
             pipeline.useSRPBatcher = true;
             pipeline.supportsDynamicBatching = false;
             pipeline.supportsCameraDepthTexture = false;
@@ -113,6 +114,8 @@ namespace SheriffAmericanLife.Editor
             if (mainShadows != null) mainShadows.boolValue = true;
             SerializedProperty additionalShadows = serialized.FindProperty("m_AdditionalLightShadowsSupported");
             if (additionalShadows != null) additionalShadows.boolValue = false;
+            SerializedProperty softShadows = serialized.FindProperty("m_SoftShadowsSupported");
+            if (softShadows != null) softShadows.boolValue = true;
             serialized.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(pipeline);
         }
