@@ -323,3 +323,5 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Civilian traffic roots preserve their Rigidbody and waypoint AI, use unit transform scale, and receive a lengthwise 1.9 × 1.25 × 4.2 box collider. Visual child colliders are removed.
 - This is still primitive placeholder geometry and has not been compiled or visually/performance tested in Unity. Confirm sedan heading, collider fit, wheel-ground contact, and mobile performance in Play Mode before treating it as verified.
 - Next: replace procedural car parts with original/licensed production meshes and PBR textures; add interior geometry and wheel animation only after basic runtime validation.
+
+- Follow-up commit `9096c0ba0be33664d7a94ed7a5e62223348050d8` adds first-pass patrol SUV cabin geometry: dashboard, instrument hood, center display/console, shifter, steering column/wheel, front seats/headrests, rear seating, and footwells. These details have not been inspected in Unity; verify visibility through the glazing and check for intersections before further refinement.
