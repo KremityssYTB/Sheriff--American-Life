@@ -331,3 +331,5 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 
 - Commit `a00aa680236aa8319cefc6372bc84b6b7c8deba8` updates `WorldClockSystem`: active sun is assigned to `RenderSettings.sun`, soft shadows and bias/strength are configured, and weather fog now uses Exponential Squared mode with color-tinted, lower-density haze for Fog/Rain.
 - No Unity compile or visual/performance validation has been performed. Soft shadows may be expensive on older supported devices and will need quality-tier tuning after profiling.
+
+- Commit `5754f76033a4966afbc6b18ddc567216625aefb5` changes the iOS player target from iPhone-only to iPhone + iPad, matching the stated supported-device goal. Minimum supported hardware/iOS still needs to be defined and tested.
