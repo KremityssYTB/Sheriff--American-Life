@@ -423,3 +423,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `8db4deeef0bae5415071440f80f5a1854d4077e7` clears walking, sprint, throttle, and steering inputs while the Settings modal is open. This prevents a held sprint/gas input from remaining active behind the modal.
 - The same change adds `OnDisable` cleanup to release movement and vehicle inputs when the player runtime controller is disabled.
 - Static source checks only; Unity compilation and actual touch-input behavior remain unverified.
+
+
+## HUD safe-area pass (2026-11-27)
+
+- Commit `855fcd7f832714bd04cdcb0c2358ba64888dee92` moves the existing IMGUI HUD into the current `Screen.safeArea` rectangle. HUD layout width/height calculations now use the safe-area dimensions, and the GUI matrix is restored after both the Settings-modal and normal HUD draw paths.
+- This is a first safe-area accommodation for notches, rounded corners, and home-indicator insets on iPhone/iPad. It is not a finished responsive UI; actual orientation changes, smallest supported screens, split-screen iPad layouts, and touch hit targets still require Unity/device validation.
+- Static source review only; no Unity compilation or visual/device test was performed.
