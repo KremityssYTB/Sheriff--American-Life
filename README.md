@@ -194,3 +194,10 @@ All art, audio, and models must be original or properly licensed.
 - The existing root vehicle object and simplified root collider remain in place so the current vehicle entry, movement, and interaction code continues to use the same transform. Detail-part primitive colliders are removed. Existing red/blue lightbar controller is retained and positioned above the roof.
 - This is still placeholder procedural geometry and not a photoreal production vehicle. A licensed/original high-quality vehicle mesh, proper UVs and texture maps, physically accurate glass/paint, interior, suspension, wheel animation, and lighting/reflection work remain future tasks.
 - No Unity compile, Play Mode, visual inspection, or mobile performance test has been run; the source changes are committed but not runtime-verified.
+
+
+## Civilian traffic vehicle visual pass (2026-11-27)
+
+- Added `TrafficVehicleVisuals` and applied it to generated civilian traffic cars. Sedan actors now have a lengthwise body/cabin silhouette, tinted glass, mirrors, side sills, four tire/alloy assemblies, headlamps, tail lamps, and bumpers instead of visible colored cubes.
+- Traffic actor roots now use unit transform scale with a lengthwise box collider (1.9 wide × 1.25 high × 4.2 long); existing Rigidbody and waypoint AI components remain on the same root.
+- This remains procedural placeholder geometry, not final vehicle art. No Unity compile, Play Mode, collision inspection, or iPhone performance test has been run.
