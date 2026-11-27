@@ -194,6 +194,11 @@ namespace SheriffAmericanLife
         {
             GameObject vehicle = Make(vehicleName, PrimitiveType.Cube, position,
                 new Vector3(4.2f,1.25f,1.9f), color);
+            // Keep the physics root at unit scale and use a lengthwise sedan collision box.
+            vehicle.transform.localScale = Vector3.one;
+            BoxCollider vehicleCollider = vehicle.GetComponent<BoxCollider>();
+            if (vehicleCollider != null) vehicleCollider.size = new Vector3(1.9f,1.25f,4.2f);
+            vehicle.AddComponent<TrafficVehicleVisuals>().Build(color);
             Rigidbody body = vehicle.AddComponent<Rigidbody>();
             body.mass = 1150f;
             CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
