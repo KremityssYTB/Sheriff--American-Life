@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace SheriffAmericanLife
 {
@@ -27,8 +29,18 @@ namespace SheriffAmericanLife
             QualitySettings.vSyncCount = 0;
 
             QualitySettings.lodBias = lodBias;
-            QualitySettings.shadowDistance = shadowDistance;
-            QualitySettings.shadowCascades = shadowCascades;
+
+            UniversalRenderPipelineAsset urp = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            if (urp != null)
+            {
+                urp.shadowDistance = shadowDistance;
+                urp.shadowCascadeCount = shadowCascades;
+            }
+            else
+            {
+                QualitySettings.shadowDistance = shadowDistance;
+                QualitySettings.shadowCascades = shadowCascades;
+            }
 
             // This only benefits textures authored with mipmap streaming enabled.
             QualitySettings.streamingMipmapsActive = true;
