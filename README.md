@@ -201,3 +201,5 @@ All art, audio, and models must be original or properly licensed.
 - Added `TrafficVehicleVisuals` and applied it to generated civilian traffic cars. Sedan actors now have a lengthwise body/cabin silhouette, tinted glass, mirrors, side sills, four tire/alloy assemblies, headlamps, tail lamps, and bumpers instead of visible colored cubes.
 - Traffic actor roots now use unit transform scale with a lengthwise box collider (1.9 wide × 1.25 high × 4.2 long); existing Rigidbody and waypoint AI components remain on the same root.
 - This remains procedural placeholder geometry, not final vehicle art. No Unity compile, Play Mode, collision inspection, or iPhone performance test has been run.
+
+- Follow-up: added a first-pass SUV cabin interior with dashboard, instrument hood, center screen/console, gear selector, steering column/wheel, front bucket seats, rear seating, and footwells. This is visible placeholder geometry, not a finished cockpit; no interior materials/textures, functional instruments, or runtime validation yet.
