@@ -56,7 +56,33 @@ namespace SheriffAmericanLife
             part.transform.localScale = scale;
             Renderer renderer = part.GetComponent<Renderer>();
             if (renderer != null) renderer.sharedMaterial = material;
+
+            // These pieces are visual dressing only. The underlying road/building
+            // collision remains on the gameplay geometry, so decorative colliders
+            // only add needless physics broadphase and contact work.
+            Collider decorativeCollider = part.GetComponent<Collider>();
+            if (decorativeCollider != null) Destroy(decorativeCollider);
             return part;
+        }
+
+        private void OnDestroy()
+        {
+            DestroyOwnedMaterial(asphalt);
+            DestroyOwnedMaterial(lanePaint);
+            DestroyOwnedMaterial(concrete);
+            DestroyOwnedMaterial(curb);
+            DestroyOwnedMaterial(glass);
+            DestroyOwnedMaterial(trim);
+            DestroyOwnedMaterial(foliage);
+            DestroyOwnedMaterial(trunk);
+            DestroyOwnedMaterial(warmLight);
+            DestroyOwnedMaterial(metal);
+            DestroyOwnedMaterial(roof);
+        }
+
+        private static void DestroyOwnedMaterial(Material material)
+        {
+            if (material != null) Destroy(material);
         }
 
         private void DressRoads()
