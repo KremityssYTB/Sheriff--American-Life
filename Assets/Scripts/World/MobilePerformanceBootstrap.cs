@@ -4,47 +4,115 @@ using UnityEngine.Rendering.Universal;
 
 namespace SheriffAmericanLife
 {
+    public enum MobileVisualQualityPreset
+    {
+        Performance = 0,
+        Balanced = 1,
+        High = 2
+    }
+
     /// <summary>
-    /// Applies a conservative mobile baseline before the generated county scene
-    /// becomes active. Final device tiers must be tuned from Unity Profiler data.
+    /// Applies one of the game's mobile visual presets. Defaults are provisional
+    /// and must be tuned using Unity Profiler captures on supported devices.
     /// </summary>
     [DefaultExecutionOrder(-1000)]
     public sealed class MobilePerformanceBootstrap : MonoBehaviour
     {
-        [Header("Frame pacing")]
-        [SerializeField, Range(30, 120)] private int targetFrameRate = 60;
+        private const string QualityPreferenceKey = "Sheriff.MobileVisualQuality";
 
-        [Header("Mobile quality baseline")]
-        [SerializeField, Range(.5f, 2f)] private float lodBias = 1f;
-        [SerializeField, Min(0f)] private float shadowDistance = 45f;
-        [SerializeField, Range(0, 4)] private int shadowCascades = 2;
-
-        [Header("Texture streaming")]
+        [SerializeField] private MobileVisualQualityPreset defaultPreset = MobileVisualQualityPreset.Balanced;
         [SerializeField, Min(64f)] private float streamingMemoryBudgetMb = 256f;
+
+        public MobileVisualQualityPreset CurrentPreset { get; private set; }
 
         private void Awake()
         {
-            Application.targetFrameRate = targetFrameRate;
             Application.backgroundLoadingPriority = ThreadPriority.BelowNormal;
             QualitySettings.vSyncCount = 0;
+            QualitySettings.streamingMipmapsActive = true;
+            QualitySettings.streamingMipmapsMemoryBudget = streamingMemoryBudgetMb;
 
+            int saved = PlayerPrefs.GetInt(QualityPreferenceKey, (int)defaultPreset);
+            if (!System.Enum.IsDefined(typeof(MobileVisualQualityPreset), saved))
+                saved = (int)defaultPreset;
+
+            ApplyPreset((MobileVisualQualityPreset)saved, false);
+        }
+
+        /// <summary>
+        /// Called by the future Settings UI. Saves the user's choice when requested.
+        /// </summary>
+        public void SetPreset(MobileVisualQualityPreset preset)
+        {
+            ApplyPreset(preset, true);
+        }
+
+        private void ApplyPreset(MobileVisualQualityPreset preset, bool save)
+        {
+            CurrentPreset = preset;
+
+            float lodBias;
+            float shadowDistance;
+            int shadowCascades;
+            int msaaSamples;
+            float renderScale;
+            bool hdr;
+            int frameRate;
+
+            switch (preset)
+            {
+                case MobileVisualQualityPreset.Performance:
+                    lodBias = 0.7f;
+                    shadowDistance = 18f;
+                    shadowCascades = 1;
+                    msaaSamples = 2;
+                    renderScale = 0.85f;
+                    hdr = false;
+                    frameRate = 30;
+                    break;
+
+                case MobileVisualQualityPreset.High:
+                    lodBias = 1.25f;
+                    shadowDistance = 50f;
+                    shadowCascades = 2;
+                    msaaSamples = 4;
+                    renderScale = 1f;
+                    hdr = true;
+                    frameRate = 60;
+                    break;
+
+                default:
+                    CurrentPreset = MobileVisualQualityPreset.Balanced;
+                    lodBias = 1f;
+                    shadowDistance = 35f;
+                    shadowCascades = 2;
+                    msaaSamples = 2;
+                    renderScale = 1f;
+                    hdr = true;
+                    frameRate = 60;
+                    break;
+            }
+
+            Application.targetFrameRate = frameRate;
             QualitySettings.lodBias = lodBias;
+            QualitySettings.shadowDistance = shadowDistance;
+            QualitySettings.shadowCascades = shadowCascades;
 
             UniversalRenderPipelineAsset urp = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             if (urp != null)
             {
                 urp.shadowDistance = shadowDistance;
                 urp.shadowCascadeCount = shadowCascades;
-            }
-            else
-            {
-                QualitySettings.shadowDistance = shadowDistance;
-                QualitySettings.shadowCascades = shadowCascades;
+                urp.msaaSampleCount = msaaSamples;
+                urp.renderScale = renderScale;
+                urp.supportsHDR = hdr;
             }
 
-            // This only benefits textures authored with mipmap streaming enabled.
-            QualitySettings.streamingMipmapsActive = true;
-            QualitySettings.streamingMipmapsMemoryBudget = streamingMemoryBudgetMb;
+            if (save)
+            {
+                PlayerPrefs.SetInt(QualityPreferenceKey, (int)CurrentPreset);
+                PlayerPrefs.Save();
+            }
         }
     }
 }
