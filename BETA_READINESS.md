@@ -39,7 +39,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - [ ] Profile CPU, GPU, memory, thermal behavior, and frame pacing on the lowest supported iPhone and iPad.
 - [ ] Inspect the generated URP asset and renderer in Unity; validate SRP Batcher, HDR/MSAA, shadow settings, render scale, and texture streaming on target devices.
 - [ ] Inspect the generated URP asset/renderer in Unity and validate SRP Batcher, main-light shadows, additional-light policy, render scale, MSAA, and texture streaming settings against device captures.
-- [ ] Verify quality presets and 30/60/120/Unlimited frame-rate options on supported devices; confirm ProMotion plist output and sustained frame pacing.
+- [ ] Verify Performance/Balanced/High graphics presets and 30/60/120/Unlimited frame-rate options on supported devices; confirm ProMotion plist output, modal touch blocking, safe-area behavior, and sustained frame pacing.
 - [ ] Test low-storage behavior and interrupted app suspension/resume.
 - [ ] Resolve all reproducible critical/high-severity bugs before inviting external testers.
 
@@ -54,7 +54,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 
 - Core prototype systems exist in source: player movement, patrol driving, camera modes, dispatch/incident generation, civilian interactions, traffic stops, citations, arrest/escort/transport/booking, and mobile MDT.
 - The world is still a generated blockout with primitive geometry. Vehicle catalog entries are metadata; actual production car models are not yet integrated.
-- Touch HUD is currently an immediate-mode Unity GUI prototype, not a finished production mobile interface.
+- Touch HUD and Settings are currently immediate-mode Unity GUI prototypes, not finished production mobile interfaces. Settings now exposes independently saved Performance/Balanced/High graphics presets and 30/60/120/Unlimited frame-rate modes.
 - Optional downloadable-content metadata exists, but no live content browser/downloader/CDN is implemented.
 - The iOS pre-build hook previously overrode the project setup's iPhone+iPad setting with iPhone-only. It has now been corrected to iPhoneAndiPad.
 - Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
