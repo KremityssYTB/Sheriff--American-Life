@@ -80,12 +80,13 @@ namespace SheriffAmericanLife
             patrolVehicle.transform.position = new Vector3(-3f, .8f, -28f);
             patrolVehicle.transform.localScale = new Vector3(2.1f, 1.45f, 4.4f);
             patrolVehicle.GetComponent<Renderer>().material.color = new Color(.08f,.1f,.14f);
+            patrolVehicle.AddComponent<PatrolSuvVisuals>().Build();
             vehicle = patrolVehicle.AddComponent<PatrolVehicleController>();
             vehicle.SetControlsEnabled(false);
 
-            Renderer redLight = CreateLightbarSegment("Red Emergency Light", new Vector3(-.42f,.79f,0f),
+            Renderer redLight = CreateLightbarSegment("Red Emergency Light", new Vector3(-.42f,1.13f,-.12f),
                 new Vector3(.62f,.13f,.34f), new Color(.95f,.04f,.04f));
-            Renderer blueLight = CreateLightbarSegment("Blue Emergency Light", new Vector3(.42f,.79f,0f),
+            Renderer blueLight = CreateLightbarSegment("Blue Emergency Light", new Vector3(.42f,1.13f,-.12f),
                 new Vector3(.62f,.13f,.34f), new Color(.04f,.18f,1f));
             lightbar = patrolVehicle.AddComponent<CountyEmergencyLightbar>();
             lightbar.Configure(redLight, blueLight, 3f);
