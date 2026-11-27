@@ -18,7 +18,11 @@ namespace SheriffAmericanLife
         [ContextMenu("Generate Test County")]
         public void GenerateWorld()
         {
-            if (root != null) Destroy(root.gameObject);
+            if (root != null)
+            {
+                TrafficVehicleVisuals.ReleaseSharedMaterials();
+                Destroy(root.gameObject);
+            }
             root = new GameObject("Marion_County_Ocala_Blockout").transform;
             root.SetParent(transform, false);
             root.gameObject.AddComponent<MobilePerformanceBootstrap>();
