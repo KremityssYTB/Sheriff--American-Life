@@ -38,7 +38,7 @@ namespace SheriffAmericanLife.Editor
             PlayerSettings.SetScriptingBackend(
                 BuildTargetGroup.iOS,
                 ScriptingImplementation.IL2CPP);
-            PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneOnly;
+            PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneAndiPad;
             PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
         }
     }
