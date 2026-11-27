@@ -45,6 +45,7 @@ namespace SheriffAmericanLife.Editor
                 SettingsFolder + "/SHERIFF_Mobile_URP.asset");
             if (existing != null)
             {
+                ConfigureUrpAsset(existing);
                 GraphicsSettings.defaultRenderPipeline = existing;
                 QualitySettings.renderPipeline = existing;
                 return;
@@ -84,8 +85,36 @@ namespace SheriffAmericanLife.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             AssetDatabase.CreateAsset(pipeline, pipelinePath);
+            ConfigureUrpAsset(pipeline);
             GraphicsSettings.defaultRenderPipeline = pipeline;
             QualitySettings.renderPipeline = pipeline;
+        }
+
+        private static void ConfigureUrpAsset(UniversalRenderPipelineAsset pipeline)
+        {
+            // Balanced high-quality mobile starting point. Device profiling may
+            // justify separate URP assets for lower tiers later.
+            pipeline.supportsHDR = true;
+            pipeline.msaaSampleCount = 2;
+            pipeline.renderScale = 1f;
+            pipeline.shadowDistance = 45f;
+            pipeline.shadowCascadeCount = 2;
+            pipeline.useSRPBatcher = true;
+            pipeline.supportsDynamicBatching = false;
+            pipeline.supportsCameraDepthTexture = false;
+            pipeline.supportsCameraOpaqueTexture = false;
+            pipeline.maxAdditionalLightsCount = 2;
+            pipeline.additionalLightsShadowmapResolution = 256;
+
+            // Main-light shadows stay enabled; additional-light shadows are
+            // disabled to avoid multiplying shadow passes on mobile.
+            var serialized = new SerializedObject(pipeline);
+            SerializedProperty mainShadows = serialized.FindProperty("m_MainLightShadowsSupported");
+            if (mainShadows != null) mainShadows.boolValue = true;
+            SerializedProperty additionalShadows = serialized.FindProperty("m_AdditionalLightShadowsSupported");
+            if (additionalShadows != null) additionalShadows.boolValue = false;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(pipeline);
         }
 
         private static MethodInfo FindRendererFactory()
