@@ -222,9 +222,9 @@ namespace SheriffAmericanLife
 
         private void DrawSettingsPanel(float scale)
         {
-            scale = Mathf.Min(scale, Mathf.Max(.6f, (UiHeight - 20f) / 330f));
-            float width = 330f * scale;
-            float height = 330f * scale;
+            scale = Mathf.Min(scale, Mathf.Max(.6f, (UiHeight - 20f) / 360f));
+            float width = 350f * scale;
+            float height = 360f * scale;
             float x = (UiWidth - width) * .5f;
             float y = (UiHeight - height) * .5f;
             GUI.Box(new Rect(x, y, width, height), "GAME SETTINGS");
@@ -262,6 +262,15 @@ namespace SheriffAmericanLife
                 quality, statusStyle);
             GUI.Label(new Rect(x + 14f * scale, y + 264f * scale, width - 28f * scale, 22f * scale),
                 frameRate, statusStyle);
+
+            string performanceReadout = performanceSettings != null &&
+                performanceSettings.MeasuredFramesPerSecond > 0f
+                ? "LIVE: " + performanceSettings.MeasuredFramesPerSecond.ToString("0") +
+                  " FPS  /  " + performanceSettings.MeasuredFrameTimeMilliseconds.ToString("0.0") + " ms"
+                : "LIVE: Measuring frame performance...";
+            GUI.Label(new Rect(x + 14f * scale, y + 290f * scale, width - 130f * scale, 22f * scale),
+                performanceReadout, statusStyle);
+
             if (GUI.Button(new Rect(x + width - 104f * scale, y + height - 46f * scale,
                 90f * scale, 32f * scale), "CLOSE", buttonStyle))
                 settingsOpen = false;
