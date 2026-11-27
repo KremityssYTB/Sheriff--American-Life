@@ -6,7 +6,7 @@ SHERIFF uses one scene and a selectable runtime quality preset rather than separ
 
 | Setting | Performance | Balanced (default) | High |
 |---|---:|---:|---:|
-| Target frame rate | 30 FPS | 60 FPS | 60 FPS |
+| Frame rate | Independently selected in Settings: 30 / 60 / 120 / Unlimited | Independently selected in Settings: 30 / 60 / 120 / Unlimited | Independently selected in Settings: 30 / 60 / 120 / Unlimited |
 | LOD bias | 0.7 | 1.0 | 1.25 |
 | Shadow distance | 18 m | 35 m | 50 m |
 | Shadow cascades | 1 | 2 | 2 |
@@ -18,13 +18,13 @@ These values are not promises of achieved frame rate, battery life, or visual qu
 
 ## Runtime integration
 
-`MobilePerformanceBootstrap` applies the saved preset at startup. The default is Balanced. The future Settings UI can call:
+`MobilePerformanceBootstrap` applies the saved preset at startup. The default is Balanced. The current prototype HUD exposes a Frame Rate panel with 30 FPS, 60 FPS, 120 FPS, and Unlimited. The saved frame-rate mode is independent of the visual-quality preset. Code can call:
 
 - `SetPreset(MobileVisualQualityPreset.Performance)`
 - `SetPreset(MobileVisualQualityPreset.Balanced)`
 - `SetPreset(MobileVisualQualityPreset.High)`
 
-The choice is stored in PlayerPrefs on the device. If no choice has been saved, Balanced is used. The current project has not yet connected these methods to a visible Settings control.
+The quality choice and frame-rate choice are stored separately in PlayerPrefs. The default visual preset is Balanced; the default frame-rate mode is 120 FPS. The current Settings panel is an immediate-mode prototype and needs replacement with production mobile UI.
 
 ## Validation gate
 
