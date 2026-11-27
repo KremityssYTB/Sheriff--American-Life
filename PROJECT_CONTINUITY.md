@@ -358,3 +358,9 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `641ea989535cb07a98725f7f71c012d2a9feace9` fixes a conflicting iOS build setting in `Assets/Editor/EnsureProjectSetupBeforeBuild.cs`: the pre-build hook was overriding the iPhone+iPad setting from `ProjectSetup` and forcing iPhone-only. It now sets `iOSTargetDevice.iPhoneAndiPad`.
 - Commit `aabfd3c3b8974af4cd2b256bfaf8028c7e1780d3` adds `BETA_READINESS.md` with explicit acceptance gates for project import/compile, iOS export/build/sign/install, the patrol gameplay loop, world/traffic, performance/stability, and beta operations.
 - Current source has core prototype systems, but the scene remains a generated blockout and the mobile HUD is still an immediate-mode GUI prototype. No Unity compilation, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device tests have been completed in this work session. Treat all unchecked beta gates as unverified.
+
+
+## Beta handling implementation (2026-11-27)
+
+- Commit `d1ca0c1bad928bc76b0f17a82cc7e8d86ccd910c` replaces direct Transform movement in `PatrolVehicleController` with a required Rigidbody and FixedUpdate-based arcade movement. It configures interpolation, continuous collision detection, mass, and frozen roll/pitch; exposes acceleration, speed, steering, coast drag, and lateral grip tuning.
+- Commit `498ad0c798baa5fbeb9f5dca6c148349ceba7e09` updates beta acceptance gates to require actual patrol vehicle collision/handling tuning. This does not yet provide WheelColliders, suspension, production vehicle meshes, or verified driving feel. Unity compile and device validation remain outstanding.
