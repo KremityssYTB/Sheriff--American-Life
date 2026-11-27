@@ -245,3 +245,10 @@ All art, audio, and models must be original or properly licensed.
 
 - `Assets/Scripts/Vehicle/PatrolVehicleController.cs` now uses a Rigidbody-driven FixedUpdate controller rather than directly translating/rotating the vehicle Transform. It adds configurable acceleration, forward/reverse speed, steering, lateral grip, interpolation, mass, and continuous collision detection.
 - This is an arcade handling foundation only. Wheel-collider suspension, real imported vehicle geometry, handling calibration, and iPhone/iPad collision testing remain outstanding. See `BETA_READINESS.md` for acceptance gates.
+
+
+## 3D mobile browser playtest
+
+The companion preview at web-demo/index.html now uses Three.js 0.180.0 and WebGL for a procedural 3D Ocala test district. It includes mobile touch movement, camera drag, a deputy avatar, patrol SUV, simplified driving, traffic, emergency lights, duty toggle, dispatch calls, and location interactions. It is intended for iPhone/iPad Safari testing while the main game continues in Unity 6.3 + URP.
+
+This is a separate browser prototype, not a Unity WebGL build, native iOS/iPadOS app, or IPA. Three.js loads from jsDelivr, so network access and WebGL 2 are required. The district and assets are procedural placeholders; no Unity C# runtime or game state is shared. GitHub Pages must be enabled with Settings → Pages → Source: GitHub Actions, and the deployment workflow must pass before the preview can be considered live. Browser and device testing are still pending.
