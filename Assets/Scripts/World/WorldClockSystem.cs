@@ -17,6 +17,8 @@ namespace SheriffAmericanLife
         [SerializeField] private Light sun;
         [SerializeField] private Gradient sunlight = new Gradient();
         [SerializeField] private AnimationCurve sunIntensity = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+        [SerializeField, Min(.05f)] private float lightingRefreshInterval = .15f;
+        private float lightingRefreshTimer;
 
         [Header("Weather")]
         [SerializeField] private FloridaWeather weather = FloridaWeather.Clear;
@@ -43,12 +45,21 @@ namespace SheriffAmericanLife
                 CurrentHour += (24f / (minutesPerGameDay * 60f)) * Time.deltaTime;
                 if (CurrentHour >= 24f) CurrentHour -= 24f;
             }
-            UpdateLighting();
+            lightingRefreshTimer += Time.deltaTime;
+            if (lightingRefreshTimer >= lightingRefreshInterval)
+            {
+                lightingRefreshTimer = 0f;
+                UpdateLighting();
+            }
         }
 
         public void SetSun(Light directionalSun)
         {
             sun = directionalSun;
+            if (sun != null)
+            {
+                RenderSettings.sun = sun;
+            }
             UpdateLighting();
         }
 
