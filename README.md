@@ -186,3 +186,11 @@ All art, audio, and models must be original or properly licensed.
 - Materials use the URP Lit shader when available, with authored roughness/smoothness and limited metallic/emissive values. The pass reuses shared materials within the dressing component.
 - This is a procedural blockout enhancement, not GTA 6-level art: buildings, vehicles, people, foliage, and many details are still primitive geometry; no photogrammetry, high-resolution texture sets, advanced reflections, or production lighting have been added.
 - The new geometry has not been profiled. It may need batching/LOD/visibility work before mobile release. Unity compilation, Play Mode, visual inspection, and iPhone performance tests remain outstanding.
+
+
+## Patrol SUV visual pass (2026-11-27)
+
+- Added `PatrolSuvVisuals`, a procedural first-pass Marion County sheriff SUV model with a multi-piece body, raised cabin, tinted windows, trim, mirrors, door handles, running boards, wheel/tire assemblies, alloy faces, grille, lamps, bumpers, plates, roof antenna, and sheriff/county markings.
+- The existing root vehicle object and simplified root collider remain in place so the current vehicle entry, movement, and interaction code continues to use the same transform. Detail-part primitive colliders are removed. Existing red/blue lightbar controller is retained and positioned above the roof.
+- This is still placeholder procedural geometry and not a photoreal production vehicle. A licensed/original high-quality vehicle mesh, proper UVs and texture maps, physically accurate glass/paint, interior, suspension, wheel animation, and lighting/reflection work remain future tasks.
+- No Unity compile, Play Mode, visual inspection, or mobile performance test has been run; the source changes are committed but not runtime-verified.
