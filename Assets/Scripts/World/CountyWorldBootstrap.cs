@@ -15,6 +15,11 @@ namespace SheriffAmericanLife
 
         private void Start() { if (generateOnStart) GenerateWorld(); }
 
+        private void OnDestroy()
+        {
+            TrafficVehicleVisuals.ReleaseSharedMaterials();
+        }
+
         [ContextMenu("Generate Test County")]
         public void GenerateWorld()
         {
