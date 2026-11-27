@@ -315,3 +315,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Model details include multi-piece body/cabin, tinted glass, trim, side mirrors, handles, running boards, four tire/rim assemblies, grille, headlamps, tail lamps, bumpers, plates, antenna, and Marion County Sheriff markings.
 - This remains procedural blockout art, not GTA 6-level realism. It has no final UV/textures, real vehicle mesh, detailed interior, physically based glass implementation, suspension, animated wheels, or verified reflection setup. Unity compilation, Play Mode, visual inspection, and iPhone/iPad performance testing remain outstanding.
 - Next: improve civilian traffic vehicle silhouettes and add a proper shared PBR material/lighting pipeline, then replace placeholder world assets with original or properly licensed high-quality art.
+
+
+## Civilian traffic visual pass (2026-11-27)
+
+- Commit `29ffeffe2235c5f506337ecf678a42cd6b3e8254` adds `Assets/Scripts/Vehicle/TrafficVehicleVisuals.cs` with procedural sedan body/cabin, glass, mirrors, wheels, lamps, bumpers, and trim. Commit `d63c33c68c5dd1a73b371b994d3a37a646f73797` wires the model into `CountyWorldBootstrap.SpawnTrafficVehicle`.
+- Civilian traffic roots preserve their Rigidbody and waypoint AI, use unit transform scale, and receive a lengthwise 1.9 × 1.25 × 4.2 box collider. Visual child colliders are removed.
+- This is still primitive placeholder geometry and has not been compiled or visually/performance tested in Unity. Confirm sedan heading, collider fit, wheel-ground contact, and mobile performance in Play Mode before treating it as verified.
+- Next: replace procedural car parts with original/licensed production meshes and PBR textures; add interior geometry and wheel animation only after basic runtime validation.
