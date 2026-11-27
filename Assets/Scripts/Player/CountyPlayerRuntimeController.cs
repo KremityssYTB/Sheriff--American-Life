@@ -47,10 +47,13 @@ namespace SheriffAmericanLife
         private float steering;
         private GUIStyle buttonStyle;
         private GUIStyle statusStyle;
+        private MobilePerformanceBootstrap performanceSettings;
+        private bool settingsOpen;
 
         public void Initialize(Transform worldRoot)
         {
             this.worldRoot = worldRoot;
+            performanceSettings = worldRoot.GetComponent<MobilePerformanceBootstrap>();
             dutyState = gameObject.AddComponent<CountyDutyState>();
             reportBook = worldRoot.GetComponent<IncidentReportBook>();
             citationBook = worldRoot.GetComponent<TrafficCitationBook>();
@@ -149,6 +152,11 @@ namespace SheriffAmericanLife
                 dutyState.ToggleDuty();
             if (GUI.Button(new Rect(Screen.width-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
                 cameraModes.ToggleCameraMode();
+            if (GUI.Button(new Rect(Screen.width-112*s,pad+150*s,100*s,42*s), "SETTINGS", buttonStyle))
+                settingsOpen = !settingsOpen;
+
+            if (settingsOpen)
+                DrawSettingsPanel(s);
 
             DrawCivilianInteractionHud(s, pad);
             DrawTrafficStopHud(s, pad);
@@ -176,6 +184,45 @@ namespace SheriffAmericanLife
                 else if (GUI.RepeatButton(new Rect(Screen.width-w-pad,Screen.height-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
                 else throttle = 0;
             }
+        }
+
+        private void DrawSettingsPanel(float scale)
+        {
+            float width = 310f * scale;
+            float height = 250f * scale;
+            float x = (Screen.width - width) * .5f;
+            float y = (Screen.height - height) * .5f;
+            GUI.Box(new Rect(x, y, width, height), "GAME SETTINGS");
+            GUI.Label(new Rect(x + 16f * scale, y + 38f * scale, width - 32f * scale, 26f * scale),
+                "FRAME RATE", statusStyle);
+
+            float buttonY = y + 72f * scale;
+            float buttonWidth = (width - 40f * scale) * .5f;
+            DrawFrameRateButton(x + 14f * scale, buttonY, buttonWidth, "30 FPS", MobileFrameRateMode.Fps30, scale);
+            DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY, buttonWidth, "60 FPS", MobileFrameRateMode.Fps60, scale);
+            DrawFrameRateButton(x + 14f * scale, buttonY + 48f * scale, buttonWidth, "120 FPS", MobileFrameRateMode.Fps120, scale);
+            DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY + 48f * scale, buttonWidth, "UNLIMITED", MobileFrameRateMode.Unlimited, scale);
+
+            string active = performanceSettings != null
+                ? performanceSettings.CurrentFrameRateMode == MobileFrameRateMode.Unlimited
+                    ? "ACTIVE: UNLIMITED"
+                    : "ACTIVE: " + (int)performanceSettings.CurrentFrameRateMode + " FPS"
+                : "FRAME RATE SETTINGS UNAVAILABLE";
+            GUI.Label(new Rect(x + 14f * scale, buttonY + 104f * scale, width - 28f * scale, 26f * scale),
+                active, statusStyle);
+            if (GUI.Button(new Rect(x + width - 104f * scale, y + height - 48f * scale,
+                90f * scale, 34f * scale), "CLOSE", buttonStyle))
+                settingsOpen = false;
+        }
+
+        private void DrawFrameRateButton(float x, float y, float width, string label,
+            MobileFrameRateMode mode, float scale)
+        {
+            bool selected = performanceSettings != null && performanceSettings.CurrentFrameRateMode == mode;
+            string caption = selected ? "SELECTED: " + label : label;
+            if (GUI.Button(new Rect(x, y, width, 40f * scale), caption, buttonStyle) &&
+                performanceSettings != null)
+                performanceSettings.SetFrameRateMode(mode);
         }
 
         private Renderer CreateLightbarSegment(string segmentName, Vector3 localPosition,
