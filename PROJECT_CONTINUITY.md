@@ -306,3 +306,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - This is a first-pass procedural visual layer only. It does not yet produce photorealistic/GTA 6-level visuals: core buildings, cars, people, and much of the world remain primitive placeholders. Production-quality assets, detailed PBR texture sets, realistic vehicle models/interiors, improved lighting/reflections, LODs, and mobile profiling are still required.
 - No Unity compile, Play Mode, visual inspection, or iPhone performance test was possible from the GitHub source connection. Treat this as committed source, not a verified in-game visual result.
 - Next graphics milestone: replace the patrol SUV and civilian traffic cubes with original/licensed detailed vehicle prefabs, then establish a consistent PBR material/lighting target and profile on supported iPhone/iPad tiers before scaling the world.
+
+
+## Patrol SUV visual pass (2026-11-27)
+
+- Commit `c511a0803c2df8471b6e2918a6766a0609699702` adds `Assets/Scripts/Vehicle/PatrolSuvVisuals.cs`, a procedural first-pass SUV model. Commit `6c27ed0d1ebfa8b5cd416ef03949d058e7e3ceef` wires it into `CountyPlayerRuntimeController` and moves the red/blue lightbar modules above the roof. Commit `24a396bc2ec5debb8c90ce53e4a0dd280b3f8872` corrects front/rear badge text orientation.
+- The original vehicle root and collider are preserved for compatibility with the current movement, enter/exit, and interaction code. The old cube renderer is hidden; visual detail primitives have their colliders removed.
+- Model details include multi-piece body/cabin, tinted glass, trim, side mirrors, handles, running boards, four tire/rim assemblies, grille, headlamps, tail lamps, bumpers, plates, antenna, and Marion County Sheriff markings.
+- This remains procedural blockout art, not GTA 6-level realism. It has no final UV/textures, real vehicle mesh, detailed interior, physically based glass implementation, suspension, animated wheels, or verified reflection setup. Unity compilation, Play Mode, visual inspection, and iPhone/iPad performance testing remain outstanding.
+- Next: improve civilian traffic vehicle silhouettes and add a proper shared PBR material/lighting pipeline, then replace placeholder world assets with original or properly licensed high-quality art.
