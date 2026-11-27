@@ -18,7 +18,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 
 ### 2. Core patrol loop
 - [ ] Player can spawn, walk, sprint, enter/exit patrol SUV, drive, and change camera modes.
-- [ ] Touch controls remain usable at supported screen sizes and safe areas.
+- [ ] Touch controls remain usable at supported screen sizes and safe areas; validate modal input release and controller disable cleanup on device.
 - [ ] Player cannot become stuck in vehicle or on foot after repeated enter/exit.
 - [ ] Duty state and basic officer interaction behave consistently.
 - [ ] Traffic stop: approach, initiate stop, interact with driver, inspect documents/history, issue citation or warning, and close stop.
@@ -54,7 +54,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 
 - Core prototype systems exist in source: player movement, patrol driving, camera modes, dispatch/incident generation, civilian interactions, traffic stops, citations, arrest/escort/transport/booking, and mobile MDT.
 - The world is still a generated blockout with primitive geometry. Vehicle catalog entries are metadata; actual production car models are not yet integrated.
-- Touch HUD and Settings are currently immediate-mode Unity GUI prototypes, not finished production mobile interfaces. Settings now exposes independently saved Performance/Balanced/High graphics presets and 30/60/120/Unlimited frame-rate modes.
+- Touch HUD and Settings are currently immediate-mode Unity GUI prototypes, not finished production mobile interfaces. Settings exposes independently saved Performance/Balanced/High graphics presets and 30/60/120/Unlimited frame-rate modes. Source now clears movement/sprint/vehicle inputs while Settings is open and on controller disable; device validation remains pending.
 - Optional downloadable-content metadata exists, but no live content browser/downloader/CDN is implemented.
 - The iOS pre-build hook previously overrode the project setup's iPhone+iPad setting with iPhone-only. It has now been corrected to iPhoneAndiPad.
 - Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
