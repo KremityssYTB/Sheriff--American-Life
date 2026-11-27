@@ -333,3 +333,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - No Unity compile or visual/performance validation has been performed. Soft shadows may be expensive on older supported devices and will need quality-tier tuning after profiling.
 
 - Commit `5754f76033a4966afbc6b18ddc567216625aefb5` changes the iOS player target from iPhone-only to iPhone + iPad, matching the stated supported-device goal. Minimum supported hardware/iOS still needs to be defined and tested.
+
+
+## Civilian vehicle variety pass (2026-11-27)
+
+- Commit `99ecde3cab338ac514770c48c9caca38b9da0092` adds `TrafficVehicleStyle` and separate procedural silhouettes for sedan, pickup, SUV, muscle, and exotic classes in `TrafficVehicleVisuals.cs`.
+- Commit `c173d036a641cbc79d76d0eb8a5a4c28eec01ff5` assigns the eight current Ocala traffic actors a mix of those styles without replacing their existing traffic AI, Rigidbody, driver/document records, or root collider.
+- Visual distinctions include pickup bed/rails, taller SUV cabin and cladding, muscle-car hood scoop/spoiler, and low/wide exotic body with front splitter, rear diffuser, and engine cover.
+- These are generic unbranded placeholder designs, not exact Ford, Dodge, Toyota, or Lamborghini vehicles. Exact branded models require licensed/original production meshes and rights to use associated trademarks.
+- No Unity compilation, Play Mode, collision/clearance inspection, or iPhone/iPad runtime test has been performed. Source-only milestone.
