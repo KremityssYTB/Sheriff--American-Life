@@ -58,6 +58,7 @@ namespace SheriffAmericanLife
                 new Vector3(1.68f,.53f,.055f), glass).transform.localRotation = Quaternion.Euler(-17f,0,0);
             Part("Rear Window", PrimitiveType.Cube, new Vector3(0,.65f,-1.18f),
                 new Vector3(1.65f,.48f,.055f), glass).transform.localRotation = Quaternion.Euler(17f,0,0);
+            AddInterior();
             for (int side=-1; side<=1; side+=2)
             {
                 float x = side*.89f;
@@ -161,6 +162,50 @@ namespace SheriffAmericanLife
             // Emergency lightbar base; animated red/blue modules remain controlled by existing system.
             Part("Lightbar Dark Housing", PrimitiveType.Cube, new Vector3(0,1.02f,-.12f),
                 new Vector3(1.15f,.12f,.34f), dark);
+        }
+
+
+        private void AddInterior()
+        {
+            // Front dashboard and center stack.
+            Part("Dashboard", PrimitiveType.Cube, new Vector3(0,.38f,.83f),
+                new Vector3(1.62f,.28f,.42f), dark);
+            Part("Instrument Cluster Hood", PrimitiveType.Cube, new Vector3(-.48f,.58f,.72f),
+                new Vector3(.62f,.18f,.26f), black);
+            Part("Center Infotainment Screen", PrimitiveType.Cube, new Vector3(.18f,.52f,.76f),
+                new Vector3(.34f,.22f,.045f), glass);
+            Part("Center Console", PrimitiveType.Cube, new Vector3(.12f,.08f,.05f),
+                new Vector3(.42f,.22f,1.2f), black);
+            Part("Gear Selector", PrimitiveType.Cube, new Vector3(.12f,.25f,.42f),
+                new Vector3(.1f,.24f,.12f), chrome);
+            Part("Steering Column", PrimitiveType.Cylinder, new Vector3(-.5f,.48f,.62f),
+                new Vector3(.1f,.36f,.1f), dark).transform.localRotation = Quaternion.Euler(90f,0,0);
+            Part("Steering Wheel", PrimitiveType.Cylinder, new Vector3(-.5f,.62f,.56f),
+                new Vector3(.42f,.42f,.055f), black).transform.localRotation = Quaternion.Euler(90f,0,0);
+            Part("Steering Wheel Center", PrimitiveType.Cylinder, new Vector3(-.5f,.62f,.515f),
+                new Vector3(.12f,.12f,.065f), chrome).transform.localRotation = Quaternion.Euler(90f,0,0);
+
+            // Two front bucket seats and two rear bench positions.
+            for (int side=-1;side<=1;side+=2)
+            {
+                float x=side*.48f;
+                Part("Front Seat Cushion", PrimitiveType.Cube, new Vector3(x,.12f,.12f),
+                    new Vector3(.58f,.18f,.62f), black);
+                Part("Front Seat Back", PrimitiveType.Cube, new Vector3(x,.48f,-.12f),
+                    new Vector3(.58f,.66f,.18f), black);
+                Part("Front Seat Headrest", PrimitiveType.Cube, new Vector3(x,.83f,-.12f),
+                    new Vector3(.34f,.22f,.18f), dark);
+                Part("Rear Seat Cushion", PrimitiveType.Cube, new Vector3(x,.12f,-.92f),
+                    new Vector3(.58f,.18f,.52f), black);
+                Part("Rear Seat Back", PrimitiveType.Cube, new Vector3(x,.43f,-1.12f),
+                    new Vector3(.58f,.52f,.16f), black);
+            }
+            Part("Rear Bench Center", PrimitiveType.Cube, new Vector3(0,.25f,-1.08f),
+                new Vector3(.42f,.3f,.2f), dark);
+            Part("Driver Footwell", PrimitiveType.Cube, new Vector3(-.48f,-.2f,.72f),
+                new Vector3(.55f,.08f,.5f), black);
+            Part("Passenger Footwell", PrimitiveType.Cube, new Vector3(.48f,-.2f,.72f),
+                new Vector3(.55f,.08f,.5f), black);
         }
 
         private void AddStarBadge(int side)
