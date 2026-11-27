@@ -58,6 +58,10 @@ namespace SheriffAmericanLife
             sun = directionalSun;
             if (sun != null)
             {
+                sun.shadows = LightShadows.Soft;
+                sun.shadowStrength = .82f;
+                sun.shadowBias = .045f;
+                sun.shadowNormalBias = .35f;
                 RenderSettings.sun = sun;
             }
             UpdateLighting();
@@ -85,10 +89,6 @@ namespace SheriffAmericanLife
                 float daylight = Mathf.Clamp01(Mathf.Sin(normalized * Mathf.PI * 2f - Mathf.PI * .5f) * .5f + .5f);
                 sun.intensity = sunIntensity.Evaluate(daylight) * (weather == FloridaWeather.Cloudy ? .55f : weather == FloridaWeather.Rain ? .38f : 1f);
                 sun.color = sunlight.Evaluate(daylight);
-                sun.shadows = LightShadows.Soft;
-                sun.shadowStrength = .82f;
-                sun.shadowBias = .045f;
-                sun.shadowNormalBias = .35f;
                 RenderSettings.sun = sun;
             }
         }
