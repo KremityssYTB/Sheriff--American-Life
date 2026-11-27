@@ -22,6 +22,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - [ ] Player cannot become stuck in vehicle or on foot after repeated enter/exit.
 - [ ] Duty state and basic officer interaction behave consistently.
 - [ ] Traffic stop: approach, initiate stop, interact with driver, inspect documents/history, issue citation or warning, and close stop.
+- [ ] Patrol SUV physics controller is tuned against road edges, traffic, props, slopes, and collisions on device (Rigidbody-based first pass is now in source).
 - [ ] Arrest: complete arrest, escort prisoner, seat prisoner, transport to jail intake, and complete booking.
 - [ ] Dispatch: receive a call, travel to its scene, resolve/report it, and clear it.
 
@@ -54,6 +55,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - Touch HUD is currently an immediate-mode Unity GUI prototype, not a finished production mobile interface.
 - Optional downloadable-content metadata exists, but no live content browser/downloader/CDN is implemented.
 - The iOS pre-build hook previously overrode the project setup's iPhone+iPad setting with iPhone-only. It has now been corrected to iPhoneAndiPad.
+- Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
 - No Unity compilation, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
 
 ## Release discipline
