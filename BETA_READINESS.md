@@ -15,6 +15,7 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - [ ] Launch, background/resume, and clean reinstall are tested on real hardware.
 - [x] Pre-build hook targets both iPhone and iPad (source corrected in commit 641ea989535cb07a98725f7f71c012d2a9feace9).
 - [ ] Confirm iPhone/iPad target settings survive the complete cloud build pipeline.
+- [x] iOS pre-build hook now verifies the generated Main scene and mobile URP asset, assigns URP to Graphics/Quality settings, and reapplies iPhone+iPad, IL2CPP, Metal, bundle ID, and auto-rotation settings. This is source-level validation only; it has not yet executed in Unity.
 
 ### 2. Core patrol loop
 - [ ] Player can spawn, walk, sprint, enter/exit patrol SUV, drive, and change camera modes.
