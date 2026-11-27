@@ -67,3 +67,8 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 ## Release discipline
 
 Treat each unchecked gate as unverified, not as complete. Prioritize build/install and core-loop blockers over new features. Keep post-beta content work on a separate track so it does not destabilize the first playable release.
+
+
+### Runtime performance diagnostics
+- The Settings panel now displays a smoothed live FPS and frame-time estimate from unscaled frame delta. This is useful for quick runtime checks but does not replace Unity Profiler CPU/GPU/memory/thermal captures.
+- [ ] Confirm the readout updates correctly in a built player and compare it against Unity Profiler on representative iPhones and iPads.
