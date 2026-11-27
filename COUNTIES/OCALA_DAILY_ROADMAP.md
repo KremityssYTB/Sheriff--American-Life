@@ -104,3 +104,16 @@ Every development day:
 - A second attempt with automatic enablement failed because the connected GitHub integration is not authorized to create the Pages site.
 - **Owner action required:** in repository Settings → Pages → Build and deployment, select **GitHub Actions** as the source. Then rerun the “Deploy Ocala browser preview” workflow from the Actions tab.
 - Do not call the browser preview live until the deployment workflow succeeds and the page is opened on the iPhone.
+
+
+## Day 1 follow-up — Three.js 3D browser playtest (2026-11-27)
+
+- [x] Replace the 2D companion page with a Three.js 0.180.0 WebGL 3D scene.
+- [x] Add procedural Ocala road grid, district buildings, greenery, civilian traffic, deputy avatar, and patrol SUV.
+- [x] Add mobile touch movement, sprint, drag-to-look camera, vehicle entry/exit and simplified driving.
+- [x] Add duty toggle, emergency lights, dispatch call marker, interaction prompts, and browser FPS readout.
+- [x] Keep the native Unity iOS/iPadOS project separate and unchanged by the browser implementation.
+- [ ] Verify GitHub Pages deployment.
+- [ ] Open and test on iPhone Safari and iPadOS Safari.
+- [ ] Validate orientation changes, touch controls, sustained FPS, memory, and background/resume.
+- The browser scene is a schematic test district and not a Unity WebGL export or an accurate real-world map.
