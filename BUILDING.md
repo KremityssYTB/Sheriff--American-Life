@@ -41,5 +41,5 @@ The existing manual workflow at `.github/workflows/build-ios-export.yml` is an a
 
 - The project targets Unity 6.3 (6000.3.25f1) and URP 17.3.0.
 - `Assets/Editor/ProjectSetup.cs` generates the URP assets and `Assets/Scenes/Main.unity` when invoked.
-- A pre-build hook is being added so cloud builds create the generated scene and iOS settings before building.
+- An iOS pre-build hook now creates the generated scene when missing, verifies the generated mobile URP asset, assigns it to Graphics/Quality settings, and enforces the iPhone+iPad, IL2CPP, Metal, bundle ID, and auto-rotation configuration. This hook is committed source and still requires a real Unity cloud build to validate.
 - No Unity compile, UBA build, Xcode build, device install, or runtime test is claimed until that exact step has completed successfully.
