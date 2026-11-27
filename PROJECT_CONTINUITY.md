@@ -297,3 +297,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The transport HUD now requires the currently escorted civilian and matching booking; older or unrelated pending records cannot be completed through the active escort.
 - Prototype limits: one escorted prisoner at a time; no handcuff animation, escort hand-hold, seatbelt/restraint animation, prisoner AI, rear-seat door interaction, jail interior navigation, or persistence of the live NPC's world position. Booking data remains local and persistent; NPC placement is session-only.
 - Source inspection only. Unity compilation, animation, collider/vehicle interaction, scene layout, save/load, and iPhone runtime remain untested.
+
+
+## Ocala visual foundation update (2026-11-27)
+
+- Commit `7ecc60ae319edde67200e7e42b54cf00fcd15fa2` added `Assets/Scripts/World/OcalaVisualDressing.cs`; commit `eefb677c30dd8596b97c60d746e931f8156e2128` corrected world-space placement of its generated details; commit `30476aa04b99e27be388a1257a8c38123897faa6` wires the dressing pass into `CountyWorldBootstrap`; commit `4289c669e6b32793fc4fe022e8e52b95aaae6586` documents the scope in README.
+- The generated Ocala blockout now receives sidewalks, curbs, road markings, crosswalk stripes, basic facade windows/doors/roof caps, a gas canopy and pump islands, street lamps, utility cabinets, palms, broad-canopy trees, and distant rural tree belts.
+- This is a first-pass procedural visual layer only. It does not yet produce photorealistic/GTA 6-level visuals: core buildings, cars, people, and much of the world remain primitive placeholders. Production-quality assets, detailed PBR texture sets, realistic vehicle models/interiors, improved lighting/reflections, LODs, and mobile profiling are still required.
+- No Unity compile, Play Mode, visual inspection, or iPhone performance test was possible from the GitHub source connection. Treat this as committed source, not a verified in-game visual result.
+- Next graphics milestone: replace the patrol SUV and civilian traffic cubes with original/licensed detailed vehicle prefabs, then establish a consistent PBR material/lighting target and profile on supported iPhone/iPad tiers before scaling the world.
