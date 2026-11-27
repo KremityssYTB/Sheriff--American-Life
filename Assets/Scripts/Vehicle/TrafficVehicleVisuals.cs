@@ -19,6 +19,9 @@ namespace SheriffAmericanLife
     {
         public void Build(Color paintColor) { Build(paintColor, TrafficVehicleStyle.Sedan); }
 
+        private static Material sharedPaint, sharedGlass, sharedTire, sharedTrim, sharedAlloy, sharedLamp, sharedTail;
+        private MaterialPropertyBlock paintProperties;
+
         public void Build(Color paintColor, TrafficVehicleStyle style)
         {
             Renderer blockRenderer = GetComponent<Renderer>();
@@ -42,13 +45,18 @@ namespace SheriffAmericanLife
                 style == TrafficVehicleStyle.Exotic ? .32f : .31f;
             float bodyY = style == TrafficVehicleStyle.Exotic ? -.16f : -.05f;
 
-            Material paint = Create("Vehicle Paint", paintColor, .48f, .78f);
-            Material glass = Create("Smoked Glass", new Color(.035f,.065f,.085f), .08f, .9f);
-            Material tire = Create("Tire Rubber", new Color(.018f,.02f,.022f), 0f, .2f);
-            Material trim = Create("Dark Trim", new Color(.035f,.04f,.045f), .25f, .55f);
-            Material alloy = Create("Wheel Alloy", new Color(.48f,.51f,.54f), .82f, .78f);
-            Material lamp = Create("Lamp Lens", new Color(.9f,.84f,.68f), .05f, .6f, true);
-            Material tail = Create("Tail Lamp", new Color(.55f,.012f,.008f), .05f, .55f, true);
+            Material paint = Shared(ref sharedPaint, "Vehicle Paint", Color.white, .48f, .78f);
+            Material glass = Shared(ref sharedGlass, "Smoked Glass", new Color(.035f,.065f,.085f), .08f, .9f);
+            Material tire = Shared(ref sharedTire, "Tire Rubber", new Color(.018f,.02f,.022f), 0f, .2f);
+            Material trim = Shared(ref sharedTrim, "Dark Trim", new Color(.035f,.04f,.045f), .25f, .55f);
+            Material alloy = Shared(ref sharedAlloy, "Wheel Alloy", new Color(.48f,.51f,.54f), .82f, .78f);
+            Material lamp = Shared(ref sharedLamp, "Lamp Lens", new Color(.9f,.84f,.68f), .05f, .6f, true);
+            Material tail = Shared(ref sharedTail, "Tail Lamp", new Color(.55f,.012f,.008f), .05f, .55f, true);
+
+            // Per-renderer color keeps all vehicle paint on one shared material.
+            paintProperties = new MaterialPropertyBlock();
+            paintProperties.SetColor("_BaseColor", paintColor);
+            paintProperties.SetColor("_Color", paintColor);
 
             Part("Vehicle Main Body", PrimitiveType.Cube, new Vector3(0,bodyY,0),
                 new Vector3(width,bodyHeight,4.15f), paint);
@@ -151,17 +159,23 @@ namespace SheriffAmericanLife
             part.transform.localPosition=position;
             part.transform.localScale=scale;
             Renderer renderer=part.GetComponent<Renderer>();
-            if(renderer!=null) renderer.sharedMaterial=material;
+            if(renderer!=null)
+            {
+                renderer.sharedMaterial=material;
+                if(material==sharedPaint && paintProperties!=null)
+                    renderer.SetPropertyBlock(paintProperties);
+            }
             Collider collider=part.GetComponent<Collider>();
             if(collider!=null) Destroy(collider);
             return part;
         }
 
-        private Material Create(string name,Color color,float metallic,float smoothness,bool emission=false)
+        private static Material Shared(ref Material material,string name,Color color,float metallic,float smoothness,bool emission=false)
         {
+            if(material!=null) return material;
             Shader shader=Shader.Find("Universal Render Pipeline/Lit");
             if(shader==null) shader=Shader.Find("Standard");
-            Material material=new Material(shader){name=name,color=color};
+            material=new Material(shader){name=name,color=color};
             if(material.HasProperty("_Metallic")) material.SetFloat("_Metallic",metallic);
             if(material.HasProperty("_Smoothness")) material.SetFloat("_Smoothness",smoothness);
             if(emission && material.HasProperty("_EmissionColor"))
@@ -170,6 +184,25 @@ namespace SheriffAmericanLife
                 material.SetColor("_EmissionColor",color*.55f);
             }
             return material;
+        }
+
+        public static void ReleaseSharedMaterials()
+        {
+            Release(ref sharedPaint);
+            Release(ref sharedGlass);
+            Release(ref sharedTire);
+            Release(ref sharedTrim);
+            Release(ref sharedAlloy);
+            Release(ref sharedLamp);
+            Release(ref sharedTail);
+        }
+
+        private static void Release(ref Material material)
+        {
+            if(material==null) return;
+            if(Application.isPlaying) Destroy(material);
+            else DestroyImmediate(material);
+            material=null;
         }
     }
 }
