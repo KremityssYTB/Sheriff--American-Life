@@ -60,7 +60,9 @@ Ship a small, stable, testable first release of the Ocala/Marion County patrol e
 - Patrol SUV movement now uses a Rigidbody in FixedUpdate with configurable acceleration, speed, steering, lateral grip, interpolation, and continuous collision detection. This is a first-pass arcade controller, not wheel-collider vehicle simulation; handling still requires Unity and device tuning.
 - Editor setup now configures the generated URP asset for HDR, 2x MSAA, 1.0 render scale, SRP Batcher, 45 m shadows, two cascades, 2048 main-light shadow map, soft main-light shadows, no additional-light shadows, up to two additional lights per object, and no depth/opaque textures by default. Runtime baseline sets a 60 FPS target, disables VSync, uses LOD bias 1.0, applies the shadow budget to the active URP asset, and enables a 256 MB mipmap-streaming budget. These are provisional settings, not measured performance results.
 - Decorative world-dressing colliders are removed, their owned materials are cleaned up, the duplicate editor-created sun is removed, and world-clock lighting updates are throttled. Civilian traffic shares common materials and uses property blocks for paint; patrol SUV materials are released on teardown.
-- No Unity compilation, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
+- An editor-only vehicle prefab validator is now in source at `Assets/Editor/VehiclePrefabValidator.cs`. It checks catalog prefabs for renderers, missing meshes/materials, LODGroup, root scale, renderer/material-slot budgets, and recommended hierarchy anchors. It has not yet been run in Unity.
+- `DESIGN/VEHICLE_VISUAL_ASSET_STANDARD.md` defines asset licensing/provenance, prefab hierarchy, axes, wheel/light/interior anchors, LODs, material budgets, and the integration sequence. No production vehicle model is integrated yet.
+- No Unity compilation, editor validation run, cloud build, Xcode build, signing, TestFlight upload, installation, or real-device performance test has been completed in this work session.
 
 ## Release discipline
 
