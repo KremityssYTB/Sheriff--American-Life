@@ -113,12 +113,6 @@ namespace SheriffAmericanLife.Editor
             var world = new GameObject("WorldBootstrap");
             world.AddComponent<CountyWorldBootstrap>();
 
-            var sun = new GameObject("Florida Sun");
-            var light = sun.AddComponent<Light>();
-            light.type = LightType.Directional;
-            light.intensity = 1.15f;
-            sun.transform.rotation = Quaternion.Euler(48f, -32f, 0f);
-
             EditorSceneManager.SaveScene(scene, SceneFolder + "/Main.unity");
             EditorBuildSettings.scenes = new[] {
                 new EditorBuildSettingsScene(SceneFolder + "/Main.unity", true)
