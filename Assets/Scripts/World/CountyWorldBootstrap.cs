@@ -177,20 +177,20 @@ namespace SheriffAmericanLife
                 CreateWaypoint("Traffic Southbound Start", new Vector3(3,.1f,58))
             };
 
-            SpawnTrafficVehicle("Civilian Sedan East 1", new Vector3(-108,.8f,-83), eastbound, reporter, 7.5f, new Color(.2f,.3f,.42f), signals, true, new Vector3(-10,0,-83));
-            SpawnTrafficVehicle("Civilian Sedan East 2", new Vector3(-55,.8f,-83), eastbound, reporter, 6.5f, new Color(.55f,.55f,.58f), signals, true, new Vector3(-10,0,-83));
-            SpawnTrafficVehicle("Civilian Sedan West 1", new Vector3(108,.8f,-77), westbound, reporter, 7f, new Color(.42f,.25f,.18f), signals, true, new Vector3(10,0,-77));
-            SpawnTrafficVehicle("Civilian Sedan West 2", new Vector3(55,.8f,-77), westbound, reporter, 6f, new Color(.18f,.38f,.28f), signals, true, new Vector3(10,0,-77));
+            SpawnTrafficVehicle("Full Size Pickup East 1", new Vector3(-108,.8f,-83), eastbound, reporter, 7.5f, new Color(.2f,.3f,.42f), signals, true, new Vector3(-10,0,-83), TrafficVehicleStyle.Pickup);
+            SpawnTrafficVehicle("Midsize Sedan East 2", new Vector3(-55,.8f,-83), eastbound, reporter, 6.5f, new Color(.55f,.55f,.58f), signals, true, new Vector3(-10,0,-83), TrafficVehicleStyle.Sedan);
+            SpawnTrafficVehicle("Muscle Sedan West 1", new Vector3(108,.8f,-77), westbound, reporter, 7f, new Color(.42f,.25f,.18f), signals, true, new Vector3(10,0,-77), TrafficVehicleStyle.Muscle);
+            SpawnTrafficVehicle("Family SUV West 2", new Vector3(55,.8f,-77), westbound, reporter, 6f, new Color(.18f,.38f,.28f), signals, true, new Vector3(10,0,-77), TrafficVehicleStyle.Suv);
 
-            SpawnTrafficVehicle("Civilian Sedan North 1", new Vector3(-3,.8f,-198), northbound, reporter, 6.8f, new Color(.32f,.4f,.5f), signals, false, new Vector3(-3,0,-90));
-            SpawnTrafficVehicle("Civilian Sedan North 2", new Vector3(-3,.8f,-145), northbound, reporter, 6f, new Color(.6f,.48f,.24f), signals, false, new Vector3(-3,0,-90));
-            SpawnTrafficVehicle("Civilian Sedan South 1", new Vector3(3,.8f,38), southbound, reporter, 7f, new Color(.25f,.45f,.32f), signals, false, new Vector3(3,0,-70));
-            SpawnTrafficVehicle("Civilian Sedan South 2", new Vector3(3,.8f,-15), southbound, reporter, 5.8f, new Color(.48f,.3f,.3f), signals, false, new Vector3(3,0,-70));
+            SpawnTrafficVehicle("Compact Sedan North 1", new Vector3(-3,.8f,-198), northbound, reporter, 6.8f, new Color(.32f,.4f,.5f), signals, false, new Vector3(-3,0,-90), TrafficVehicleStyle.Sedan);
+            SpawnTrafficVehicle("Exotic Sports Car North 2", new Vector3(-3,.8f,-145), northbound, reporter, 6f, new Color(.6f,.48f,.24f), signals, false, new Vector3(-3,0,-90), TrafficVehicleStyle.Exotic);
+            SpawnTrafficVehicle("Utility Pickup South 1", new Vector3(3,.8f,38), southbound, reporter, 7f, new Color(.25f,.45f,.32f), signals, false, new Vector3(3,0,-70), TrafficVehicleStyle.Pickup);
+            SpawnTrafficVehicle("Performance Coupe South 2", new Vector3(3,.8f,-15), southbound, reporter, 5.8f, new Color(.48f,.3f,.3f), signals, false, new Vector3(3,0,-70), TrafficVehicleStyle.Exotic);
         }
 
         private void SpawnTrafficVehicle(string vehicleName, Vector3 position, Transform[] route,
             WorldIncidentReporter reporter, float speed, Color color, TrafficSignalController signals,
-            bool eastWest, Vector3 stopLine)
+            bool eastWest, Vector3 stopLine, TrafficVehicleStyle style)
         {
             GameObject vehicle = Make(vehicleName, PrimitiveType.Cube, position,
                 new Vector3(4.2f,1.25f,1.9f), color);
@@ -198,7 +198,7 @@ namespace SheriffAmericanLife
             vehicle.transform.localScale = Vector3.one;
             BoxCollider vehicleCollider = vehicle.GetComponent<BoxCollider>();
             if (vehicleCollider != null) vehicleCollider.size = new Vector3(1.9f,1.25f,4.2f);
-            vehicle.AddComponent<TrafficVehicleVisuals>().Build(color);
+            vehicle.AddComponent<TrafficVehicleVisuals>().Build(color, style);
             Rigidbody body = vehicle.AddComponent<Rigidbody>();
             body.mass = 1150f;
             CountyTrafficVehicleAgent agent = vehicle.AddComponent<CountyTrafficVehicleAgent>();
