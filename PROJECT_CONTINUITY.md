@@ -430,3 +430,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `855fcd7f832714bd04cdcb0c2358ba64888dee92` moves the existing IMGUI HUD into the current `Screen.safeArea` rectangle. HUD layout width/height calculations now use the safe-area dimensions, and the GUI matrix is restored after both the Settings-modal and normal HUD draw paths.
 - This is a first safe-area accommodation for notches, rounded corners, and home-indicator insets on iPhone/iPad. It is not a finished responsive UI; actual orientation changes, smallest supported screens, split-screen iPad layouts, and touch hit targets still require Unity/device validation.
 - Static source review only; no Unity compilation or visual/device test was performed.
+
+
+## Live frame performance readout (2026-11-27)
+
+- Commit `7272dee6b3cc7b9ab4cb85a16d2428eac53551f1` adds smoothed unscaled frame-time sampling to `MobilePerformanceBootstrap`, exposing measured FPS and milliseconds per frame without allocating per sample.
+- Commit `1e0939b7f109cb5da2828d1b4a3f0f6c812c9f2c` displays the live FPS/frame-time readout in the Settings panel and expands the panel slightly to fit it.
+- These are runtime diagnostics, not a performance guarantee or a substitute for Unity Profiler CPU/GPU/memory/thermal captures. Metrics have not been verified in a Unity player or on devices.
