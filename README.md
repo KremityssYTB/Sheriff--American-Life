@@ -233,3 +233,9 @@ All art, audio, and models must be original or properly licensed.
 - Added `BETA_READINESS.md` with explicit build/install, patrol-loop, world/traffic, stability/performance, and beta-operations acceptance gates. Unchecked items are unverified, not complete.
 - Corrected `Assets/Editor/EnsureProjectSetupBeforeBuild.cs`: the pre-build hook had been forcing `iPhoneOnly` after project setup had correctly selected `iPhoneAndiPad`. It now selects `iPhoneAndiPad`, so cloud builds no longer intentionally override the iPad target.
 - This is a source-level correction only. Unity compile, cloud build, Xcode build, signing, TestFlight upload, installation, and real-device tests remain outstanding.
+
+
+## Beta handling update (2026-11-27)
+
+- `Assets/Scripts/Vehicle/PatrolVehicleController.cs` now uses a Rigidbody-driven FixedUpdate controller rather than directly translating/rotating the vehicle Transform. It adds configurable acceleration, forward/reverse speed, steering, lateral grip, interpolation, mass, and continuous collision detection.
+- This is an arcade handling foundation only. Wheel-collider suspension, real imported vehicle geometry, handling calibration, and iPhone/iPad collision testing remain outstanding. See `BETA_READINESS.md` for acceptance gates.
