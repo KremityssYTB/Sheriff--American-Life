@@ -72,3 +72,15 @@ Treat each unchecked gate as unverified, not as complete. Prioritize build/insta
 ### Runtime performance diagnostics
 - The Settings panel now displays a smoothed live FPS and frame-time estimate from unscaled frame delta. This is useful for quick runtime checks but does not replace Unity Profiler CPU/GPU/memory/thermal captures.
 - [ ] Confirm the readout updates correctly in a built player and compare it against Unity Profiler on representative iPhones and iPads.
+
+
+### Three.js browser playtest companion (2026-11-27)
+- [ ] GitHub Pages deployment succeeds and the 3D preview opens from the published URL.
+- [ ] Test WebGL 2 startup and CDN module loading in iPhone Safari.
+- [ ] Test touch movement, sprint, camera drag, enter/exit, driving, emergency lights, and dispatch interactions on iPhone.
+- [ ] Test iPadOS sizing, safe areas, orientation changes, and touch targets.
+- [ ] Check sustained browser frame pacing, memory use, thermal behavior, and background/resume.
+- A separate Three.js 0.180.0 ES-module prototype now replaces the old 2D page with a procedural 3D Ocala test district, patrol SUV, deputy, civilian traffic, touch controls, dispatch marker, and a basic FPS readout.
+- This browser preview is not a Unity WebGL build, not the native iOS/iPadOS game, and not an IPA. It loads Three.js from jsDelivr and requires network access and WebGL 2.
+- The map, buildings, traffic, and vehicle are procedural placeholders. Browser-side driving is simplified and does not validate Unity physics or C# systems.
+- Source is committed; Pages deployment and all browser/device tests remain unverified.
