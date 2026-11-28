@@ -132,6 +132,8 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Independent controls can be held together, supporting movement plus sprint and steering plus throttle/brake.
 - `CountyPlayerRuntimeController` receives the control states and maps them to its existing walker and vehicle inputs. The previous IMGUI movement and vehicle RepeatButtons have been removed to avoid duplicate inputs.
 - The adapter releases held inputs on focus loss, application pause, control-mode changes, settings-modal opening, and controller disable. Controls are hidden while the controller is disabled or the settings modal is open.
-- The touch Canvas currently has sorting order 40, below the MDT Canvas at 50. The top-level duty/vehicle/camera/settings actions and contextual panels remain IMGUI and are the next migration phases.
+- The touch Canvas currently has sorting order 40, below the MDT Canvas at 50. Duty status and the primary vehicle/duty/camera/settings actions are now Canvas elements; callbacks invoke the existing controller methods and labels refresh from duty/vehicle state.
+- The old IMGUI movement/vehicle RepeatButtons and top-level status/action buttons have been removed. Civilian interaction, traffic-stop, prisoner-transport, and Settings modal content remain IMGUI for later phases.
+- Vehicle gas/brake controls and the Settings action use separate screen regions to avoid a known hit-target overlap. The floating MDT toggle remains on its higher-sorting Canvas.
 
 **Not yet verified:** Unity compilation, runtime EventSystem behavior, multi-touch on device, safe-area layout in portrait/landscape and iPad split view, button hit areas, and interaction with the MDT Canvas. Do not treat this as a tested or production-ready control scheme.
