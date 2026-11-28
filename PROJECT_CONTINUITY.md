@@ -632,3 +632,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Save writes stage through a `.tmp` file before copying to the primary path. Exceptions are caught/logged. There is no cloud sync, schema migration, or automatic corruption recovery.
 - Commit recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, iOS filesystem, or iPhone/iPad runtime test has been performed.
 - Current next phase: Phase 13 — persist dispatch calls and restore/validate dispatch lifecycle state. Fetch current source and blob SHAs before editing.
+
+
+## Phase 13 — persistent dispatch calls (2026-11-28)
+
+- `DispatchCallManager` now loads/saves versioned local JSON at `Application.persistentDataPath/dispatch-calls.json`; call IDs continue from a persisted sequence, and the source-incident duplicate-prevention index is rebuilt after load. The ledger is capped at 1,000 calls.
+- New calls and valid lifecycle changes persist: Available → Accepted → EnRoute → OnScene → Resolved, with cancellation retained for non-terminal calls. Resolve/cancel continue writing incident reports. No server CAD, multiplayer sync, schema migration, or automatic corruption recovery was added.
+- Commit recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, restart lifecycle, iOS filesystem, or iPhone/iPad runtime test has been performed.
+- Current next phase: Phase 14 — introduce shared local-save infrastructure, migration policy, and corruption-recovery behavior. Before refactoring, inspect all three new ledgers and their callers for compatibility.
