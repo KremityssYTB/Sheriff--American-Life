@@ -555,4 +555,5 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The panel appears only when the deputy is on duty and in the patrol vehicle with an escorted prisoner whose booking remains AwaitingTransport. It shows prisoner name, intake distance, and booking-range status; BOOK INTAKE appears only within 18 m.
 - The action reuses `CompletePrisonerTransport`, which revalidates duty, vehicle, escort/booking identity, and intake distance before marking the booking Booked, restoring the civilian, recording the jail-intake report, and stopping the vehicle.
 - Commit `87af666329205c73f15eae4a866c7b3e9b7e038f` documents Phase 3c in `DESIGN/MOBILE_MDT_INTERFACE.md`.
+- Commit `69b173b1d458f7e64b09dd6b4e252c5b71d0370c` removes the obsolete `DrawPrisonerTransportHud` call and sizing helper after the method removal; the IMGUI transport path is fully disconnected.
 - Civilian interaction, traffic-stop, and prisoner transport interfaces are now Canvas-based. Settings modal remains IMGUI. Static source inspection only; Unity compile, Play Mode, touch testing, visual layout, cloud build, signing, and IPA installation remain unverified.
