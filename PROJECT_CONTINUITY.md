@@ -472,3 +472,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `8894fcdd52c74f2243f4de9b2f53196e3fbd037a` adds a dedicated safe-area RectTransform to the runtime-generated MDT Canvas. The MDT window and floating MDT toggle are now parented under that area, with anchors updated from `Screen.safeArea` when device insets or orientation change.
 - Updated `DESIGN/MOBILE_MDT_INTERFACE.md` to record the implementation. This complements the existing IMGUI player HUD safe-area pass.
 - Static source/documentation edit only. Unity compilation, notch/home-indicator layout inspection, portrait/landscape touch testing, and real iPhone/iPad validation remain outstanding.
+
+
+## Responsive deputy touch HUD pass (2026-11-28)
+
+- Commit `e6db81187f39539590cc16654073db23000c4594` updates `CountyPlayerRuntimeController.OnGUI` to derive HUD scale from both safe-area width and height, so short landscape layouts are considered rather than scaling from width alone. The status label now uses the remaining width beside the top-right action stack.
+- Movement/vehicle button rectangles retain a minimum 54 GUI-point width/height after scaling. Font sizes follow the responsive scale. This is a source-level hit-area rule, not a guarantee of identical physical-pixel size on every display.
+- Commit `cca15f9183505691b698800c936882ed7575ede1` documents the responsive sizing and outstanding device-layout validation.
+- Static source change only. No Unity compilation, Play Mode inspection, touch test, or iPhone/iPad runtime test has been performed. Remaining checks include smallest supported iPhone, large iPhone, iPad portrait/landscape, split-screen/resizing, and contextual HUD overlap/clipping.
