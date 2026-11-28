@@ -75,12 +75,12 @@ func _process(_delta: float) -> void:
 		var near_vehicle := player.global_position.distance_to(patrol_suv.global_position) < 4.2
 		enter_button.visible = near_vehicle
 		if near_vehicle:
-			status_label.text = "ON FOOT  •  Patrol SUV nearby — press E / ENTER VEHICLE"
+			status_label.text = "UNIT 214  •  ON FOOT  •  VEHICLE IN RANGE"
 		else:
-			status_label.text = "ON FOOT  •  WASD move  •  drag right side to look"
+			status_label.text = "UNIT 214  •  ON FOOT  •  RADIO 1 / PRIMARY"
 	elif in_vehicle:
 		var speed := patrol_suv.linear_velocity.length() * 3.6
-		status_label.text = "IN PATROL SUV  •  %.0f km/h  •  WASD drive  •  SPACE brake  •  L lights" % speed
+		status_label.text = "UNIT 214  •  PATROL SUV  •  %.0f KM/H  •  RADIO 1" % speed
 	if is_instance_valid(dispatch_manager) and dispatch_manager.get_state_label() == "UNIT EN ROUTE":
 		var unit_position: Vector3 = patrol_suv.global_position if in_vehicle else player.global_position
 		var distance := unit_position.distance_to(dispatch_manager.get_destination())
@@ -225,62 +225,122 @@ func _toggle_vehicle() -> void:
 
 func _build_touch_hud() -> void:
 	var layer := CanvasLayer.new()
+	layer.name = "PoliceInterface"
 	add_child(layer)
+
+	# Compact CAD-style unit header. Anchors keep it usable across phone and tablet sizes.
+	var header := PanelContainer.new()
+	header.name = "UnitStatusHeader"
+	header.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	header.position = Vector2(18, 18)
+	header.custom_minimum_size = Vector2(310, 82)
+	var header_style := StyleBoxFlat.new()
+	header_style.bg_color = Color(0.025, 0.045, 0.065, 0.94)
+	header_style.border_color = Color(0.28, 0.39, 0.48, 0.95)
+	header_style.set_border_width_all(1)
+	header_style.set_corner_radius_all(8)
+	header_style.content_margin_left = 12
+	header_style.content_margin_right = 12
+	header_style.content_margin_top = 8
+	header_style.content_margin_bottom = 8
+	header.add_theme_stylebox_override("panel", header_style)
+	layer.add_child(header)
+	var header_content := VBoxContainer.new()
+	header_content.add_theme_constant_override("separation", 4)
+	header.add_child(header_content)
 	var title := Label.new()
-	title.text = "SHERIFF: AMERICAN LIFE  |  OCALA DISTRICT TEST"
-	title.position = Vector2(24,18)
-	title.add_theme_font_size_override("font_size", 22)
-	layer.add_child(title)
+	title.text = "MARION COUNTY  /  SHERIFF'S OFFICE"
+	title.add_theme_font_size_override("font_size", 13)
+	title.add_theme_color_override("font_color", Color(0.76, 0.84, 0.91))
+	header_content.add_child(title)
 	status_label = Label.new()
-	status_label.text = "ON FOOT  •  WASD move  •  drag right side to look"
-	status_label.position = Vector2(24,52)
-	layer.add_child(status_label)
+	status_label.text = "UNIT 214  •  AVAILABLE  •  ON FOOT"
+	status_label.add_theme_font_size_override("font_size", 12)
+	status_label.add_theme_color_override("font_color", Color(0.91, 0.95, 0.98))
+	header_content.add_child(status_label)
+	var radio_label := Label.new()
+	radio_label.text = "RADIO 1  /  PRIMARY     GPS  /  OCALA DISTRICT"
+	radio_label.add_theme_font_size_override("font_size", 10)
+	radio_label.add_theme_color_override("font_color", Color(0.48, 0.72, 0.78))
+	header_content.add_child(radio_label)
+
 	var foot := [
-		["UP","move_forward",Vector2(112,560)],
-		["DOWN","move_back",Vector2(112,660)],
-		["LEFT","move_left",Vector2(12,610)],
-		["RIGHT","move_right",Vector2(212,610)],
-		["RUN","sprint",Vector2(250,550)]
+		["UP", "move_forward"],
+		["DOWN", "move_back"],
+		["LEFT", "move_left"],
+		["RIGHT", "move_right"],
+		["RUN", "sprint"]
 	]
 	for item in foot:
 		var button := TouchButton.new()
 		button.text = item[0]
-		button.position = item[2]
-		button.size = Vector2(88,76)
 		button.action_name = item[1]
 		layer.add_child(button)
 		foot_controls.append(button)
 	var drive := [
-		["GAS","drive_forward",Vector2(1080,560)],
-		["REVERSE","drive_back",Vector2(1080,660)],
-		["LEFT","drive_left",Vector2(880,610)],
-		["RIGHT","drive_right",Vector2(1280-180,610)],
-		["BRAKE","vehicle_brake",Vector2(1080,460)]
+		["GAS", "drive_forward"],
+		["REVERSE", "drive_back"],
+		["LEFT", "drive_left"],
+		["RIGHT", "drive_right"],
+		["BRAKE", "vehicle_brake"]
 	]
 	for item in drive:
 		var button := TouchButton.new()
 		button.text = item[0]
-		button.position = item[2]
-		button.size = Vector2(88,76)
 		button.action_name = item[1]
 		layer.add_child(button)
 		vehicle_controls.append(button)
 		button.hide()
+
 	enter_button = Button.new()
-	enter_button.text = "ENTER VEHICLE"
-	enter_button.position = Vector2(24,100)
-	enter_button.size = Vector2(210,64)
+	enter_button.text = "ENTER PATROL SUV"
+	enter_button.custom_minimum_size = Vector2(184, 48)
+	enter_button.position = Vector2(18, 112)
 	enter_button.visible = false
 	enter_button.pressed.connect(_toggle_vehicle)
 	layer.add_child(enter_button)
 	lights_button = Button.new()
-	lights_button.text = "LIGHTS / SIREN"
-	lights_button.position = Vector2(24,174)
-	lights_button.size = Vector2(210,58)
+	lights_button.text = "EMERGENCY LIGHTS"
+	lights_button.custom_minimum_size = Vector2(184, 44)
+	lights_button.position = Vector2(18, 166)
 	lights_button.visible = false
 	lights_button.pressed.connect(func(): patrol_suv.toggle_lights())
 	layer.add_child(lights_button)
 	_build_dispatch_panel(layer)
+	_layout_touch_controls()
+	get_viewport().size_changed.connect(_layout_touch_controls)
+
+func _layout_touch_controls() -> void:
+	var viewport_size := get_viewport().get_visible_rect().size
+	var button_size := Vector2(64, 58)
+	var bottom := viewport_size.y - button_size.y - 20.0
+	var upper := bottom - button_size.y - 8.0
+	var left_x := 14.0
+	var center_x := left_x + button_size.x + 8.0
+	var right_x := left_x + (button_size.x + 8.0) * 2.0
+	var drive_right := viewport_size.x - button_size.x - 14.0
+	var drive_center := drive_right - button_size.x - 8.0
+	var drive_left := drive_center - button_size.x - 8.0
+	var foot_positions := [
+		Vector2(center_x, upper),
+		Vector2(center_x, bottom),
+		Vector2(left_x, bottom),
+		Vector2(right_x, bottom),
+		Vector2(left_x, upper)
+	]
+	var vehicle_positions := [
+		Vector2(drive_right, upper),
+		Vector2(drive_right, bottom),
+		Vector2(drive_left, bottom),
+		Vector2(drive_center, bottom),
+		Vector2(drive_left, upper)
+	]
+	for i in range(foot_controls.size()):
+		foot_controls[i].position = foot_positions[i]
+		foot_controls[i].size = button_size
+	for i in range(vehicle_controls.size()):
+		vehicle_controls[i].position = vehicle_positions[i]
+		vehicle_controls[i].size = button_size
 
 class TouchButton:
 	extends Button
