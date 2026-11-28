@@ -291,3 +291,11 @@ The project is following a 60-phase roadmap. Phases 1–10 are recorded as compl
 - Refactored incident reports, witness statements, and dispatch calls to use the shared helper while retaining their existing per-ledger schema versions, sequence reconciliation, record caps, and lifecycle behavior.
 - Existing booking, citation, and driver-history ledgers have not yet been migrated to this helper. This phase establishes the common path for subsequent consistency work.
 - Static source review only. Unity compilation, JSON round-trip, corruption recovery, iOS filesystem behavior, and device tests remain outstanding.
+
+
+## Phase 15 — cross-system case references (2026-11-28)
+
+- Added a common `caseId` to incident reports, witness statements, dispatch calls, citations, and arrest bookings. Older report/witness/dispatch records fall back to their existing incident reference fields when loaded.
+- Added `CaseFileIndex`, automatically attached to the runtime world root, to build a read-only `CaseFileSnapshot` across the five ledgers for a supplied case ID.
+- Dispatch resolution/cancellation reports retain the dispatch case reference. Arrest and jail-intake reports retain the booking case reference. Citation follow-up reports retain the citation case reference. New citations/bookings receive stable default case IDs and expose `LinkToCase` for explicit joining.
+- No automatic identity inference, cloud sync, or legal records integration. Static source checks only; Unity compile, Play Mode, runtime index behavior, save compatibility, and device testing remain unverified.
