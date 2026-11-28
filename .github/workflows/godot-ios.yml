@@ -40,8 +40,15 @@ jobs:
           version: 4.5.1
           use-dotnet: false
           include-templates: true
+      - name: Configure unsigned iOS export
+        run: |
+          set -euo pipefail
+          # Godot requires a non-empty Team ID field even for project-only export.
+          # This placeholder is only used to generate an unsigned Xcode project.
+          sed -i '' 's/application\/app_store_team_id=""/application\/app_store_team_id="0000000000"/' godot/export_presets.cfg
       - name: Export iOS Xcode project
         run: |
+          set -euo pipefail
           mkdir -p build/ios
           godot --headless --path godot --export-release "iOS" build/ios/SheriffAmericanLife.zip
           mkdir -p build/ios/xcode
