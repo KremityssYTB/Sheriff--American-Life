@@ -111,3 +111,17 @@ The final playable region is **225 km² total**, counting both land and water. T
 6. Validate performance and realistic travel times on supported iPhones and iPads before increasing world density.
 
 The map is intended to deliver the scale, variety and systemic open-world feel requested, without copying another game's map or assets. It remains a staged production target; the current build does not yet contain this 225 km² region.
+
+## Florida geographic data plan
+
+Use real Florida geospatial datasets as the geographic foundation for the 225 km² world, centered on the existing Ocala/Marion County concept. This means adapting real road geometry, waterways, land cover, terrain and public geographic features into a game-scale scene; it does not mean importing the entire state or copying aerial imagery as finished game art.
+
+Candidate authoritative sources to evaluate before importing each layer:
+- Florida Department of Transportation GIS: statewide road centerlines, county roads, state roads, interstates, bridges and traffic-related layers. https://www.fdot.gov/statistics/gis/default.shtm
+- Florida Geographic Data Library (University of Florida GeoPlan): statewide and regional GIS layers including transportation, hydrography, land cover, soils and boundaries. https://fgdl.org/
+- Florida Department of Environmental Protection Geospatial Open Data: water resources, wetlands, land cover, oceans/estuaries, recreation and environmental layers. https://geodata.dep.state.fl.us/
+- FDOT Transportation Data Portal: searchable and downloadable transportation datasets. https://www.fdot.gov/data/index
+
+For every imported dataset, record the publisher, dataset title, version/date, coordinate reference system, attribution requirements, license/terms and any restrictions in a project data manifest. Confirm that the specific layer permits redistribution and use in a commercial game before committing it. Convert source coordinates into a local metric coordinate system, clip data to the chosen 225 km² boundary, simplify geometry for mobile rendering, and preserve road/water connectivity in shared navigation data. GIS features provide geographic structure only; create original game-ready buildings, props, vegetation, signage, vehicles and interiors.
+
+The initial geographic focus should connect Ocala's urban street pattern with a plausible surrounding Marion County landscape. Include usable waterways only where the selected footprint and source data support them; add boat ramps, docks and navigable water routes as explicit gameplay nodes. Do not claim exact real-world accuracy until the imported layers have been checked against their metadata and on-the-ground geography.
