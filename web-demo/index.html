@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#101b26">
 <title>SHERIFF: AMERICAN LIFE — 3D Ocala Playtest</title>
-<style>
+<style>\n:root{--gold:#d6b66f;--navy:#0b1420;--panel:#142635}\n
 :root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#101b26;color:#f1eee5;--gold:#d5b36a;--navy:#101b26}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;background:#101820}
 #scene{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #hud{position:fixed;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);pointer-events:none}
 .panel{pointer-events:auto;background:#101b26e8;border:1px solid #d5b36a55;border-radius:4px;padding:9px 11px;box-shadow:0 5px 20px #0005;backdrop-filter:blur(8px)}
-#top{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+#top{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}\n#top .panel{display:flex;align-items:center;gap:10px;padding:10px 13px;border-color:#d6b66f88;background:linear-gradient(135deg,#0b1420f2,#193142ed)}\n#brandmark{width:34px;height:38px;flex:none}\n#brand{font-family:Georgia,serif;font-size:11px;font-weight:900;letter-spacing:.12em}#status{font-size:9px;color:#d6b66f;margin-top:4px;letter-spacing:.12em}\n#topActions{max-width:52vw}\nbutton,.social{border-radius:2px;box-shadow:0 4px 14px #0005}\n#mission{border-left:2px solid var(--gold);border-radius:2px}\n#mapTag{padding:9px 11px;background:#0b1420b8;border:1px solid #d6b66f55;border-radius:2px;letter-spacing:.1em}\n#toast{border-radius:2px;border-color:#d6b66f99;box-shadow:0 8px 28px #0008}\n@media(max-width:620px){#top{align-items:flex-start}#top .panel{gap:7px;padding:8px}#brandmark{width:27px;height:31px}#brand{font-size:9px}#status{font-size:7px}#topActions{max-width:56vw}button,.social{min-height:35px;padding:7px 8px;font-size:8px}#mission{top:68px;max-width:64vw}#mapTag{top:140px;font-size:7px;padding:7px}#controls{bottom:max(10px,env(safe-area-inset-bottom))}}
 #brand{font-size:12px;font-weight:950;letter-spacing:.13em;color:#f1eee5}#status{font-size:10px;color:#d5b36a;margin-top:3px;letter-spacing:.08em}
 #topActions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;pointer-events:auto}
 button,.social{min-height:40px;padding:9px 11px;border:1px solid #d5b36a70;border-radius:3px;background:#1b2b39;color:#f1eee5;font-size:10px;font-weight:900;letter-spacing:.08em;touch-action:manipulation;user-select:none;-webkit-user-select:none;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
@@ -36,8 +36,8 @@ button:active,.held,.social:hover{background:#d5b36a;color:#101b26;border-color:
 <canvas id="scene" aria-label="Three-dimensional Ocala sheriff game preview"></canvas>
 <div id="hud">
  <div id="top">
-  <div class="panel"><div id="brand">SHERIFF: AMERICAN LIFE</div><div id="status">MARION COUNTY • OCALA • 3D PLAYTEST</div></div>
-  <div id="topActions"><a class="social" href="https://x.com/officalsalgame" target="_blank" rel="noopener">OFFICIAL X ↗</a><button id="duty">GO OFF DUTY</button><button id="lights">LIGHTS OFF</button><button id="dispatch">911 CALL</button></div>
+  <div class="panel"><svg id="brandmark" viewBox="0 0 100 110" aria-hidden="true"><path d="M50 4 91 18 85 68 50 104 15 68 9 18Z" fill="#d6b66f"/><path d="M50 10 84 22 78 65 50 93 22 65 16 22Z" fill="#122333" stroke="#f0dba7" stroke-width="2"/><path d="m50 24 6.7 16.4 17.7 1.3-13.6 11.4 4.3 17.2L50 61.9 35 70.3l4.3-17.2-13.6-11.4 17.7-1.3Z" fill="#d6b66f"/></svg><div><div id="brand">SHERIFF: AMERICAN LIFE</div><div id="status">MARION COUNTY • OCALA • 3D PLAYTEST</div></div></div>
+  <div id="topActions"><a class="social" href="https://x.com/officalsalgame" target="_blank" rel="noopener">OFFICIAL X ↗</a><a class="social" href="../" target="_blank" rel="noopener">PROJECT SITE ↗</a><button id="duty">GO OFF DUTY</button><button id="lights">LIGHTS OFF</button><button id="dispatch">911 CALL</button></div>
  </div>
  <div id="mission" class="panel">PATROL STATUS<strong id="missionText">Start outside the Marion County Sheriff Office.</strong><span id="subText">Move with the left pad. Drag the world to rotate your camera.</span></div>
  <div id="mapTag">MARION COUNTY • FLORIDA<br>OCALA TEST DISTRICT<br>THREE.JS • WEBGL</div>
