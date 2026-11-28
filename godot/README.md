@@ -16,9 +16,9 @@ This is the active Godot 4 development track. The original Unity source remains 
 ## iOS build pipeline
 GitHub Actions now runs on pushes and pull requests to `godot4`:
 1. A Linux job imports the project with Godot 4 headless to catch project/script parse errors.
-2. A macOS job exports the Godot iOS Xcode project and uploads it as a workflow artifact.
+2. A macOS job requires the `APPLE_TEAM_ID` GitHub Actions repository secret, exports the Godot iOS Xcode project as a ZIP, and uploads it as a workflow artifact.
 
-Open the repository's **Actions** tab, select **Godot iOS build**, open the latest successful run, and download `sheriff-american-life-ios-xcode-project`. This is an Xcode project, not an installable IPA.
+Before running the iOS export, add a repository Actions secret named `APPLE_TEAM_ID` containing the 10-character Apple Developer Team ID. Open the repository's **Actions** tab, select **Godot iOS build**, open the latest successful run, and download `sheriff-american-life-ios-xcode-project`. The artifact is a ZIP containing the Xcode project, not an installable IPA. Pull requests run validation only.
 
 ### IPA signing requirement
 A device-installable IPA requires Apple code signing with a valid Apple Developer team, certificate and provisioning profile. The current workflow deliberately does not contain signing credentials and does not claim to produce a signed IPA. Once signing credentials are safely configured as GitHub Actions secrets, a separate signing/export stage can be added. Never commit certificates, private keys, provisioning profiles or Apple account passwords to this repository.
