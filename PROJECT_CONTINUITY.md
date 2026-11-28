@@ -586,3 +586,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Found and fixed a one-prisoner capacity bug: a second arrest could create an AwaitingTransport booking even though `HandleArrestCompleted` refused to start a second escort. `MobileTouchControls.SetCivilianContext` now disables ARREST while an escort is active, and `CountyPlayerRuntimeController.HandleHudAction` repeats the guard so the rule is enforced outside the UI too.
 - The existing controller remains gameplay authority; the Canvas only reflects availability and forwards the action.
 - Static review only. No Unity compile, Play Mode, arrest/transport simulation, or iPhone/iPad runtime validation was performed.
+
+
+## Phase 7 — booking release lifecycle audit (2026-11-28)
+
+- Fixed a custody-state mismatch: marking a booking Released in the MDT previously updated only the ledger; the in-world civilian remained Arrested and their routine agent remained disabled.
+- Added `CivilianCharacter.ReleaseFromCustody()`. `CountyPlayerRuntimeController` now listens to `ArrestBookingBook.BookingsChanged`, finds the matching Released booking's civilian by identification number, resets legal state to Free, and re-enables the civilian routine. The event subscription is cleaned up on controller destruction.
+- This remains a prototype-level identity link. Duplicate identification numbers and release of offline/not-loaded civilians are not resolved by this scene-local synchronization.
+- Static source/documentation checks only; no Unity compilation or runtime release test was performed.
