@@ -14,7 +14,7 @@ var vehicle_controls: Array[Button] = []
 var enter_button: Button
 var lights_button: Button
 var vehicle_look_touch_id := -1
-var region_catalog: RefCounted
+var region_catalog: FloridaRegionCatalog
 var dispatch_manager: Node
 var dispatch_summary: Label
 var dispatch_state_label: Label
