@@ -649,3 +649,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - `ArrestBookingBook`, `TrafficCitationBook`, and `TrafficDriverHistoryBook` still use their previous local save implementations; migration remains outstanding.
 - Commits recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, corruption test, iOS filesystem, or iPhone/iPad runtime test has been performed.
 - Current next phase: Phase 15 — audit and add cross-ledger case references linking dispatch, reports, witnesses, citations, and bookings without changing their authority or inventing legal workflow.
+
+
+## Phase 15 — cross-system case references (2026-11-28)
+
+- Added `caseId` to `IncidentReport`, `WitnessStatement`, `DispatchCall`, `TrafficCitation`, and `ArrestBookingRecord`. On load, reports/witnesses/dispatch calls backfill empty case IDs from their legacy incident reference fields without changing their existing save schema versions; new optional JSON fields remain backward-compatible with old payloads.
+- Added `CaseFileIndex` and `CaseFileSnapshot`, a read-only aggregation layer over the five local ledgers. `CountyPlayerRuntimeController.Initialize` adds the index to the runtime world root when absent; the index discovers the ledgers on that object.
+- Dispatch resolution and cancellation reports inherit the call case ID. Arrest and jail-intake reports inherit the booking case ID. Citation follow-up reports inherit the citation case ID. New citation and booking records receive stable default case IDs and both books expose `LinkToCase` methods that persist explicit reassignment.
+- This is a prototype local grouping feature. It does not infer relationships from names/plates/IDs, merge separate cases automatically, create a central legal record, or sync to a server. Existing witness statements and world incidents group by their incident IDs; independently created booking/citation cases require explicit linking to join another case.
+- Static source review: checked brace balance for CaseFileIndex and all five ledgers plus OfficerInteractionController; inspected changed call sites for case ID propagation. No Unity compilation, Play Mode, runtime component wiring, save compatibility/round-trip, iOS filesystem, or iPhone/iPad test was performed.
+- Current next phase: Phase 16 — add case-level grouping and search in the MDT, using CaseFileIndex as the data source. Inspect current MobileMdtController/Screen architecture and preserve existing tabs/actions.
