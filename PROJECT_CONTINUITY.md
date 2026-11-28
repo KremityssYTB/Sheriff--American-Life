@@ -640,3 +640,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - New calls and valid lifecycle changes persist: Available → Accepted → EnRoute → OnScene → Resolved, with cancellation retained for non-terminal calls. Resolve/cancel continue writing incident reports. No server CAD, multiplayer sync, schema migration, or automatic corruption recovery was added.
 - Commit recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, restart lifecycle, iOS filesystem, or iPhone/iPad runtime test has been performed.
 - Current next phase: Phase 14 — introduce shared local-save infrastructure, migration policy, and corruption-recovery behavior. Before refactoring, inspect all three new ledgers and their callers for compatibility.
+
+
+## Phase 14 — shared local save infrastructure (2026-11-28)
+
+- Added `Assets/Scripts/Systems/LocalJsonSave.cs` with typed JSON load, temporary-file writes, filename validation, error logging, and timestamped preservation of parse-corrupt save files. The helper does not auto-repair data or migrate schemas.
+- Refactored `IncidentReportBook`, `WitnessStatementBook`, and `DispatchCallManager` to use the shared helper. Existing schema versions, ID sequencing, caps, dispatch state transitions, and report/witness events remain in their owning ledgers.
+- `ArrestBookingBook`, `TrafficCitationBook`, and `TrafficDriverHistoryBook` still use their previous local save implementations; migration remains outstanding.
+- Commits recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, corruption test, iOS filesystem, or iPhone/iPad runtime test has been performed.
+- Current next phase: Phase 15 — audit and add cross-ledger case references linking dispatch, reports, witnesses, citations, and bookings without changing their authority or inventing legal workflow.
