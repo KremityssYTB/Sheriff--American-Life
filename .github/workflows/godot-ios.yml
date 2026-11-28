@@ -40,11 +40,22 @@ jobs:
           version: 4.5.1
           use-dotnet: false
           include-templates: true
+      - name: Ensure iOS export template is installed
+        run: |
+          set -euo pipefail
+          TEMPLATE_DIR="$HOME/Library/Application Support/Godot/export_templates/4.5.1.stable"
+          mkdir -p "$TEMPLATE_DIR"
+          if [ ! -s "$TEMPLATE_DIR/ios.zip" ]; then
+            curl -fL --retry 3 "https://github.com/godotengine/godot-builds/releases/download/4.5.1-stable/Godot_v4.5.1-stable_export_templates.tpz" -o "$RUNNER_TEMP/godot_export_templates.tpz"
+            unzip -l "$RUNNER_TEMP/godot_export_templates.tpz" | grep -q 'templates/ios.zip'
+            unzip -p "$RUNNER_TEMP/godot_export_templates.tpz" templates/ios.zip > "$TEMPLATE_DIR/ios.zip"
+          fi
+          test -s "$TEMPLATE_DIR/ios.zip"
+          echo "Verified iOS export template: $TEMPLATE_DIR/ios.zip"
       - name: Configure unsigned iOS export
         run: |
           set -euo pipefail
-          # Godot requires a non-empty Team ID field even for project-only export.
-          # This placeholder is only used to generate an unsigned Xcode project.
+          # A 10-character placeholder is used only to generate an unsigned Xcode project.
           sed -i '' 's/application\/app_store_team_id=""/application\/app_store_team_id="0000000000"/' godot/export_presets.cfg
       - name: Export iOS Xcode project
         run: |
