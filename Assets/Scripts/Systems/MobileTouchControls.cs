@@ -81,8 +81,8 @@ namespace SheriffAmericanLife
                 int row = i / 2;
                 float xMin = .04f + column * .48f;
                 float xMax = xMin + .44f;
-                float yMax = .48f - row * .11f;
-                rect.anchorMin = new Vector2(xMin, yMax - .10f);
+                float yMax = .48f - row * .09f;
+                rect.anchorMin = new Vector2(xMin, yMax - .08f);
                 rect.anchorMax = new Vector2(xMax, yMax);
                 rect.offsetMin = Vector2.zero;
                 rect.offsetMax = Vector2.zero;
@@ -251,13 +251,13 @@ namespace SheriffAmericanLife
             CreateSettingsButton("quality_high", "HIGH", new Vector2(.66f,.60f), new Vector2(.95f,.73f));
 
             CreateSettingsLabel("Frame Rate Heading", "FRAME RATE", new Vector2(.05f,.49f), new Vector2(.95f,.59f), 14f, out settingsFrameRateStatus);
-            CreateSettingsButton("fps_30", "30 FPS", new Vector2(.05f,.31f), new Vector2(.48f,.44f));
-            CreateSettingsButton("fps_60", "60 FPS", new Vector2(.52f,.31f), new Vector2(.95f,.44f));
-            CreateSettingsButton("fps_120", "120 FPS", new Vector2(.05f,.16f), new Vector2(.48f,.29f));
-            CreateSettingsButton("fps_unlimited", "UNLIMITED", new Vector2(.52f,.16f), new Vector2(.95f,.29f));
+            CreateSettingsButton("fps_30", "30 FPS", new Vector2(.05f,.34f), new Vector2(.48f,.45f));
+            CreateSettingsButton("fps_60", "60 FPS", new Vector2(.52f,.34f), new Vector2(.95f,.45f));
+            CreateSettingsButton("fps_120", "120 FPS", new Vector2(.05f,.20f), new Vector2(.48f,.31f));
+            CreateSettingsButton("fps_unlimited", "UNLIMITED", new Vector2(.52f,.20f), new Vector2(.95f,.31f));
 
-            CreateSettingsLabel("Performance Readout", "LIVE: Measuring frame performance...", new Vector2(.05f,.12f), new Vector2(.68f,.22f), 11f, out settingsPerformanceStatus);
-            CreateSettingsButton("settings_close", "CLOSE", new Vector2(.72f,.105f), new Vector2(.95f,.225f));
+            CreateSettingsLabel("Performance Readout", "LIVE: Measuring frame performance...", new Vector2(.05f,.06f), new Vector2(.68f,.16f), 11f, out settingsPerformanceStatus);
+            CreateSettingsButton("settings_close", "CLOSE", new Vector2(.72f,.06f), new Vector2(.95f,.16f));
             settingsPanel.SetActive(false);
         }
 
@@ -322,8 +322,8 @@ namespace SheriffAmericanLife
             transportPanel = new GameObject("Prisoner Transport Panel", typeof(RectTransform), typeof(Image));
             transportPanel.transform.SetParent(safeRoot, false);
             RectTransform panelRect = transportPanel.GetComponent<RectTransform>();
-            panelRect.anchorMin = new Vector2(.20f, .12f);
-            panelRect.anchorMax = new Vector2(.80f, .23f);
+            panelRect.anchorMin = new Vector2(.47f, .24f);
+            panelRect.anchorMax = new Vector2(.82f, .36f);
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             transportPanel.GetComponent<Image>().color = new Color(.025f, .04f, .055f, .92f);
@@ -404,8 +404,8 @@ namespace SheriffAmericanLife
                 int row = i / 2;
                 float xMin = .04f + column * .48f;
                 float xMax = xMin + .44f;
-                float yMax = .48f - row * .11f;
-                float yMin = yMax - .10f;
+                float yMax = .48f - row * .09f;
+                float yMin = yMax - .08f;
                 AddTrafficButton(ids[i], captions[i], new Vector2(xMin,yMin), new Vector2(xMax,yMax));
             }
             trafficPanel.SetActive(false);
