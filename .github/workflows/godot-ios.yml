@@ -22,6 +22,7 @@ jobs:
         with:
           version: 4.5.1
           use-dotnet: false
+          include-templates: true
       - name: Import project and check scripts
         run: godot --headless --editor --path godot --quit
 
@@ -37,6 +38,7 @@ jobs:
         with:
           version: 4.5.1
           use-dotnet: false
+          include-templates: true
       - name: Export iOS project
         run: |
           mkdir -p build/ios
