@@ -61,9 +61,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/build/ios"
-          godot --headless --verbose --path godot --export-release "iOS" "$GITHUB_WORKSPACE/build/ios/SheriffAmericanLife.zip"
-          echo "Godot export output:"
-          find "$GITHUB_WORKSPACE/build/ios" -maxdepth 3 -print
+          godot --headless --verbose --path godot --export-release "iOS" "$GITHUB_WORKSPACE/build/ios"
+          echo "Godot Xcode project export output:"
+          find "$GITHUB_WORKSPACE/build/ios" -maxdepth 4 -print
+          if ! find "$GITHUB_WORKSPACE/build/ios" -maxdepth 4 -name "*.xcodeproj" -print -quit | grep -q .; then
+            echo "::error::Godot did not export an Xcode project into build/ios."
+            exit 1
+          fi
       - name: Build app without Apple signing
         run: |
           set -euo pipefail
