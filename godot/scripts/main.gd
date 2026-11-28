@@ -23,7 +23,7 @@ var dispatch_request_button: Button
 var dispatch_accept_button: Button
 var dispatch_clear_button: Button
 var dispatch_marker: Node3D
-var career: RefCounted
+var career: LawEnforcementCareer
 var county_picker: OptionButton
 var agency_picker: OptionButton
 var transfer_button: Button
