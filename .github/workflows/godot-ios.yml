@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/ios
-          godot --headless --path godot --export-release "iOS" build/ios/SheriffAmericanLife.zip
+          godot --headless --verbose --path godot --export-release "iOS" build/ios/SheriffAmericanLife.zip
           mkdir -p build/ios/xcode
           unzip -q build/ios/SheriffAmericanLife.zip -d build/ios/xcode
       - name: Build app without Apple signing
