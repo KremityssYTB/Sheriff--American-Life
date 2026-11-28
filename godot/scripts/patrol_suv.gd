@@ -62,7 +62,6 @@ func _build_body() -> void:
 		_add_box("Headlamp", Vector3(side * 0.68, 1.0, -2.27), Vector3(0.42, 0.2, 0.045), _mat(Color(0.82,0.9,1.0),0.18,0.1))
 		_add_box("TailLamp", Vector3(side * 0.72, 0.98, 2.27), Vector3(0.32, 0.3, 0.05), _mat(Color(0.55,0.025,0.02),0.2,0.15))
 	_add_box("SheriffDoorBadge", Vector3(1.012, 0.92, -0.12), Vector3(0.025, 0.42, 0.72), _mat(Color(0.08,0.13,0.17),0.55))
-	_add_box("CollisionBody", Vector3(0, 0.88, 0), Vector3(1.85, 1.15, 4.15), _mat(Color(1,1,1)), false)
 	var collision := CollisionShape3D.new()
 	var shape := BoxShape3D.new()
 	shape.size = Vector3(1.85, 1.15, 4.15)
