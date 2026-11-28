@@ -207,8 +207,6 @@ namespace SheriffAmericanLife
             float s = Mathf.Clamp(Mathf.Min(widthScale, heightScale), .8f, 1.25f);
             buttonStyle.fontSize = Mathf.RoundToInt(18f * s);
             statusStyle.fontSize = Mathf.RoundToInt(18f * s);
-            float w = Mathf.Max(54f, 66f*s);
-            float h = Mathf.Max(54f, 58f*s);
             float pad = 12f*s;
             if (settingsOpen)
             {
