@@ -287,7 +287,11 @@
         "Silver River spring run",
         "small lakes"
       ],
-      "jurisdiction": "Marion County Sheriff"
+      "jurisdiction": "Marion County Sheriff",
+      "anchor_m": [
+        -4500,
+        -3500
+      ]
     },
     {
       "id": "orlando_orange",
@@ -306,7 +310,11 @@
       "water_features": [
         "urban lakes"
       ],
-      "jurisdiction": "Orange County / Orlando Police"
+      "jurisdiction": "Orange County / Orlando Police",
+      "anchor_m": [
+        1200,
+        -1600
+      ]
     },
     {
       "id": "kissimmee_osceola",
@@ -327,7 +335,11 @@
         "Lake Tohopekaliga",
         "canals"
       ],
-      "jurisdiction": "Osceola County Sheriff"
+      "jurisdiction": "Osceola County Sheriff",
+      "anchor_m": [
+        1800,
+        700
+      ]
     },
     {
       "id": "tampa_hillsborough",
@@ -348,7 +360,11 @@
         "Tampa Bay",
         "Hillsborough River"
       ],
-      "jurisdiction": "Hillsborough Sheriff / Tampa Police"
+      "jurisdiction": "Hillsborough Sheriff / Tampa Police",
+      "anchor_m": [
+        -4800,
+        1200
+      ]
     },
     {
       "id": "st_pete_pinellas",
@@ -369,7 +385,11 @@
         "Boca Ciega Bay",
         "Intracoastal"
       ],
-      "jurisdiction": "Pinellas Sheriff / St. Petersburg Police"
+      "jurisdiction": "Pinellas Sheriff / St. Petersburg Police",
+      "anchor_m": [
+        -6500,
+        1900
+      ]
     },
     {
       "id": "miami_dade",
@@ -390,7 +410,11 @@
         "Biscayne Bay",
         "Intracoastal"
       ],
-      "jurisdiction": "Miami-Dade Sheriff / Miami Police"
+      "jurisdiction": "Miami-Dade Sheriff / Miami Police",
+      "anchor_m": [
+        5400,
+        5100
+      ]
     },
     {
       "id": "fort_lauderdale_broward",
@@ -411,7 +435,11 @@
         "Intracoastal Waterway",
         "residential canals"
       ],
-      "jurisdiction": "Broward Sheriff / local police"
+      "jurisdiction": "Broward Sheriff / local police",
+      "anchor_m": [
+        4700,
+        3400
+      ]
     },
     {
       "id": "keys_monroe",
@@ -432,7 +460,11 @@
         "ocean channels",
         "backcountry flats"
       ],
-      "jurisdiction": "Monroe County Sheriff"
+      "jurisdiction": "Monroe County Sheriff",
+      "anchor_m": [
+        6500,
+        6900
+      ]
     },
     {
       "id": "jacksonville_duval",
@@ -453,7 +485,11 @@
         "St. Johns River",
         "tidal marsh"
       ],
-      "jurisdiction": "Jacksonville Sheriff"
+      "jurisdiction": "Jacksonville Sheriff",
+      "anchor_m": [
+        -3000,
+        -6500
+      ]
     },
     {
       "id": "gainesville_alachua",
@@ -473,7 +509,11 @@
       "water_features": [
         "springs and creeks"
       ],
-      "jurisdiction": "Alachua County Sheriff"
+      "jurisdiction": "Alachua County Sheriff",
+      "anchor_m": [
+        -5200,
+        -5700
+      ]
     },
     {
       "id": "rural_heartland",
@@ -495,7 +535,11 @@
         "canals",
         "marshes"
       ],
-      "jurisdiction": "Regional county sheriff agencies"
+      "jurisdiction": "Regional county sheriff agencies",
+      "anchor_m": [
+        0,
+        3800
+      ]
     },
     {
       "id": "space_coast_brevard",
@@ -516,7 +560,11 @@
         "Indian River Lagoon",
         "Atlantic inlets"
       ],
-      "jurisdiction": "Brevard County Sheriff"
+      "jurisdiction": "Brevard County Sheriff",
+      "anchor_m": [
+        3500,
+        -3200
+      ]
     }
   ],
   "watercraft_access_points": [
@@ -581,5 +629,233 @@
     "mid_lod_radius_m": 1500,
     "far_visual_only_radius_m": 4000,
     "notes": "Initial tuning values only. Profile and adjust on supported iPhones; do not assume performance until tested on-device."
+  },
+  "route_graph": {
+    "coordinate_note": "Authored compressed-world anchor positions for early layout and navigation prototyping; not surveyed real-world coordinates or imported GIS geometry.",
+    "nodes": [
+      {
+        "id": "ocala_marion",
+        "x_m": -4500,
+        "z_m": -3500,
+        "county_id": "marion"
+      },
+      {
+        "id": "orlando_orange",
+        "x_m": 1200,
+        "z_m": -1600,
+        "county_id": "orange"
+      },
+      {
+        "id": "kissimmee_osceola",
+        "x_m": 1800,
+        "z_m": 700,
+        "county_id": "osceola"
+      },
+      {
+        "id": "tampa_hillsborough",
+        "x_m": -4800,
+        "z_m": 1200,
+        "county_id": "hillsborough"
+      },
+      {
+        "id": "st_pete_pinellas",
+        "x_m": -6500,
+        "z_m": 1900,
+        "county_id": "pinellas"
+      },
+      {
+        "id": "miami_dade",
+        "x_m": 5400,
+        "z_m": 5100,
+        "county_id": "miami_dade"
+      },
+      {
+        "id": "fort_lauderdale_broward",
+        "x_m": 4700,
+        "z_m": 3400,
+        "county_id": "broward"
+      },
+      {
+        "id": "keys_monroe",
+        "x_m": 6500,
+        "z_m": 6900,
+        "county_id": "monroe"
+      },
+      {
+        "id": "jacksonville_duval",
+        "x_m": -3000,
+        "z_m": -6500,
+        "county_id": "duval"
+      },
+      {
+        "id": "gainesville_alachua",
+        "x_m": -5200,
+        "z_m": -5700,
+        "county_id": "alachua"
+      },
+      {
+        "id": "rural_heartland",
+        "x_m": 0,
+        "z_m": 3800,
+        "county_id": "okeechobee"
+      },
+      {
+        "id": "space_coast_brevard",
+        "x_m": 3500,
+        "z_m": -3200,
+        "county_id": "brevard"
+      }
+    ],
+    "road_edges": [
+      {
+        "id": null,
+        "from": "gainesville_alachua",
+        "to": "ocala_marion",
+        "mode": "road",
+        "road_class": "county_highway"
+      },
+      {
+        "id": null,
+        "from": "gainesville_alachua",
+        "to": "jacksonville_duval",
+        "mode": "road",
+        "road_class": "state_highway"
+      },
+      {
+        "id": null,
+        "from": "jacksonville_duval",
+        "to": "space_coast_brevard",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": null,
+        "from": "ocala_marion",
+        "to": "orlando_orange",
+        "mode": "road",
+        "road_class": "state_highway"
+      },
+      {
+        "id": null,
+        "from": "ocala_marion",
+        "to": "tampa_hillsborough",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": null,
+        "from": "tampa_hillsborough",
+        "to": "st_pete_pinellas",
+        "mode": "road",
+        "road_class": "causeway"
+      },
+      {
+        "id": null,
+        "from": "orlando_orange",
+        "to": "kissimmee_osceola",
+        "mode": "road",
+        "road_class": "urban_arterial"
+      },
+      {
+        "id": null,
+        "from": "kissimmee_osceola",
+        "to": "space_coast_brevard",
+        "mode": "road",
+        "road_class": "state_highway"
+      },
+      {
+        "id": null,
+        "from": "kissimmee_osceola",
+        "to": "rural_heartland",
+        "mode": "road",
+        "road_class": "county_highway"
+      },
+      {
+        "id": null,
+        "from": "rural_heartland",
+        "to": "fort_lauderdale_broward",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": null,
+        "from": "fort_lauderdale_broward",
+        "to": "miami_dade",
+        "mode": "road",
+        "road_class": "urban_arterial"
+      },
+      {
+        "id": null,
+        "from": "miami_dade",
+        "to": "keys_monroe",
+        "mode": "road",
+        "road_class": "overseas_highway"
+      },
+      {
+        "id": null,
+        "from": "orlando_orange",
+        "to": "rural_heartland",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": null,
+        "from": "tampa_hillsborough",
+        "to": "rural_heartland",
+        "mode": "road",
+        "road_class": "county_highway"
+      }
+    ],
+    "water_edges": [
+      {
+        "id": null,
+        "from": "ocala_marion",
+        "to": "rural_heartland",
+        "mode": "water",
+        "route_type": "river_and_lake_route"
+      },
+      {
+        "id": null,
+        "from": "tampa_hillsborough",
+        "to": "st_pete_pinellas",
+        "mode": "water",
+        "route_type": "bay_channel"
+      },
+      {
+        "id": null,
+        "from": "tampa_hillsborough",
+        "to": "rural_heartland",
+        "mode": "water",
+        "route_type": "coastal_and_inland_waterway"
+      },
+      {
+        "id": null,
+        "from": "miami_dade",
+        "to": "fort_lauderdale_broward",
+        "mode": "water",
+        "route_type": "intracoastal_waterway"
+      },
+      {
+        "id": null,
+        "from": "fort_lauderdale_broward",
+        "to": "keys_monroe",
+        "mode": "water",
+        "route_type": "coastal_channel"
+      },
+      {
+        "id": null,
+        "from": "jacksonville_duval",
+        "to": "space_coast_brevard",
+        "mode": "water",
+        "route_type": "intracoastal_waterway"
+      },
+      {
+        "id": null,
+        "from": "kissimmee_osceola",
+        "to": "rural_heartland",
+        "mode": "water",
+        "route_type": "lake_and_canal_route"
+      }
+    ]
   }
 }
