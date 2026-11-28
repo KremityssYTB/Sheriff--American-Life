@@ -480,3 +480,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Movement/vehicle button rectangles retain a minimum 54 GUI-point width/height after scaling. Font sizes follow the responsive scale. This is a source-level hit-area rule, not a guarantee of identical physical-pixel size on every display.
 - Commit `cca15f9183505691b698800c936882ed7575ede1` documents the responsive sizing and outstanding device-layout validation.
 - Static source change only. No Unity compilation, Play Mode inspection, touch test, or iPhone/iPad runtime test has been performed. Remaining checks include smallest supported iPhone, large iPhone, iPad portrait/landscape, split-screen/resizing, and contextual HUD overlap/clipping.
+
+
+## Contextual HUD collision-avoidance pass (2026-11-28)
+
+- Commit `69fa626e2f0c6c48d1c2de75aa75d59048552ae1` changes the prisoner-transport prompt to use a responsive width derived from safe-area width and places it in the upper-left contextual column while a traffic stop is active. This separates it from the traffic-stop document/action controls in the upper-right column.
+- Commit `a1809d034e736dd3c38a79e95b2f16510134a554` records the layout rule in `DESIGN/MOBILE_MDT_INTERFACE.md`.
+- Static source/documentation update only. No Unity compile, Game view inspection, or device touch/layout test has been performed. Verify all contextual HUD combinations, narrow phones, iPad split view, and long names/booking identifiers before treating the layout as complete.
