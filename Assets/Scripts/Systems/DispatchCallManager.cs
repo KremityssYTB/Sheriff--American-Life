@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace SheriffAmericanLife
@@ -39,15 +40,25 @@ namespace SheriffAmericanLife
         public string disposition;
     }
 
-    /// <summary>
-    /// Converts world incident events into dispatch calls and enforces a simple call lifecycle.
-    /// Calls are session-only and intended for a future radio/MDT interface.
-    /// </summary>
+    /// <summary>Converts world incidents into persistent local dispatch calls and enforces their lifecycle.</summary>
     public sealed class DispatchCallManager : MonoBehaviour
     {
+        [Serializable]
+        private sealed class SaveData
+        {
+            public int version = 1;
+            public int nextSequence = 1;
+            public List<DispatchCall> calls = new List<DispatchCall>();
+        }
+
+        private const int SaveVersion = 1;
+        private const int MaximumCalls = 1000;
         [SerializeField] private bool createCallsFromWorldIncidents = true;
         private readonly List<DispatchCall> calls = new List<DispatchCall>();
         private readonly Dictionary<string, DispatchCall> callsByIncident = new Dictionary<string, DispatchCall>();
+        private int nextSequence = 1;
+        private string SavePath => Path.Combine(Application.persistentDataPath, "dispatch-calls.json");
+        private string TemporarySavePath => SavePath + ".tmp";
         private IncidentReportBook reportBook;
 
         public void Configure(IncidentReportBook reports) => reportBook = reports;
@@ -55,6 +66,11 @@ namespace SheriffAmericanLife
         public IReadOnlyList<DispatchCall> Calls => calls;
         public event Action<DispatchCall> CallCreated;
         public event Action<DispatchCall> CallUpdated;
+
+        private void Awake()
+        {
+            Load();
+        }
 
         private void OnEnable()
         {
@@ -69,11 +85,11 @@ namespace SheriffAmericanLife
         private void HandleWorldIncident(WorldIncident incident)
         {
             if (!createCallsFromWorldIncidents || incident == null) return;
-            if (callsByIncident.ContainsKey(incident.incidentId)) return;
+            if (!string.IsNullOrEmpty(incident.incidentId) && callsByIncident.ContainsKey(incident.incidentId)) return;
 
             var call = new DispatchCall
             {
-                callId = "CAD-" + (calls.Count + 1).ToString("0000"),
+                callId = "CAD-" + nextSequence.ToString("000000"),
                 sourceIncidentId = incident.incidentId,
                 incidentType = incident.type,
                 priority = GetPriority(incident.type),
@@ -87,8 +103,12 @@ namespace SheriffAmericanLife
                 disposition = string.Empty
             };
 
+            nextSequence++;
             calls.Add(call);
-            callsByIncident.Add(incident.incidentId, call);
+            if (!string.IsNullOrEmpty(incident.incidentId))
+                callsByIncident[incident.incidentId] = call;
+            if (calls.Count > MaximumCalls) calls.RemoveAt(0);
+            Save();
             CallCreated?.Invoke(call);
             Debug.Log("[DISPATCH] " + call.callId + " | " + call.priority + " | " + call.title);
         }
@@ -115,11 +135,12 @@ namespace SheriffAmericanLife
             DispatchCall call = Find(callId);
             if (call == null || call.status != DispatchCallStatus.OnScene) return false;
             call.status = DispatchCallStatus.Resolved;
-            call.disposition = disposition;
+            call.disposition = disposition.Trim();
             if (reportBook != null)
-                reportBook.AddReport("Dispatch resolution", call.title, "Responded to call", disposition,
+                reportBook.AddReport("Dispatch resolution", call.title, "Responded to call", call.disposition,
                     "Call " + call.callId + " resolved by " + call.assignedUnit + ". " + call.description,
                     call.sourceIncidentId);
+            Save();
             CallUpdated?.Invoke(call);
             return true;
         }
@@ -131,17 +152,18 @@ namespace SheriffAmericanLife
             if (call == null || call.status == DispatchCallStatus.Resolved ||
                 call.status == DispatchCallStatus.Cancelled) return false;
             call.status = DispatchCallStatus.Cancelled;
-            call.disposition = reason;
+            call.disposition = reason.Trim();
             if (reportBook != null)
-                reportBook.AddReport("Dispatch cancellation", call.title, "Cancel call", reason,
+                reportBook.AddReport("Dispatch cancellation", call.title, "Cancel call", call.disposition,
                     "Call " + call.callId + " was cancelled. " + call.description, call.sourceIncidentId);
+            Save();
             CallUpdated?.Invoke(call);
             return true;
         }
 
         public DispatchCall Find(string callId)
         {
-            return calls.Find(c => c.callId == callId);
+            return calls.Find(c => c != null && c.callId == callId);
         }
 
         private bool Transition(string callId, DispatchCallStatus required,
@@ -151,8 +173,67 @@ namespace SheriffAmericanLife
             if (call == null || call.status != required) return false;
             call.status = next;
             if (!string.IsNullOrWhiteSpace(unitName)) call.assignedUnit = unitName;
+            Save();
             CallUpdated?.Invoke(call);
             return true;
+        }
+
+        private void Load()
+        {
+            try
+            {
+                if (!File.Exists(SavePath)) return;
+                SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(SavePath));
+                if (data == null || data.version != SaveVersion || data.calls == null)
+                {
+                    Debug.LogWarning("Dispatch save has an unsupported or invalid format; starting with an empty in-memory ledger.");
+                    return;
+                }
+
+                calls.Clear();
+                callsByIncident.Clear();
+                calls.AddRange(data.calls.FindAll(item => item != null && !string.IsNullOrEmpty(item.callId)));
+                if (calls.Count > MaximumCalls)
+                    calls.RemoveRange(0, calls.Count - MaximumCalls);
+
+                nextSequence = Math.Max(1, data.nextSequence);
+                foreach (DispatchCall item in calls)
+                {
+                    if (!string.IsNullOrEmpty(item.callId) &&
+                        item.callId.StartsWith("CAD-", StringComparison.Ordinal))
+                    {
+                        int number;
+                        if (int.TryParse(item.callId.Substring(4), out number))
+                            nextSequence = Math.Max(nextSequence, number + 1);
+                    }
+
+                    if (!string.IsNullOrEmpty(item.sourceIncidentId) &&
+                        !callsByIncident.ContainsKey(item.sourceIncidentId))
+                        callsByIncident.Add(item.sourceIncidentId, item);
+                }
+            }
+            catch (Exception exception)
+            {
+                calls.Clear();
+                callsByIncident.Clear();
+                nextSequence = 1;
+                Debug.LogWarning("Could not load local dispatch calls: " + exception.Message);
+            }
+        }
+
+        private void Save()
+        {
+            try
+            {
+                var data = new SaveData { nextSequence = nextSequence, calls = calls };
+                File.WriteAllText(TemporarySavePath, JsonUtility.ToJson(data, true));
+                File.Copy(TemporarySavePath, SavePath, true);
+                File.Delete(TemporarySavePath);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning("Could not save local dispatch calls: " + exception.Message);
+            }
         }
 
         private static DispatchPriority GetPriority(WorldIncidentType type)
