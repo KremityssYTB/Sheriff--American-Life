@@ -569,3 +569,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The Canvas exposes Performance/Balanced/High graphics presets and 30/60/120/Unlimited frame-rate modes. It displays the active settings and existing measured FPS/frame time. Existing PlayerPrefs persistence and rendering configuration remain in `MobilePerformanceBootstrap`.
 - All four gameplay HUD areas—civilian interaction, traffic stop, prisoner transport, and Settings—are now Canvas-based. Settings opening releases held inputs and hides other HUD elements; closing restores their prior visibility state.
 - Static source checks confirm all eight settings action IDs exist in the UI and controller, the settings context is state-driven, the old Settings IMGUI methods and `OnGUI` are absent, and braces balance. Unity compilation, Play Mode, touch testing, visual layout on portrait/landscape iPhone/iPad, cloud build, signing, and IPA installation remain unverified.
+
+
+## Mobile HUD source-level layout audit (2026-11-28)
+
+- Commit `5b440934db5c5018e0c4eb82937705af149b1915` fixes traffic-stop action row spacing, moves the prisoner transport panel clear of the lower movement/steering controls, and separates the Settings frame-rate and bottom readout/close rows.
+- Commit `b06028083f9309b00713ed4856fd2e39d79521ba` enables TMP auto-sizing for top-level HUD action labels and deputy status text.
+- Commit `82bf3d66604b2ef5e89829029322c9de01ad196d` documents the source-level audit in `DESIGN/MOBILE_MDT_INTERFACE.md`.
+- Static checks confirm traffic action rows use the revised in-panel spacing, transport and Settings anchors use the revised regions, action/status auto-sizing is enabled, and `MobileTouchControls.cs` braces balance.
+- This was a source/normalized-anchor audit only. No Unity Editor, device rendering, safe-area rotation, touch target, or runtime tests were available. Actual pixel sizing and any remaining overlaps must be validated in Unity on portrait/landscape iPhone and iPad layouts.
