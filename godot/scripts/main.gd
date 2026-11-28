@@ -3,6 +3,7 @@ extends Node3D
 const DeputyController = preload("res://scripts/player_controller.gd")
 const PatrolSUVController = preload("res://scripts/patrol_suv.gd")
 const DispatchManager = preload("res://scripts/dispatch_manager.gd")
+const FloridaRegionCatalog = preload("res://scripts/florida_region_catalog.gd")
 var player: CharacterBody3D
 var patrol_suv: VehicleBody3D
 var in_vehicle := false
@@ -12,6 +13,7 @@ var vehicle_controls: Array[Button] = []
 var enter_button: Button
 var lights_button: Button
 var vehicle_look_touch_id := -1
+var region_catalog: RefCounted
 var dispatch_manager: Node
 var dispatch_summary: Label
 var dispatch_state_label: Label
@@ -25,6 +27,9 @@ func _ready() -> void:
 	# Supersample the desktop Forward+ path; keep iOS at native resolution.
 	get_viewport().scaling_3d_scale = 1.0 if OS.has_feature("mobile") else 1.25
 	_setup_input()
+	region_catalog = FloridaRegionCatalog.new()
+	if region_catalog.load_catalog():
+		print("Florida region catalog loaded: %d counties, %d playable districts, %.0f km2." % [region_catalog.get_county_count(), region_catalog.get_districts().size(), region_catalog.get_map_area_km2()])
 	_build_environment()
 	_build_district()
 	_spawn_player()
