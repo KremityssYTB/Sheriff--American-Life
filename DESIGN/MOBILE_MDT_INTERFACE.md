@@ -98,3 +98,5 @@ All calls, reports, and witness statements are currently session-only. No save/l
 - Remaining validation: inspect smallest supported iPhone, large iPhone, iPad portrait/landscape, split-screen/resizing, text clipping, and overlapping contextual HUD panels in Unity and on devices. The current IMGUI control scheme remains a prototype, not a final virtual joystick.
 
 - The prisoner-transport prompt now uses a responsive panel width and shifts to the upper-left contextual column while a traffic stop is active, avoiding the shared upper-right action column used by document checks. This is a deterministic source-level collision avoidance rule; other combinations and narrow-screen clipping still need visual testing.
+
+- Follow-up layout refinement: the prisoner-transport HUD is now a compact center-bottom strip above the vehicle control row. It combines intake distance and prisoner name into one status line and only shows the booking action when within intake range. This keeps it out of both traffic-stop side columns and leaves the steering/throttle hit areas clear by a scaled vertical gap.
