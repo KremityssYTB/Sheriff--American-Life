@@ -346,19 +346,42 @@ class TouchButton:
 	extends Button
 	var action_name := ""
 	func _ready() -> void:
-		modulate = Color(1,1,1,0.78)
-		add_theme_font_size_override("font_size", 16)
+		add_theme_font_size_override("font_size", 12)
+		add_theme_color_override("font_color", Color(0.91, 0.95, 0.98))
+		add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0))
+		add_theme_color_override("font_pressed_color", Color(0.72, 0.86, 0.94))
+		var normal := StyleBoxFlat.new()
+		normal.bg_color = Color(0.025, 0.055, 0.078, 0.88)
+		normal.border_color = Color(0.32, 0.48, 0.58, 0.95)
+		normal.set_border_width_all(1)
+		normal.set_corner_radius_all(10)
+		normal.content_margin_left = 5
+		normal.content_margin_right = 5
+		var hover := normal.duplicate() as StyleBoxFlat
+		hover.bg_color = Color(0.07, 0.13, 0.17, 0.96)
+		var pressed := normal.duplicate() as StyleBoxFlat
+		pressed.bg_color = Color(0.12, 0.23, 0.29, 0.98)
+		add_theme_stylebox_override("normal", normal)
+		add_theme_stylebox_override("hover", hover)
+		add_theme_stylebox_override("pressed", pressed)
+		add_theme_stylebox_override("focus", normal)
 		button_down.connect(func(): Input.action_press(action_name))
 		button_up.connect(func(): Input.action_release(action_name))
 
 func _build_dispatch_panel(layer: CanvasLayer) -> void:
 	var panel := PanelContainer.new()
 	panel.name = "DispatchPanel"
-	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	panel.offset_left = -352
-	panel.offset_right = -20
-	panel.offset_top = 18
-	panel.offset_bottom = 254
+	var viewport_width := get_viewport().get_visible_rect().size.x
+	if viewport_width < 700.0:
+		panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		panel.position = Vector2(18, 112)
+		panel.custom_minimum_size = Vector2(minf(viewport_width - 36.0, 354.0), 0)
+	else:
+		panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		panel.offset_left = -352
+		panel.offset_right = -20
+		panel.offset_top = 18
+		panel.offset_bottom = 254
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.035, 0.065, 0.09, 0.94)
 	panel_style.border_color = Color(0.34, 0.48, 0.58, 0.9)
