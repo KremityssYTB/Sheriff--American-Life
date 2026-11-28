@@ -624,3 +624,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Phase 11: `IncidentReportBook` now loads/saves a versioned local JSON ledger at `Application.persistentDataPath/incident-reports.json`. Report IDs use a persisted sequence, are reconciled against loaded records, and the ledger is capped at 1,000 newest records. Writes stage through a `.tmp` file before copying to the primary path. Errors are caught/logged; there is no cloud sync or automatic migration/recovery yet.
 - Phase 11 source and documentation commits are recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, iOS filesystem, or iPhone/iPad runtime test has been performed.
 - Current next phase: Phase 12 — persist witness statements with versioned JSON and stable statement numbering. Fetch current source and blob SHAs before editing.
+
+
+## Phase 12 — persistent witness statements (2026-11-28)
+
+- `WitnessStatementBook` now loads/saves versioned local JSON at `Application.persistentDataPath/witness-statements.json`; statement IDs continue from the persisted sequence and are reconciled against loaded IDs. The ledger is capped at 2,000 newest statements, and confidence is clamped to 0–1 on insertion.
+- Save writes stage through a `.tmp` file before copying to the primary path. Exceptions are caught/logged. There is no cloud sync, schema migration, or automatic corruption recovery.
+- Commit recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, iOS filesystem, or iPhone/iPad runtime test has been performed.
+- Current next phase: Phase 13 — persist dispatch calls and restore/validate dispatch lifecycle state. Fetch current source and blob SHAs before editing.
