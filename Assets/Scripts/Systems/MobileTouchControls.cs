@@ -28,6 +28,7 @@ namespace SheriffAmericanLife
         private TextMeshProUGUI settingsFrameRateStatus;
         private TextMeshProUGUI settingsPerformanceStatus;
         private bool settingsVisible;
+        private readonly Dictionary<GameObject, bool> visibilityBeforeModal = new Dictionary<GameObject, bool>();
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
@@ -149,14 +150,24 @@ namespace SheriffAmericanLife
 
         public void SetControlsVisible(bool visible)
         {
-            if (!visible) ReleaseAll();
             if (canvas != null) canvas.enabled = true;
             if (safeRoot == null) return;
-            for (int i = 0; i < safeRoot.childCount; i++)
+            if (!visible)
             {
-                GameObject child = safeRoot.GetChild(i).gameObject;
-                child.SetActive(visible || (child == settingsPanel && settingsVisible));
+                if (visibilityBeforeModal.Count > 0) return;
+                ReleaseAll();
+                for (int i = 0; i < safeRoot.childCount; i++)
+                {
+                    GameObject child = safeRoot.GetChild(i).gameObject;
+                    visibilityBeforeModal[child] = child.activeSelf;
+                    child.SetActive(false);
+                }
+                return;
             }
+
+            foreach (KeyValuePair<GameObject, bool> pair in visibilityBeforeModal)
+                if (pair.Key != null) pair.Key.SetActive(pair.Value);
+            visibilityBeforeModal.Clear();
         }
 
         public void ReleaseAll()
@@ -227,8 +238,8 @@ namespace SheriffAmericanLife
             settingsPanel = new GameObject("Settings Panel", typeof(RectTransform), typeof(Image));
             settingsPanel.transform.SetParent(safeRoot, false);
             RectTransform panelRect = settingsPanel.GetComponent<RectTransform>();
-            panelRect.anchorMin = new Vector2(.17f, .08f);
-            panelRect.anchorMax = new Vector2(.83f, .92f);
+            panelRect.anchorMin = new Vector2(.04f, .08f);
+            panelRect.anchorMax = new Vector2(.96f, .92f);
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             settingsPanel.GetComponent<Image>().color = new Color(.018f, .028f, .04f, .97f);
