@@ -11,6 +11,7 @@ namespace SheriffAmericanLife
     public sealed class TrafficCitation
     {
         public string citationNumber;
+        public string caseId;
         public string driverName;
         public string licenseNumber;
         public string plateNumber;
@@ -49,7 +50,7 @@ namespace SheriffAmericanLife
             Load();
         }
 
-        public TrafficCitation Issue(TrafficStopDriverProfile profile, string location, string officerUnit)
+        public TrafficCitation Issue(TrafficStopDriverProfile profile, string location, string officerUnit, string caseId = null)
         {
             if (profile == null || !profile.AllDocumentsChecked || !profile.HasViolation) return null;
 
@@ -75,6 +76,7 @@ namespace SheriffAmericanLife
             if (violations.Count == 0) return null;
             var citation = new TrafficCitation {
                 citationNumber = "MC-" + nextSequence.ToString("000000"),
+                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : null,
                 driverName = profile.DriverName,
                 licenseNumber = profile.LicenseNumber,
                 plateNumber = profile.PlateNumber,
