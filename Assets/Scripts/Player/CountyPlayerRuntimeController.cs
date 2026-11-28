@@ -578,7 +578,7 @@ namespace SheriffAmericanLife
             if (reportBook != null)
                 reportBook.AddReport("Jail intake", booking.personName, "Prisoner transport",
                     "Transport completed at Marion County jail intake. Booking " + booking.bookingId + " received.",
-                    "Fictional gameplay custody transfer recorded at the Ocala greybox jail intake.");
+                    "Fictional gameplay custody transfer recorded at the Ocala greybox jail intake.", null, booking.caseId);
             vehicle.StopImmediately();
             Debug.Log("Prisoner transport completed: " + booking.bookingId);
         }
