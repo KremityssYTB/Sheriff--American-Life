@@ -3,6 +3,7 @@ config_version=5
 
 [application]
 config/name="SHERIFF: AMERICAN LIFE"
+config/icon="res://icon.svg"
 run/main_scene="res://scenes/main.tscn"
 
 [display]
@@ -14,6 +15,7 @@ window/stretch/mode="canvas_items"
 3d/default_gravity=9.8
 
 [rendering]
+textures/vram_compression/import_etc2_astc=true
 renderer/rendering_method="forward_plus"
 renderer/rendering_method.mobile="mobile"
 scaling_3d/scale=1.0
