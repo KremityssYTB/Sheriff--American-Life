@@ -55,7 +55,6 @@ namespace SheriffAmericanLife
 
         private float UiWidth => Screen.safeArea.width;
         private float UiHeight => Screen.safeArea.height;
-        private float hForTransport(float scale) => Mathf.Max(54f, 58f * scale);
 
         public void Initialize(Transform worldRoot)
         {
@@ -297,7 +296,6 @@ namespace SheriffAmericanLife
                 return;
             }
             if (touchControls != null) touchControls.SetControlsVisible(true);
-            DrawPrisonerTransportHud(s, pad);
 
             GUI.matrix = previousGuiMatrix;
         }
