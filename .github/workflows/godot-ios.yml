@@ -56,7 +56,7 @@ jobs:
         run: |
           set -euo pipefail
           # A 10-character placeholder is used only to generate an unsigned Xcode project.
-          sed -i '' 's/application\/app_store_team_id=""/application\/app_store_team_id="0000000000"/' godot/export_presets.cfg
+          sed -i '' 's/application\/app_store_team_id=""/application\/app_store_team_id="ABCDE12XYZ"/' godot/export_presets.cfg
       - name: Export iOS Xcode project
         run: |
           set -euo pipefail
