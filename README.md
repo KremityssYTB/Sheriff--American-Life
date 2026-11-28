@@ -14,7 +14,7 @@ See [Core Gameplay Scope](DESIGN/CORE_GAMEPLAY_SCOPE.md) for the complete requir
 
 ## Phone-playable browser preview
 
-A separate lightweight browser preview is being added under [web-demo](web-demo/index.html), with touch movement, a patrol SUV, driving, on/off-duty toggle, simple dispatch calls, and location interactions. It is a temporary 2D playtest companion, not the Unity game build. The GitHub Pages deployment workflow is [deploy-web-demo.yml](.github/workflows/deploy-web-demo.yml). The first deployment is blocked because Pages is not enabled and the connected integration cannot enable it. In repository Settings → Pages, select **GitHub Actions** as the source, then rerun the workflow. The expected URL is https://kremityssytb.github.io/Sheriff--American-Life/ after a successful deployment.
+A separate lightweight **3D browser preview** is available under [web-demo](web-demo/index.html), with touch movement, a patrol SUV, simplified driving, on/off-duty toggle, sample dispatch calls, and location interactions. It is a limited Three.js/WebGL playtest companion, not the Unity game build or a native iOS app. The public-facing project site is in [site](site/index.html) and links to the preview and official X account: [@officalsalgame](https://x.com/officalsalgame). The GitHub Pages deployment workflow is [deploy-web-demo.yml](.github/workflows/deploy-web-demo.yml). If GitHub Pages has not yet been enabled for this repository, open Settings → Pages and select **GitHub Actions** as the source. The workflow publishes the project site and nests the browser preview at `/playtest/`. The expected URL is https://kremityssytb.github.io/Sheriff--American-Life/ after a successful deployment.
 
 ## Current prototype foundation
 
