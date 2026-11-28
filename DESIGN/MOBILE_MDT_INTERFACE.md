@@ -187,3 +187,10 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Reworked the Settings modal's lower frame-rate row and bottom performance/close row so their normalized vertical regions no longer overlap.
 - Enabled TMP auto-sizing for top-level action labels and deputy status text to reduce clipping on narrow screens.
 - Verified normalized anchor regions and the source-level changes by inspection. This is not a substitute for checking actual rendered pixel sizes, device safe areas, touch interaction, or orientation changes in Unity.
+
+
+### Phase 6 — gameplay interaction lifecycle audit (2026-11-28)
+
+- The source audit found a custody-state conflict: the deputy could arrest a second civilian while already escorting one prisoner. `OfficerInteractionController` created the second AwaitingTransport booking before the runtime escort handler rejected the second escort, leaving an arrested civilian and booking with no transport path.
+- The civilian Canvas now disables ARREST while an escort is active, and the controller independently rejects the action if invoked despite the disabled UI. The existing one-prisoner escort rule and booking workflow remain authoritative.
+- This is a targeted source-level guard. It does not add multi-prisoner transport or alter arrest/booking data. Unity compilation, UI interaction, arrest/transport runtime tests, and device tests remain outstanding.
