@@ -546,3 +546,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The existing traffic-stop methods remain authoritative for driver responses, document checks, report logging, citations, driver history, and lightbar behavior. The old `DrawTrafficStopHud` IMGUI method and its call were removed.
 - `DESIGN/MOBILE_MDT_INTERFACE.md` records Phase 3b. Civilian interactions and traffic stops are now Canvas panels; prisoner transport and the Settings modal remain IMGUI.
 - Static checks confirm all nine UI action IDs exist and dispatch, the old traffic-stop IMGUI method/call are absent, and braces balance. No Unity compile, Play Mode, visual inspection, device touch test, cloud build, signing, or IPA installation has been performed.
+
+
+## Gameplay HUD prisoner transport Canvas migration (2026-11-28)
+
+- Commit `eeaaffff9011a5b43e24b3c4d6e447e7e30125cc` adds the Canvas prisoner transport panel, prisoner detail text, and BOOK INTAKE button.
+- Commit `e7ded2940418f1fe99b4c71a646e4a53f5733216` connects the panel to the existing pending booking state, adds a fresh booking lookup for the button callback, and removes the old IMGUI transport strip.
+- The panel appears only when the deputy is on duty and in the patrol vehicle with an escorted prisoner whose booking remains AwaitingTransport. It shows prisoner name, intake distance, and booking-range status; BOOK INTAKE appears only within 18 m.
+- The action reuses `CompletePrisonerTransport`, which revalidates duty, vehicle, escort/booking identity, and intake distance before marking the booking Booked, restoring the civilian, recording the jail-intake report, and stopping the vehicle.
+- Commit `87af666329205c73f15eae4a866c7b3e9b7e038f` documents Phase 3c in `DESIGN/MOBILE_MDT_INTERFACE.md`.
+- Civilian interaction, traffic-stop, and prisoner transport interfaces are now Canvas-based. Settings modal remains IMGUI. Static source inspection only; Unity compile, Play Mode, touch testing, visual layout, cloud build, signing, and IPA installation remain unverified.
