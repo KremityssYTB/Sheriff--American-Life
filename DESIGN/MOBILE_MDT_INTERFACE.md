@@ -202,3 +202,11 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Added `CivilianCharacter.ReleaseFromCustody()` and subscribed the player runtime to booking-ledger changes. When a booking is Released, the matching in-scene civilian returns to Free and their routine agent is re-enabled. The subscription is removed when the player controller is destroyed.
 - The booking ledger remains the source of the release decision; the runtime mirrors that state into the civilian actor. Matching currently uses the saved identification number, so production identity uniqueness and duplicate-identity handling remain future data-model work.
 - Static source review only. No Unity compile, MDT interaction, jail release simulation, or runtime test has been performed.
+
+
+### Phase 8 — traffic driver-history identity audit (2026-11-28)
+
+- Found that `FindByLicenseOrPlate` merged a history record when either the license OR plate matched. A conflicting license/plate pair could therefore attach a new encounter to another driver's history and overwrite the stored identity fields.
+- Matching now prioritizes an exact normalized license match, then an exact normalized plate match, and rejects a candidate when the other supplied identifier conflicts. Missing identifiers may still match a record that lacks that field.
+- This reduces accidental record merging but does not provide authoritative DMV identity resolution; generated profiles and local fictional records remain prototype data.
+- Static source review only. No Unity compile or citation/history runtime test was performed.
