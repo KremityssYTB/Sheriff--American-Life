@@ -163,3 +163,19 @@ func get_stream_cell_count() -> Vector2i:
 		ceili((float(bounds[2]) - float(bounds[0])) / float(cell_size)),
 		ceili((float(bounds[3]) - float(bounds[1])) / float(cell_size))
 	)
+
+func get_region_for_county(county_id: String) -> Dictionary:
+	for region in data.get("regions", []):
+		if county_id in region.get("county_ids", []):
+			return region
+	return {}
+
+func get_districts_for_county(county_id: String) -> Array:
+	var matches: Array = []
+	for district in get_districts():
+		if str(district.get("county_id", "")) == county_id:
+			matches.append(district)
+	return matches
+
+func get_county_roster() -> Array:
+	return data.get("county_roster", [])
