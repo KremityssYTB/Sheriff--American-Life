@@ -49,6 +49,9 @@ namespace SheriffAmericanLife
         private GUIStyle statusStyle;
         private MobilePerformanceBootstrap performanceSettings;
         private bool settingsOpen;
+        private MobileTouchControls touchControls;
+        private bool touchMoveLeft, touchMoveRight, touchMoveUp, touchMoveDown, touchSprint;
+        private bool touchSteerLeft, touchSteerRight, touchGas, touchBrake;
 
         private float UiWidth => Screen.safeArea.width;
         private float UiHeight => Screen.safeArea.height;
@@ -111,6 +114,12 @@ namespace SheriffAmericanLife
             cameraModes.Configure(cam, footThird, footFirst);
             walker.SetCameraTransform(cameraObject.transform);
             cameraModes.SetFirstPerson(false);
+
+            GameObject touchObject = new GameObject("Gameplay Touch Controls");
+            touchObject.transform.SetParent(worldRoot, false);
+            touchControls = touchObject.AddComponent<MobileTouchControls>();
+            touchControls.ControlChanged += HandleTouchControlChanged;
+            touchControls.SetVehicleMode(false);
         }
 
         private Transform MakeAnchor(Transform parent, string anchorName, Vector3 localPosition)
@@ -125,10 +134,17 @@ namespace SheriffAmericanLife
         private void OnDestroy()
         {
             if (interactions != null) interactions.ArrestCompleted -= HandleArrestCompleted;
+            if (touchControls != null)
+            {
+                touchControls.ControlChanged -= HandleTouchControlChanged;
+                touchControls.ReleaseAll();
+            }
         }
 
         private void OnDisable()
         {
+            if (touchControls != null) touchControls.ReleaseAll();
+            ClearTouchState();
             moveInput = Vector2.zero;
             throttle = 0f;
             steering = 0f;
@@ -149,7 +165,11 @@ namespace SheriffAmericanLife
             RefreshCivilianFocus();
             RefreshTrafficTarget();
             UpdatePrisonerEscort();
-            if (walker && !inVehicle) walker.SetMoveInput(moveInput);
+            if (walker && !inVehicle)
+            {
+                walker.SetMoveInput(moveInput);
+                walker.SetSprint(touchSprint && !settingsOpen);
+            }
             if (vehicle)
             {
                 vehicle.SetThrottle(inVehicle ? throttle : 0f);
@@ -181,6 +201,7 @@ namespace SheriffAmericanLife
             float pad = 12f*s;
             if (settingsOpen)
             {
+                if (touchControls != null) touchControls.SetControlsVisible(false);
                 moveInput = Vector2.zero;
                 throttle = 0f;
                 steering = 0f;
@@ -189,6 +210,7 @@ namespace SheriffAmericanLife
                 GUI.matrix = previousGuiMatrix;
                 return;
             }
+            if (touchControls != null) touchControls.SetControlsVisible(true);
             float statusWidth = Mathf.Max(80f, UiWidth - 136f*s);
             GUI.Label(new Rect(pad, pad, statusWidth, 30*s),
                 dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY",
@@ -206,30 +228,46 @@ namespace SheriffAmericanLife
             DrawTrafficStopHud(s, pad);
             DrawPrisonerTransportHud(s, pad);
 
-            if (!inVehicle)
-            {
-                moveInput = Vector2.zero;
-                if (GUI.RepeatButton(new Rect(pad+w+4*s,UiHeight-h*2-pad,w,h), "▲", buttonStyle)) moveInput.y = 1;
-                if (GUI.RepeatButton(new Rect(pad+w+4*s,UiHeight-h-pad,w,h), "▼", buttonStyle)) moveInput.y = -1;
-                if (GUI.RepeatButton(new Rect(pad,UiHeight-h-pad,w,h), "◀", buttonStyle)) moveInput.x = -1;
-                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,UiHeight-h-pad,w,h), "▶", buttonStyle)) moveInput.x = 1;
-                if (GUI.RepeatButton(new Rect(pad+w*2+8*s,UiHeight-h*2-pad,w,h), "SPRINT", buttonStyle))
-                    walker.SetSprint(true);
-                else walker.SetSprint(false);
-                throttle = 0f; steering = 0f;
-            }
-            else
-            {
-                moveInput = Vector2.zero;
-                if (GUI.RepeatButton(new Rect(pad,UiHeight-h-pad,w,h), "LEFT", buttonStyle)) steering = -1;
-                else if (GUI.RepeatButton(new Rect(pad+w+4*s,UiHeight-h-pad,w,h), "RIGHT", buttonStyle)) steering = 1;
-                else steering = 0;
-                if (GUI.RepeatButton(new Rect(UiWidth-w-pad,UiHeight-h-pad,w,h), "GAS", buttonStyle)) throttle = 1;
-                else if (GUI.RepeatButton(new Rect(UiWidth-w-pad,UiHeight-h*2-pad,w,h), "BRAKE / REV", buttonStyle)) throttle = -1;
-                else throttle = 0;
-            }
-
             GUI.matrix = previousGuiMatrix;
+        }
+
+        private void HandleTouchControlChanged(string control, bool pressed)
+        {
+            switch (control)
+            {
+                case "move_left": touchMoveLeft = pressed; break;
+                case "move_right": touchMoveRight = pressed; break;
+                case "move_up": touchMoveUp = pressed; break;
+                case "move_down": touchMoveDown = pressed; break;
+                case "sprint": touchSprint = pressed; break;
+                case "steer_left": touchSteerLeft = pressed; break;
+                case "steer_right": touchSteerRight = pressed; break;
+                case "gas": touchGas = pressed; break;
+                case "brake": touchBrake = pressed; break;
+            }
+            RefreshTouchInputs();
+        }
+
+        private void RefreshTouchInputs()
+        {
+            moveInput = inVehicle ? Vector2.zero : new Vector2(
+                (touchMoveRight ? 1f : 0f) - (touchMoveLeft ? 1f : 0f),
+                (touchMoveUp ? 1f : 0f) - (touchMoveDown ? 1f : 0f));
+            if (moveInput.sqrMagnitude > 1f) moveInput.Normalize();
+            steering = inVehicle
+                ? (touchSteerRight ? 1f : 0f) - (touchSteerLeft ? 1f : 0f)
+                : 0f;
+            throttle = inVehicle
+                ? (touchGas ? 1f : 0f) - (touchBrake ? 1f : 0f)
+                : 0f;
+            if (walker != null) walker.SetSprint(touchSprint && !inVehicle && !settingsOpen);
+        }
+
+        private void ClearTouchState()
+        {
+            touchMoveLeft = touchMoveRight = touchMoveUp = touchMoveDown = touchSprint = false;
+            touchSteerLeft = touchSteerRight = touchGas = touchBrake = false;
+            RefreshTouchInputs();
         }
 
         private void DrawSettingsPanel(float scale)
@@ -790,6 +828,8 @@ namespace SheriffAmericanLife
             {
                 if (Vector3.Distance(player.transform.position, patrolVehicle.transform.position) > 5f) return;
                 inVehicle = true;
+                if (touchControls != null) touchControls.SetVehicleMode(true);
+                ClearTouchState();
                 characterController.enabled = false;
                 walker.SetMovementEnabled(false);
                 player.GetComponent<Renderer>().enabled = false;
@@ -806,6 +846,8 @@ namespace SheriffAmericanLife
                 vehicle.StopImmediately();
                 vehicle.SetControlsEnabled(false);
                 inVehicle = false;
+                if (touchControls != null) touchControls.SetVehicleMode(false);
+                ClearTouchState();
                 player.transform.SetPositionAndRotation(exitPosition, patrolVehicle.transform.rotation);
                 player.GetComponent<Renderer>().enabled = true;
                 characterController.enabled = true;
