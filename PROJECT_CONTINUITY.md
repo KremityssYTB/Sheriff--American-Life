@@ -513,3 +513,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The touch Canvas uses a safe-area root and sorting order 40, below the MDT Canvas at sorting order 50. Existing duty/vehicle/camera/settings action buttons and civilian/traffic-stop/transport panels remain IMGUI; those are later migration phases.
 - Static source checks performed: balanced braces in the new touch-control source and player controller; no remaining `GUI.RepeatButton` movement/vehicle controls; adapter callback and release paths present. These checks do not prove compilation or runtime behavior.
 - No Unity compile, Play Mode test, device multi-touch test, visual layout inspection, cloud build, Xcode export, signing, or IPA installation has been performed. The implementation must be validated before being treated as working on iPhone/iPad.
+
+
+## Gameplay HUD primary action migration (2026-11-28)
+
+- Commit `b82f911aa0fc747f2ca6238a3c82f51445407a25` adds Canvas status text and duty, enter/exit vehicle, camera, and Settings action buttons to `MobileTouchControls`.
+- Commit `513ac83c35f7fa2789e46a1f07b9cb9915fa622a` wires those actions to the existing `CountyPlayerRuntimeController` methods and removes their duplicate IMGUI status/action controls. Duty and vehicle labels are refreshed from current controller state.
+- Commits `200a6a7aae7097943baf06b057431b26f549322e` and `2df6eb29c90e54e34337ea1a68a25c25f5230866` adjust the brake/settings touch hit areas and remove obsolete IMGUI layout variables.
+- The first Canvas migration phases now cover held foot/vehicle controls and top-level status/actions. Civilian interactions, traffic-stop panels, prisoner transport, and the Settings modal remain IMGUI.
+- Static source checks confirm balanced braces, correct touch-button collection types, held pointer lifecycle handlers, safe-area logic, controller event wiring, primary action dispatch, no old movement RepeatButtons, and no old top-level IMGUI action buttons. These are text-level checks only.
+- Unity compile/runtime, actual multi-touch, visual layout, MDT overlap, portrait/landscape, iPad split view, cloud build, signing, and install remain unverified.
