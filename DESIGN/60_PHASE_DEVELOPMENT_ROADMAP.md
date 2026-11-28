@@ -7,7 +7,7 @@ This is a planning roadmap, not a claim that planned systems are implemented. Ph
 12. Persist witness statements and reconcile statement IDs after reload.
 13. Persist dispatch calls and validate call lifecycle restoration.
 14. Add shared local-save infrastructure, schema migration policy, and corruption recovery.
-15. Add cross-ledger links between incidents, reports, witnesses, citations, bookings, and dispatch.
+15. Add cross-ledger case references, a read-only case index, and explicit citation/booking linking.
 16. Add case-level grouping and case search in the MDT.
 17. Add save-slot/profile metadata and a clean new-game flow.
 18. Add save diagnostics and user-facing recovery messaging.
@@ -68,3 +68,12 @@ This is a planning roadmap, not a claim that planned systems are implemented. Ph
 - Source inspection is not Unity compilation. Unity compilation is not Play Mode validation. Neither is an iPhone/iPad device test.
 - Do not claim multiplayer, production assets, full county coverage, or a signed installable app unless those capabilities are actually implemented and verified.
 - Preserve the iPhone-only and zero-budget workflow; avoid paid cloud desktop dependencies.
+
+
+## Phase 15 — cross-system case references (2026-11-28)
+
+- Added a shared `caseId` field to incident reports, witness statements, dispatch calls, traffic citations, and arrest bookings. Legacy report `relatedIncidentId`, witness `incidentId`, and dispatch `sourceIncidentId` values are used as fallbacks when loading older records.
+- Added `CaseFileIndex`, a read-only lookup that collects all five record types for a case ID. It is attached to the runtime world root by `CountyPlayerRuntimeController` and discovers the existing ledgers on that object.
+- Dispatch-generated reports inherit the call's case ID. Arrest reports and jail-intake reports inherit the booking case ID. Citation-generated follow-up reports inherit the citation case ID. Citations and bookings receive stable default case IDs and expose explicit `LinkToCase` methods for joining an existing case.
+- This is a local prototype index, not a real records-management system. It does not merge unrelated cases, infer identity, provide legal authority, or synchronize across devices. Witness/dispatch records with an existing world incident ID naturally group under that ID; separately created arrest/citation cases remain separate until explicitly linked.
+- Static source checks only. Unity compilation, runtime component wiring, lookup behavior, save compatibility, and device tests remain outstanding.
