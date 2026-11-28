@@ -217,3 +217,11 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Tightened dispatch state entry validation: accepting a call now requires a non-empty unit name; resolving a call requires a non-empty disposition; cancelling a call requires a non-empty reason. Accepted unit names are trimmed before storage.
 - Existing transition ordering remains unchanged: Available → Accepted → EnRoute → OnScene → Resolved. Cancellation remains available for non-terminal calls, and terminal calls cannot be resolved/cancelled again.
 - This prevents blank assignment and closure metadata from entering the session-only CAD log. Static source review only; no Unity compile or MDT runtime workflow test was performed.
+
+
+### Phase 10 — cross-system data lifecycle and persistence audit (2026-11-28)
+
+- Completed a source-level pass across the interaction, custody, traffic citation/history, witness, incident report, dispatch, and MDT controller paths.
+- Confirmed current storage boundaries: arrest bookings, traffic citations, and driver history write local JSON under `Application.persistentDataPath`; incident reports, witness statements, and dispatch calls are in-memory/session-only. The MDT reads these systems and refreshes from their change events; it does not make session-only records persistent.
+- Recorded this distinction as an explicit prototype limitation rather than implying that every MDT record survives an application restart. Persistent report/dispatch/witness storage, schema migration, atomic writes, corruption recovery, and cross-ledger reconciliation remain future work.
+- Rechecked the Phase 6–9 guards and source structure. All inspected C# files have balanced braces. This is not a C# compiler check. No Unity Editor, Play Mode, automated test suite, device test, cloud build, signing, or IPA installation was performed.
