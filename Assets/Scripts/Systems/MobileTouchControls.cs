@@ -108,8 +108,8 @@ namespace SheriffAmericanLife
             // Vehicle steering remains on the left; accelerator and brake are on the right.
             AddButton("steer_left", "LEFT", new Vector2(.025f,.055f), new Vector2(.15f,.22f));
             AddButton("steer_right", "RIGHT", new Vector2(.17f,.055f), new Vector2(.295f,.22f));
-            AddButton("gas", "GAS", new Vector2(.84f,.055f), new Vector2(.975f,.235f));
-            AddButton("brake", "BRAKE\nREV", new Vector2(.84f,.25f), new Vector2(.975f,.43f));
+            AddButton("gas", "GAS", new Vector2(.84f,.12f), new Vector2(.975f,.30f));
+            AddButton("brake", "BRAKE\nREV", new Vector2(.84f,.32f), new Vector2(.975f,.50f));
         }
 
         private void AddButton(string id, string label, Vector2 anchorMin, Vector2 anchorMax)
