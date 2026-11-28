@@ -30,6 +30,7 @@ jobs:
     name: Export iOS Xcode project
     runs-on: macos-14
     needs: validate
+    if: github.event_name != 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,14 +40,23 @@ jobs:
           version: 4.5.1
           use-dotnet: false
           include-templates: true
-      - name: Export iOS project
+      - name: Require Apple Team ID
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -z "$APPLE_TEAM_ID" ]; then
+            echo "::error::Add the APPLE_TEAM_ID repository secret before running the iOS export job."
+            exit 1
+          fi
+          sed -i '' "s/application\/app_store_team_id=\"\"/application\/app_store_team_id=\"$APPLE_TEAM_ID\"/" godot/export_presets.cfg
+      - name: Export iOS Xcode project
         run: |
           mkdir -p build/ios
-          godot --headless --path godot --export-release "iOS" build/ios
+          godot --headless --path godot --export-release "iOS" build/ios/SheriffAmericanLife.zip
       - name: Upload iOS Xcode project
         uses: actions/upload-artifact@v4
         with:
           name: sheriff-american-life-ios-xcode-project
-          path: build/ios/
+          path: build/ios/SheriffAmericanLife.zip
           if-no-files-found: error
           retention-days: 7
