@@ -252,3 +252,16 @@ All art, audio, and models must be original or properly licensed.
 The companion preview at web-demo/index.html now uses Three.js 0.180.0 and WebGL for a procedural 3D Ocala test district. It includes mobile touch movement, camera drag, a deputy avatar, patrol SUV, simplified driving, traffic, emergency lights, duty toggle, dispatch calls, and location interactions. It is intended for iPhone/iPad Safari testing while the main game continues in Unity 6.3 + URP.
 
 This is a separate browser prototype, not a Unity WebGL build, native iOS/iPadOS app, or IPA. Three.js loads from jsDelivr, so network access and WebGL 2 are required. The district and assets are procedural placeholders; no Unity C# runtime or game state is shared. GitHub Pages must be enabled with Settings → Pages → Source: GitHub Actions, and the deployment workflow must pass before the preview can be considered live. Browser and device testing are still pending.
+
+
+## 60-phase development roadmap
+
+The project is following a 60-phase roadmap. Phases 1–10 are recorded as completed source-level milestones; Phases 11–60 are planned and will be completed incrementally. See [DESIGN/60_PHASE_DEVELOPMENT_ROADMAP.md](DESIGN/60_PHASE_DEVELOPMENT_ROADMAP.md). Phase completion does not imply Unity compilation, Play Mode, or device validation unless explicitly recorded.
+
+## Phase 11 — persistent incident reports (2026-11-28)
+
+- `IncidentReportBook` now loads and saves fictional incident reports to `Application.persistentDataPath/incident-reports.json` using versioned JSON.
+- Report numbers use a persisted sequence and are reconciled against loaded report IDs to avoid reusing numbers after relaunch. The ledger is capped at 1,000 records and keeps newest records first.
+- Writes use a temporary file before copying into the primary save path. Load/save exceptions are caught and logged so a storage failure does not crash the gameplay flow; a failed save may leave the current session record only.
+- This is local device storage, not cloud sync or a real police records system. Unsupported/corrupt save data is not automatically migrated or repaired in this phase.
+- Static source review only. Unity compilation, JSON round-trip, iOS filesystem behavior, and device tests remain outstanding.
