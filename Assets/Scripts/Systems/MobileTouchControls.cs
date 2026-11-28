@@ -13,6 +13,9 @@ namespace SheriffAmericanLife
     {
         private readonly Dictionary<string, MobileHoldButton> buttons = new Dictionary<string, MobileHoldButton>();
         private readonly Dictionary<string, TextMeshProUGUI> actionLabels = new Dictionary<string, TextMeshProUGUI>();
+        private readonly Dictionary<string, Button> contextButtons = new Dictionary<string, Button>();
+        private GameObject civilianPanel;
+        private TextMeshProUGUI civilianHeader;
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
@@ -20,6 +23,14 @@ namespace SheriffAmericanLife
 
         public event Action<string, bool> ControlChanged;
         public event Action<string> ActionTriggered;
+
+        public void SetCivilianContext(bool visible, string personName)
+        {
+            if (civilianPanel == null) return;
+            civilianPanel.SetActive(visible);
+            if (civilianHeader != null)
+                civilianHeader.text = string.IsNullOrEmpty(personName) ? "CIVILIAN CONTACT" : "NEARBY: " + personName;
+        }
 
         public void SetHudState(bool onDuty, bool inVehicle)
         {
@@ -136,9 +147,89 @@ namespace SheriffAmericanLife
             AddActionButton("duty", "GO ON DUTY", new Vector2(.84f,.71f), new Vector2(.975f,.82f));
             AddActionButton("camera", "CAMERA", new Vector2(.84f,.58f), new Vector2(.975f,.69f));
             AddActionButton("settings", "SETTINGS", new Vector2(.84f,.48f), new Vector2(.975f,.59f));
-            AddStatusLabel();
+            AddStatusLabel();\n            BuildCivilianPanel();
         }
 
+
+        private void BuildCivilianPanel()
+        {
+            civilianPanel = new GameObject("Civilian Interaction Panel", typeof(RectTransform), typeof(Image));
+            civilianPanel.transform.SetParent(safeRoot, false);
+            RectTransform panelRect = civilianPanel.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(.47f, .40f);
+            panelRect.anchorMax = new Vector2(.82f, .88f);
+            panelRect.offsetMin = Vector2.zero;
+            panelRect.offsetMax = Vector2.zero;
+            civilianPanel.GetComponent<Image>().color = new Color(.025f, .04f, .055f, .88f);
+
+            GameObject headerObject = new GameObject("Civilian Contact Header", typeof(RectTransform), typeof(TextMeshProUGUI));
+            headerObject.transform.SetParent(civilianPanel.transform, false);
+            RectTransform headerRect = headerObject.GetComponent<RectTransform>();
+            headerRect.anchorMin = new Vector2(.03f, .82f);
+            headerRect.anchorMax = new Vector2(.97f, .98f);
+            headerRect.offsetMin = Vector2.zero;
+            headerRect.offsetMax = Vector2.zero;
+            civilianHeader = headerObject.GetComponent<TextMeshProUGUI>();
+            civilianHeader.text = "CIVILIAN CONTACT";
+            civilianHeader.fontSize = 15f;
+            civilianHeader.enableAutoSizing = true;
+            civilianHeader.fontSizeMin = 9f;
+            civilianHeader.fontSizeMax = 15f;
+            civilianHeader.fontStyle = FontStyles.Bold;
+            civilianHeader.color = Color.white;
+            civilianHeader.alignment = TextAlignmentOptions.Center;
+            civilianHeader.raycastTarget = false;
+
+            string[] ids = { "civilian_greet", "civilian_questions", "civilian_id", "civilian_warn",
+                "civilian_cite", "civilian_detain", "civilian_arrest", "civilian_release" };
+            string[] captions = { "GREET", "QUESTIONS", "ID", "WARN", "CITE", "DETAIN", "ARREST", "RELEASE" };
+            for (int i = 0; i < ids.Length; i++)
+            {
+                int column = i % 2;
+                int row = i / 2;
+                float xMin = .035f + column * .49f;
+                float xMax = xMin + .455f;
+                float yMax = .79f - row * .19f;
+                float yMin = yMax - .16f;
+                AddContextButton(ids[i], captions[i], new Vector2(xMin, yMin), new Vector2(xMax, yMax));
+            }
+            civilianPanel.SetActive(false);
+        }
+
+        private void AddContextButton(string id, string caption, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            GameObject buttonObject = new GameObject("Context Action " + id, typeof(RectTransform), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(civilianPanel.transform, false);
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = new Color(.08f, .12f, .15f, .98f);
+            Button button = buttonObject.GetComponent<Button>();
+            button.targetGraphic = image;
+            button.onClick.AddListener(() => ActionTriggered?.Invoke(id));
+
+            GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(buttonObject.transform, false);
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(2f, 2f);
+            labelRect.offsetMax = new Vector2(-2f, -2f);
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = caption;
+            label.alignment = TextAlignmentOptions.Center;
+            label.fontSize = 13f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 8f;
+            label.fontSizeMax = 13f;
+            label.fontStyle = FontStyles.Bold;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            contextButtons.Add(id, button);
+        }
 
         private void AddStatusLabel()
         {
