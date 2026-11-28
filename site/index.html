@@ -24,6 +24,36 @@ footer{padding:26px 0;border-top:1px solid var(--line);display:flex;justify-cont
 @media(max-width:850px){.hero-seal{right:2%;width:230px;max-width:27vw;opacity:.55}.world-layout{grid-template-columns:1fr;gap:32px}.features{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.wrap{width:calc(100% - 30px)}nav{height:68px}.crest{width:37px;height:42px}.brand-name{font-size:16px}.brand-sub{font-size:7px}.navlinks{gap:12px;font-size:9px}.navlinks a:not(.nav-cta){display:none}.nav-cta{padding:10px}.hero{min-height:680px}.hero-inner{padding:86px 0 105px}.hero-seal{width:180px;max-width:none;right:-30px;top:auto;bottom:8px;transform:none;opacity:.22}.hero-copy{font-size:14px;max-width:96%}.hero-meta{gap:12px;font-size:8px}section{padding:70px 0}.features{grid-template-columns:1fr}.feature{min-height:0}.platform-grid{grid-template-columns:1fr}.map-card{min-height:300px;padding:24px}.map-label{font-size:44px}footer{line-height:1.7}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+
+/* Cinematic high-detail presentation */
+:root{--gold:#e0c27b;--gold2:#fff0c5;--ink:#07111b;--navy:#0b1b29}
+body{background:radial-gradient(ellipse at 50% -20%,#28485a 0%,#0b1824 45%,#060d15 100%);background-attachment:fixed}
+.topline{height:4px;box-shadow:0 0 22px #e0c27b88}
+header{background:linear-gradient(180deg,#07111bf5,#07111bdc);box-shadow:0 12px 35px #0005}
+.crest{filter:drop-shadow(0 0 7px #e0c27b55) drop-shadow(0 7px 14px #0009)}
+.hero{min-height:790px;background:linear-gradient(180deg,#172e3b 0%,#3b5660 46%,#d19a62 100%);isolation:isolate}
+.hero:before{z-index:-1;inset:0;background:linear-gradient(90deg,#07111bf5 0%,#07111bd9 38%,#07111b40 74%,#07111b20 100%),linear-gradient(0deg,#07111bf0 0%,transparent 45%),radial-gradient(ellipse at 74% 43%,#f7d29b99,transparent 34%)}
+.hero:after{z-index:-1;right:-8%;bottom:-64%;width:90%;height:110%;border-color:#f2d89a88;box-shadow:0 0 0 24px #f2d89a18,0 0 0 52px #f2d89a12,0 0 0 85px #f2d89a0a}
+.hero-art{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.hero-art svg{position:absolute;right:0;bottom:0;width:min(76vw,1080px);height:100%;opacity:.96;filter:drop-shadow(0 22px 45px #0008)}
+.hero-inner{z-index:3;text-shadow:0 2px 24px #0006}
+.hero-copy{color:#e2e8e8;text-shadow:0 2px 14px #0008}
+.eyebrow{text-shadow:0 1px 10px #0008}
+.btn{box-shadow:0 10px 28px #0005,inset 0 1px #ffffff35}
+.btn-gold{background:linear-gradient(135deg,#f3dfa9,#c59c50);border:1px solid #fff0c2}
+.btn-outline{backdrop-filter:blur(12px);background:#07111b77;border-color:#ffffff70}
+.hero-seal{filter:drop-shadow(0 24px 45px #0009) drop-shadow(0 0 18px #e0c27b33)}
+.feature,.platform{background:linear-gradient(145deg,#203b4bdb,#0d1d2bf2);box-shadow:inset 0 1px #ffffff13,0 18px 38px #0003;backdrop-filter:blur(10px);transition:transform .25s,border-color .25s,box-shadow .25s}
+.feature:hover,.platform:hover{transform:translateY(-5px);border-color:#e0c27b88;box-shadow:inset 0 1px #ffffff22,0 25px 48px #0005}
+.feature:after{content:"";position:absolute;inset:1px;border:1px solid #ffffff08;pointer-events:none}
+.world{background:linear-gradient(145deg,#07111b,#102333 55%,#08131d)}
+.map-card{background:radial-gradient(ellipse at 50% 32%,#68808a 0%,#294858 42%,#0a1a27 100%);box-shadow:inset 0 0 90px #02091099,0 25px 55px #0006}
+.place{background:#07111bd9;border-color:#e0c27b66;box-shadow:0 4px 14px #0005;backdrop-filter:blur(8px)}
+.updates{background:radial-gradient(ellipse at 50% 0%,#486575 0%,#172e3d 40%,#07111b 82%);box-shadow:inset 0 1px #ffffff18}
+.updates h2{text-shadow:0 5px 25px #0008,0 0 35px #e0c27b25}
+footer{color:#a6b2b8}
+@media(max-width:850px){.hero-art svg{width:100%;opacity:.55}}
+@media(max-width:620px){.hero{min-height:730px}.hero-art svg{width:145%;height:74%;right:-26%;opacity:.42}.hero:before{background:linear-gradient(90deg,#07111bf2,#07111b9c 85%),linear-gradient(0deg,#07111bf0 0%,transparent 65%),radial-gradient(ellipse at 75% 40%,#f7d29b55,transparent 40%)}.hero-inner{padding-top:72px}.hero-seal{opacity:.15}}
 </style>
 </head>
 <body>
@@ -35,7 +65,48 @@ footer{padding:26px 0;border-top:1px solid var(--line);display:flex;justify-cont
 <div class="navlinks"><a href="#experience">EXPERIENCE</a><a href="#world">THE WORLD</a><a href="#platforms">PLATFORMS</a><a class="nav-cta" href="https://x.com/officalsalgame" target="_blank" rel="noopener">OFFICIAL X ↗</a></div>
 </nav></div></header>
 <main>
-<section class="hero"><div class="wrap"><div class="hero-inner">
+<section class="hero"><div class="hero-art" aria-hidden="true"><svg viewBox="0 0 1200 760" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#b6cbd0" stop-opacity=".05"/><stop offset=".6" stop-color="#f3c58a" stop-opacity=".45"/><stop offset="1" stop-color="#172d39" stop-opacity=".9"/></linearGradient>
+ <linearGradient id="road" x2="0" y2="1"><stop stop-color="#56616a"/><stop offset="1" stop-color="#111b24"/></linearGradient>
+ <linearGradient id="car" x2="0" y2="1"><stop stop-color="#f8f8ee"/><stop offset=".48" stop-color="#bfc8c9"/><stop offset="1" stop-color="#52616c"/></linearGradient>
+ <linearGradient id="glass" x2="0" y2="1"><stop stop-color="#8caeb7"/><stop offset="1" stop-color="#263c4c"/></linearGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+ <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<ellipse cx="870" cy="300" rx="240" ry="145" fill="#f4d19c" opacity=".25" filter="url(#blur)"/>
+<circle cx="870" cy="300" r="86" fill="#f7d9a8" opacity=".42"/>
+<path d="M0 475 110 405 185 448 280 365 360 440 450 385 560 455 670 390 790 450 900 375 1010 440 1120 390 1200 435V760H0Z" fill="#273e42" opacity=".72"/>
+<path d="M0 520 125 465 235 493 330 440 440 500 565 452 680 500 800 438 920 492 1030 440 1200 505V760H0Z" fill="#152b30"/>
+<g fill="#10232b" opacity=".95">
+<path d="M85 480v-115h48v115zm8-130 16-44 16 44zM185 480V335h58v145zm10-160 19-55 19 55zM1060 480V330h55v150zm8-170 19-55 19 55z"/>
+<path d="M0 505q40-110 78 0m0 0q40-145 80 0m-35 0q35-100 70 0m920 0q35-140 70 0m-30 0q45-170 90 0" fill="none" stroke="#0a1b22" stroke-width="17"/>
+</g>
+<path d="M0 590 1200 540v220H0Z" fill="url(#road)" opacity=".95"/>
+<path d="M0 615 1200 570" stroke="#e8d8a6" stroke-width="4" stroke-dasharray="32 25" opacity=".42"/>
+<path d="M0 685 1200 650" stroke="#f3e4bd" stroke-width="2" opacity=".25"/>
+<!-- palms -->
+<g fill="none" stroke="#132a2b" stroke-linecap="round">
+<path d="M1050 510Q1045 350 1085 245" stroke-width="17"/>
+<path d="M1085 245q-110-75-160-8 80-20 160 8q-20-105 45-138-18 74-45 138q86-70 147-35-74 0-147 35q78 25 91 90-48-60-91-90" stroke-width="11"/>
+<path d="M180 535Q165 380 205 300" stroke-width="13"/>
+<path d="M205 300q-90-65-130-10 65-18 130 10q-10-90 45-120-20 70-45 120q70-55 120-20-62-2-120 20q60 22 70 75-40-50-70-75" stroke-width="9"/>
+</g>
+<!-- patrol SUV silhouette -->
+<g transform="translate(560 465)" filter="url(#glow)">
+<ellipse cx="145" cy="150" rx="210" ry="28" fill="#02080d" opacity=".65" filter="url(#blur)"/>
+<path d="M20 92 42 38q9-21 38-24l160-1q32 2 48 27l39 55 22 13 8 54H0l5-46z" fill="url(#car)" stroke="#d8dfdf" stroke-width="3"/>
+<path d="m75 29 164-1q19 2 30 21l26 39H48l20-46q2-10 7-13z" fill="url(#glass)" stroke="#d6e0df" stroke-width="3"/>
+<path d="M154 29v60M47 96h293" stroke="#263a48" stroke-width="5"/>
+<path d="M112 101h110v35H112z" fill="#172c3a"/>
+<path d="m166 105 11 7 12-7-4 14 11 8-15 1-5 13-5-13-15-1 11-8z" fill="#e0c27b"/>
+<text x="167" y="128" fill="#f6f2e8" text-anchor="middle" font-size="9" font-family="Arial" font-weight="bold">SHERIFF</text>
+<path d="M115 3h82v9h-82z" fill="#d4d8d6"/><path d="M123 0h25v13h-25z" fill="#d92c3c" filter="url(#glow)"/><path d="M165 0h25v13h-25z" fill="#2687d9" filter="url(#glow)"/>
+<path d="M-2 105h24v17H-2zm315 0h24v17h-24z" fill="#f4e4b8"/>
+<circle cx="67" cy="160" r="27" fill="#10171c" stroke="#889399" stroke-width="8"/><circle cx="67" cy="160" r="9" fill="#c1c8c9"/>
+<circle cx="276" cy="160" r="27" fill="#10171c" stroke="#889399" stroke-width="8"/><circle cx="276" cy="160" r="9" fill="#c1c8c9"/>
+</g>
+</svg></div><div class="wrap"><div class="hero-inner">
 <div class="eyebrow">A FLORIDA OPEN-WORLD ROLEPLAY EXPERIENCE</div>
 <h1>YOUR SHIFT.<span>YOUR FLORIDA.</span></h1>
 <p class="hero-copy">Put on the uniform, patrol the streets, answer calls, and explore beyond the badge. SHERIFF: AMERICAN LIFE is an ambitious Florida-inspired open-world game centered on law enforcement, vehicles, and everyday life.</p>
