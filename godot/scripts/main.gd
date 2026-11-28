@@ -10,6 +10,7 @@ var foot_controls: Array[Button] = []
 var vehicle_controls: Array[Button] = []
 var enter_button: Button
 var lights_button: Button
+var vehicle_look_touch_id := -1
 
 func _ready() -> void:
 	_setup_input()
@@ -45,6 +46,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		_toggle_vehicle()
 	elif event.is_action_pressed("toggle_lights") and in_vehicle:
 		patrol_suv.toggle_lights()
+	if in_vehicle and event is InputEventScreenTouch:
+		if event.pressed and event.position.x > get_viewport().get_visible_rect().size.x * 0.42:
+			vehicle_look_touch_id = event.index
+		elif not event.pressed and event.index == vehicle_look_touch_id:
+			vehicle_look_touch_id = -1
+	elif in_vehicle and event is InputEventScreenDrag and event.index == vehicle_look_touch_id:
+		patrol_suv.vehicle_camera.rotation.y = clamp(patrol_suv.vehicle_camera.rotation.y - event.relative.x * 0.0025, -0.9, 0.9)
+		patrol_suv.vehicle_camera.rotation.x = clamp(patrol_suv.vehicle_camera.rotation.x - event.relative.y * 0.002, -0.55, 0.1)
 
 func _process(_delta: float) -> void:
 	if not in_vehicle and is_instance_valid(player) and is_instance_valid(patrol_suv):
