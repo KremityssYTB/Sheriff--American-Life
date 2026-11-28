@@ -196,11 +196,11 @@ namespace SheriffAmericanLife
                     if (activeTrafficStop.IsPulledOver && activeDriverProfile != null)
                     {
                         trafficDetails = "DRIVER: " + activeDriverProfile.DriverName +
-                            "\\nPLATE: " + activeDriverProfile.PlateNumber;
+                            "\nPLATE: " + activeDriverProfile.PlateNumber;
                         if (activeDriverBehavior != null)
                         {
-                            trafficDetails += "\\nBEHAVIOR: " + activeDriverBehavior.Disposition.ToString().ToUpperInvariant() +
-                                "\\n" + activeDriverBehavior.LatestResponse;
+                            trafficDetails += "\nBEHAVIOR: " + activeDriverBehavior.Disposition.ToString().ToUpperInvariant() +
+                                "\n" + activeDriverBehavior.LatestResponse;
                             if (!activeDriverBehavior.OfficerSpoke)
                             {
                                 trafficActions.Add("traffic_calm");
@@ -213,15 +213,15 @@ namespace SheriffAmericanLife
                         if (activeDriverProfile.AllDocumentsChecked)
                         {
                             trafficDetails += activeDriverProfile.HasViolation
-                                ? "\\nDOCUMENT ISSUE FOUND"
-                                : "\\nALL DOCUMENTS VALID";
+                                ? "\nDOCUMENT ISSUE FOUND"
+                                : "\nALL DOCUMENTS VALID";
                             if (activeDriverProfile.HasViolation && !trafficStopDecisionRecorded)
                             {
                                 trafficActions.Add("traffic_warning");
                                 trafficActions.Add("traffic_citation");
                             }
                             else if (trafficStopDecisionRecorded)
-                                trafficDetails += "\\nSTOP DECISION RECORDED";
+                                trafficDetails += "\nSTOP DECISION RECORDED";
                         }
                     }
                 }
