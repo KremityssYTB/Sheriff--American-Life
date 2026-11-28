@@ -146,3 +146,14 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Removed the duplicate civilian interaction IMGUI label and buttons. The panel is hidden when no civilian is focused or when the player is in a vehicle; it is also hidden with the gameplay Canvas while Settings is open.
 - The panel uses safe-area-relative anchors and sits left of the primary action stack and clear of the foot movement controls. Actual overlap and readability still require Unity Game view inspection on narrow phones and iPad layouts.
 - Traffic-stop documents/decisions, prisoner transport, and Settings remain IMGUI and are not represented as migrated.
+
+
+### Phase 3b — traffic-stop Canvas panel (2026-11-28)
+
+- The gameplay Canvas now presents nearby traffic contact and active stop state in a dedicated safe-area panel, separate from the civilian panel and vehicle steering/throttle controls.
+- The panel displays driver name, plate, driver disposition, and latest response when those data are available. It exposes Pull Over, Calm/Firm Approach, License/Registration/Insurance checks, Warning/Citation decisions, and End/Cancel Stop according to the existing traffic-stop state.
+- Each Canvas action dispatches to the existing controller methods. Document checks remain one-time actions based on the existing profile flags; warning/citation remain gated by all document checks, a detected violation, and no prior decision.
+- Removed the duplicate traffic-stop IMGUI labels and buttons. The traffic-stop simulation, citation creation, driver history, report logging, and lightbar behavior remain in their existing gameplay methods.
+- The panel is hidden outside vehicle mode or when there is neither an active stop nor an eligible nearby traffic target. The Settings modal still hides the entire gameplay Canvas.
+- The panel uses a responsive two-column action layout within the safe area. Its actual touch-target sizing, long-text wrapping, and layout on compact portrait/landscape phones and iPad remain unverified.
+- Prisoner transport and Settings modal remain IMGUI and are the next migration targets.
