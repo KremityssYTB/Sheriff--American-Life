@@ -58,6 +58,8 @@ namespace SheriffAmericanLife
             performanceSettings = worldRoot.GetComponent<MobilePerformanceBootstrap>();
             dutyState = gameObject.AddComponent<CountyDutyState>();
             reportBook = worldRoot.GetComponent<IncidentReportBook>();
+            if (worldRoot.GetComponent<CaseFileIndex>() == null)
+                worldRoot.gameObject.AddComponent<CaseFileIndex>();
             citationBook = worldRoot.GetComponent<TrafficCitationBook>();
             driverHistoryBook = worldRoot.GetComponent<TrafficDriverHistoryBook>();
             arrestBookingBook = worldRoot.GetComponent<ArrestBookingBook>();
