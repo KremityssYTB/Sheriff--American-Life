@@ -156,4 +156,14 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Removed the duplicate traffic-stop IMGUI labels and buttons. The traffic-stop simulation, citation creation, driver history, report logging, and lightbar behavior remain in their existing gameplay methods.
 - The panel is hidden outside vehicle mode or when there is neither an active stop nor an eligible nearby traffic target. The Settings modal still hides the entire gameplay Canvas.
 - The panel uses a responsive two-column action layout within the safe area. Its actual touch-target sizing, long-text wrapping, and layout on compact portrait/landscape phones and iPad remain unverified.
-- Prisoner transport and Settings modal remain IMGUI and are the next migration targets.
+- Prisoner transport is now a state-driven Canvas intake panel. The Settings modal remains IMGUI and is the next migration target.
+
+
+### Phase 3c — prisoner transport Canvas panel (2026-11-28)
+
+- The gameplay Canvas now shows the escorted prisoner's name, distance to Marion County jail intake, and whether the vehicle is within the existing 18 m booking range.
+- The BOOK INTAKE action is enabled only while the player is on duty, inside the patrol vehicle, escorting the matching AwaitingTransport booking, and within 18 m of intake. The controller revalidates all of these conditions in `CompletePrisonerTransport` before changing the booking.
+- Successful booking continues to use `ArrestBookingBook.MarkBooked`, restores/unparents the escorted civilian, records the jail-intake report, and stops the patrol vehicle. These gameplay operations remain in the controller.
+- Removed the duplicate center-bottom IMGUI transport strip. The Canvas panel uses safe-area-relative anchors and remains hidden unless a valid escorted booking is pending.
+- The actual layout and touch target still require Unity visual inspection on compact phones, landscape, and iPad. Unity compilation and runtime booking tests have not been performed.
+- Settings remains the final IMGUI HUD section to migrate.
