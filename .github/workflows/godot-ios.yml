@@ -1,0 +1,50 @@
+name: Godot iOS build
+
+on:
+  push:
+    branches: [godot4]
+  pull_request:
+    branches: [godot4]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Godot 4 project validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Godot 4
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.5.1
+          use-dotnet: false
+      - name: Import project and check scripts
+        run: godot --headless --editor --path godot --quit
+
+  ios-export:
+    name: Export iOS Xcode project
+    runs-on: macos-14
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Godot 4
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.5.1
+          use-dotnet: false
+      - name: Export iOS project
+        run: |
+          mkdir -p build/ios
+          godot --headless --path godot --export-release "iOS" build/ios
+      - name: Upload iOS Xcode project
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheriff-american-life-ios-xcode-project
+          path: build/ios/
+          if-no-files-found: error
+          retention-days: 7
