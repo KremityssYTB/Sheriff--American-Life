@@ -78,3 +78,9 @@ The design target is a grounded, persistent-feeling police and civilian roleplay
 7. Design the civilian roleplay and multiplayer authority model before attempting online persistence.
 
 The current Godot scene is still an early procedural prototype. It does not yet contain a real Marion County map, photoreal assets, multiplayer, a complete civilian roleplay loop, production animation or verified iOS runtime performance.
+
+## County environment milestone
+
+The procedural test cross has been replaced with a connected five-by-five street grid spanning the current playable blockout. The center corridor is wider than neighborhood streets; road edges, dashed center markings, sidewalks, central crosswalks, varied building footprints, a sheriff office parking area and Florida palm landscaping establish a more coherent county-town layout.
+
+This is still a greybox environment, not a geographically accurate Marion County recreation. The next map pass should introduce named districts, a road graph for GPS/dispatch routing, intersections with turning geometry, traffic signals, parking access, rural connectors and authored landmark silhouettes. Replace primitive building and vehicle meshes with original or properly licensed production assets before describing the map as photorealistic.
