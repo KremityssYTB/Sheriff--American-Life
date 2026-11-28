@@ -31,6 +31,15 @@ func load_catalog() -> bool:
 	for access in data.get("watercraft_access_points", []):
 		if not district_ids.has(str(access.get("district_id", ""))):
 			return _fail("Water access point references an unknown district.")
+	var graph: Dictionary = data.get("route_graph", {})
+	var node_ids := {}
+	for node in graph.get("nodes", []):
+		if not district_ids.has(str(node.get("id", ""))) or node_ids.has(str(node.get("id", ""))):
+			return _fail("Route graph contains an unknown or duplicate node.")
+		node_ids[str(node.id)] = true
+	for edge in graph.get("road_edges", []) + graph.get("water_edges", []):
+		if not node_ids.has(str(edge.get("from", ""))) or not node_ids.has(str(edge.get("to", ""))):
+			return _fail("A route edge references an unknown district node.")
 	return true
 
 func _fail(message: String) -> bool:
@@ -55,3 +64,6 @@ func get_district_by_id(district_id: String) -> Dictionary:
 		if str(district.get("id", "")) == district_id:
 			return district
 	return {}
+
+func get_route_graph() -> Dictionary:
+	return data.get("route_graph", {})
