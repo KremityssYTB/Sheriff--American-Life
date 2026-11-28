@@ -52,6 +52,7 @@ namespace SheriffAmericanLife
 
         private float UiWidth => Screen.safeArea.width;
         private float UiHeight => Screen.safeArea.height;
+        private float hForTransport(float scale) => Mathf.Max(54f, 58f * scale);
 
         public void Initialize(Transform worldRoot)
         {
@@ -549,23 +550,21 @@ namespace SheriffAmericanLife
             if (pending == null) return;
 
             float distance = Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition);
-            // Traffic-stop actions occupy the upper-right contextual column. Move
-            // prisoner transport to the upper-left while a stop is active.
-            float panelWidth = Mathf.Clamp(UiWidth * .38f, 132f, 190f);
-            float x = activeTrafficStop != null ? padding : UiWidth - panelWidth - padding;
-            float y = activeTrafficStop != null ? padding + 190f * scale : padding + 150f * scale;
-            GUI.Label(new Rect(x, y, panelWidth, 48f * scale),
-                "JAIL INTAKE  " + distance.ToString("0") + " m", statusStyle);
-            GUI.Label(new Rect(x, y + 44f * scale, panelWidth, 42f * scale),
-                pending.bookingId + "  " + pending.personName, statusStyle);
-
+            // Use a compact center-bottom strip above the vehicle controls. This avoids
+            // the traffic-stop document column and the driver's contact/action column.
+            float panelWidth = Mathf.Min(Mathf.Max(180f, UiWidth * .72f), UiWidth - padding * 2f);
+            float panelHeight = 42f * scale;
+            float x = (UiWidth - panelWidth) * .5f;
+            float y = UiHeight - hForTransport(scale) - padding - panelHeight - 8f * scale;
+            float actionWidth = Mathf.Min(112f * scale, panelWidth * .42f);
             bool atIntake = distance <= 18f;
-            if (atIntake && GUI.Button(new Rect(x, y + 88f * scale, panelWidth, 42f * scale),
-                "COMPLETE TRANSPORT", buttonStyle))
+            string transportStatus = "INTAKE " + distance.ToString("0") + "m  •  " +
+                pending.personName;
+            GUI.Label(new Rect(x, y, panelWidth - actionWidth - 6f * scale, panelHeight),
+                transportStatus, statusStyle);
+            if (atIntake && GUI.Button(new Rect(x + panelWidth - actionWidth, y,
+                actionWidth, panelHeight), "BOOK INTAKE", buttonStyle))
                 CompletePrisonerTransport(pending);
-            else if (!atIntake)
-                GUI.Label(new Rect(x, y + 88f * scale, panelWidth, 42f * scale),
-                    "Drive to intake bay", statusStyle);
         }
 
         private void CompletePrisonerTransport(ArrestBookingRecord booking)
