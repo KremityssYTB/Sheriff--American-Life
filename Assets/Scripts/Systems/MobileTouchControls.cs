@@ -78,6 +78,7 @@ namespace SheriffAmericanLife
 
         public void SetControlsVisible(bool visible)
         {
+            if (canvas != null && canvas.enabled == visible) return;
             if (!visible) ReleaseAll();
             if (canvas != null) canvas.enabled = visible;
         }
