@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace SheriffAmericanLife
@@ -33,8 +32,6 @@ namespace SheriffAmericanLife
         private const int MaximumRecords = 1000;
         private readonly List<IncidentReport> reports = new List<IncidentReport>();
         private int nextSequence = 1;
-        private string SavePath => Path.Combine(Application.persistentDataPath, "incident-reports.json");
-        private string TemporarySavePath => SavePath + ".tmp";
 
         public IReadOnlyList<IncidentReport> Reports => reports;
         public event Action<IncidentReport> ReportAdded;
@@ -67,54 +64,31 @@ namespace SheriffAmericanLife
 
         private void Load()
         {
-            try
+            if (!LocalJsonSave.TryLoad<SaveData>("incident-reports.json", out SaveData data)) return;
+            if (data.version != SaveVersion || data.reports == null)
             {
-                if (!File.Exists(SavePath)) return;
-                SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(SavePath));
-                if (data == null || data.version != SaveVersion || data.reports == null)
-                {
-                    Debug.LogWarning("Incident report save has an unsupported or invalid format; starting with an empty in-memory ledger.");
-                    return;
-                }
-
-                reports.Clear();
-                reports.AddRange(data.reports.FindAll(item => item != null));
-                if (reports.Count > MaximumRecords)
-                    reports.RemoveRange(MaximumRecords, reports.Count - MaximumRecords);
-
-                nextSequence = Math.Max(1, data.nextSequence);
-                foreach (IncidentReport item in reports)
-                {
-                    if (!string.IsNullOrEmpty(item.incidentNumber) &&
-                        item.incidentNumber.StartsWith("OC-", StringComparison.Ordinal))
-                    {
-                        int number;
-                        if (int.TryParse(item.incidentNumber.Substring(3), out number))
-                            nextSequence = Math.Max(nextSequence, number + 1);
-                    }
-                }
+                Debug.LogWarning("Incident report save has an unsupported format; starting with an empty in-memory ledger.");
+                return;
             }
-            catch (Exception exception)
+            reports.Clear();
+            reports.AddRange(data.reports.FindAll(item => item != null));
+            if (reports.Count > MaximumRecords) reports.RemoveRange(MaximumRecords, reports.Count - MaximumRecords);
+            nextSequence = Math.Max(1, data.nextSequence);
+            foreach (IncidentReport item in reports)
             {
-                reports.Clear();
-                nextSequence = 1;
-                Debug.LogWarning("Could not load local incident reports: " + exception.Message);
+                if (!string.IsNullOrEmpty(item.incidentNumber) && item.incidentNumber.StartsWith("OC-", StringComparison.Ordinal))
+                {
+                    int number;
+                    if (int.TryParse(item.incidentNumber.Substring(3), out number))
+                        nextSequence = Math.Max(nextSequence, number + 1);
+                }
             }
         }
 
         private void Save()
         {
-            try
-            {
-                var data = new SaveData { nextSequence = nextSequence, reports = reports };
-                File.WriteAllText(TemporarySavePath, JsonUtility.ToJson(data, true));
-                File.Copy(TemporarySavePath, SavePath, true);
-                File.Delete(TemporarySavePath);
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning("Could not save local incident reports: " + exception.Message);
-            }
+            LocalJsonSave.TrySave("incident-reports.json",
+                new SaveData { nextSequence = nextSequence, reports = reports });
         }
     }
 }
