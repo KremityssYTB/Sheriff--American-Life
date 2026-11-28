@@ -28,6 +28,16 @@ namespace SheriffAmericanLife
         private TrafficCitationBook citations;
         private ArrestBookingBook bookings;
 
+        private void Awake()
+        {
+            Configure(
+                GetComponent<IncidentReportBook>(),
+                GetComponent<WitnessStatementBook>(),
+                GetComponent<DispatchCallManager>(),
+                GetComponent<TrafficCitationBook>(),
+                GetComponent<ArrestBookingBook>());
+        }
+
         public void Configure(
             IncidentReportBook reportBook,
             WitnessStatementBook witnessBook,
