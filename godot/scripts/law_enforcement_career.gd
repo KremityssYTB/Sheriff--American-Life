@@ -25,7 +25,7 @@ func get_counties() -> Array:
 func get_agency_types() -> Array:
 	return ["County Sheriff", "Florida Highway Patrol", "City Police", "Fish & Wildlife"]
 
-func get_station_position(target_county: String, catalog: RefCounted) -> Vector3:
+func get_station_position(target_county: String, catalog: FloridaRegionCatalog) -> Vector3:
 	if target_county == "marion":
 		return Vector3(-29.0, 0.0, -18.0)
 	for district in catalog.get_districts_for_county(target_county):
