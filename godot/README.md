@@ -12,6 +12,8 @@ This is the active Godot 4 development track. The original Unity source remains 
 - Basic sky, directional sun, road grid, sidewalks, civic-office anchor, placeholder buildings and palms.
 - First drivable patrol SUV prototype using Godot VehicleBody3D and VehicleWheel3D suspension.
 - Enter/exit vehicle interaction and on-screen driving controls.
+- Dispatch call manager with routine welfare checks, traffic complaints and suspicious-vehicle calls.
+- In-game dispatch panel with offer/accept states, incident details, a 3D destination beacon, live unit-distance readout and a 10 m arrival check before call clearance.
 - Follow camera and alternating red/blue emergency lightbar prototype.
 
 ## iOS unsigned IPA pipeline
@@ -33,16 +35,17 @@ Open the `godot/` folder in Godot 4 and run `scenes/main.tscn`.
 - On foot: WASD to move, Shift to sprint, drag on the right side to look.
 - Enter/exit: E or the on-screen vehicle button when close to the SUV.
 - Driving: WASD, Space to brake, L to toggle emergency lights.
+- Dispatch: request a call, review and accept it, travel to the 3D beacon, then clear the call within 10 m.
 - Touch: on-screen movement and driving controls.
 
 ## Important status
-The new unsigned-IPA workflow has been committed but has not yet completed a successful run. Export success and IPA validity are therefore unverified. No iPhone runtime, physics, camera, touch HUD or FPS test has been performed. Vehicle suspension, steering, collisions, camera transitions and mobile HUD layout remain unverified. The SUV and buildings are procedural placeholders, not production-grade real models. No actual Ocala GIS/map data or licensed vehicle assets are included yet.
+The unsigned-IPA workflow is still under active repair. Godot validation has passed on recent commits, and the iOS export has generated an Xcode project, but packaging has not yet completed successfully. IPA availability and validity remain unverified. No iPhone runtime, physics, camera, touch HUD or FPS test has been performed. Vehicle suspension, steering, collisions, camera transitions and mobile HUD layout remain unverified. The SUV and buildings are procedural placeholders, not production-grade real models. No actual Ocala GIS/map data or licensed vehicle assets are included yet.
 
 ## Next milestones
 1. Get the first GitHub Actions validation and unsigned IPA export green.
 2. Sign the IPA for installation on a physical iPhone/iPad.
 3. Test on target devices and fix runtime issues.
-4. Add traffic-stop interaction and a basic dispatch call.
+4. Add traffic-stop interaction, vehicle approach/positioning and a structured incident report after call clearance.
 5. Replace the first district blockout with sourced, properly licensed Marion County/Ocala road and building data.
 6. Add high-quality licensed vehicle/building/character assets and interiors.
 7. Profile on target hardware; 30/60 FPS are targets and 120 FPS is aspirational, not guaranteed.
