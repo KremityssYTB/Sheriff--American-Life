@@ -119,7 +119,9 @@ namespace SheriffAmericanLife
             touchObject.transform.SetParent(worldRoot, false);
             touchControls = touchObject.AddComponent<MobileTouchControls>();
             touchControls.ControlChanged += HandleTouchControlChanged;
+            touchControls.ActionTriggered += HandleHudAction;
             touchControls.SetVehicleMode(false);
+            touchControls.SetHudState(dutyState != null && dutyState.IsOnDuty, inVehicle);
         }
 
         private Transform MakeAnchor(Transform parent, string anchorName, Vector3 localPosition)
@@ -137,6 +139,7 @@ namespace SheriffAmericanLife
             if (touchControls != null)
             {
                 touchControls.ControlChanged -= HandleTouchControlChanged;
+                touchControls.ActionTriggered -= HandleHudAction;
                 touchControls.ReleaseAll();
             }
         }
@@ -171,6 +174,8 @@ namespace SheriffAmericanLife
             RefreshCivilianFocus();
             RefreshTrafficTarget();
             UpdatePrisonerEscort();
+            if (touchControls != null)
+                touchControls.SetHudState(dutyState != null && dutyState.IsOnDuty, inVehicle);
             if (walker && !inVehicle)
             {
                 walker.SetMoveInput(moveInput);
@@ -217,24 +222,31 @@ namespace SheriffAmericanLife
                 return;
             }
             if (touchControls != null) touchControls.SetControlsVisible(true);
-            float statusWidth = Mathf.Max(80f, UiWidth - 136f*s);
-            GUI.Label(new Rect(pad, pad, statusWidth, 30*s),
-                dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY",
-                statusStyle);
-            if (GUI.Button(new Rect(UiWidth-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
-                ToggleVehicle();
-            if (GUI.Button(new Rect(UiWidth-112*s,pad+50*s,100*s,42*s), dutyState != null && dutyState.IsOnDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
-                dutyState.ToggleDuty();
-            if (GUI.Button(new Rect(UiWidth-112*s,pad+100*s,100*s,42*s), "CAMERA", buttonStyle))
-                cameraModes.ToggleCameraMode();
-            if (GUI.Button(new Rect(UiWidth-112*s,pad+150*s,100*s,42*s), "SETTINGS", buttonStyle))
-                settingsOpen = !settingsOpen;
-
             DrawCivilianInteractionHud(s, pad);
             DrawTrafficStopHud(s, pad);
             DrawPrisonerTransportHud(s, pad);
 
             GUI.matrix = previousGuiMatrix;
+        }
+
+        private void HandleHudAction(string action)
+        {
+            switch (action)
+            {
+                case "vehicle":
+                    ToggleVehicle();
+                    break;
+                case "duty":
+                    if (dutyState != null) dutyState.ToggleDuty();
+                    break;
+                case "camera":
+                    if (cameraModes != null) cameraModes.ToggleCameraMode();
+                    break;
+                case "settings":
+                    settingsOpen = !settingsOpen;
+                    if (touchControls != null) touchControls.SetControlsVisible(!settingsOpen);
+                    break;
+            }
         }
 
         private void HandleTouchControlChanged(string control, bool pressed)
