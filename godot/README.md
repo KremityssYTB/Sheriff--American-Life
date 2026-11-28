@@ -155,3 +155,27 @@ The destination set was expanded to cover more recognizable Florida areas: Pensa
 
 
 The catalog also exposes county-to-region and county-to-district lookup helpers. These will let dispatch, patrol boundaries and agency selection resolve a county consistently instead of hardcoding every call location. Most counties currently have statewide roster/region coverage but do not yet have a separately authored playable district or precise boundary polygon.
+
+
+## Multi-agency Florida career milestone
+
+A first playable agency-career layer is now in source on `godot4`:
+- The career catalog exposes all 67 Florida county names and IDs.
+- Players can select a county and an agency type: County Sheriff, Florida Highway Patrol, City Police, or Fish & Wildlife.
+- Clock-in / transfer is gated by proximity to the selected county's station anchor; it is not an unrestricted remote menu switch.
+- The current assignment tracks agency, county, rank label, callsign, on-duty state and transfer feedback.
+- Florida Highway Patrol assignments use the State Trooper rank label; county sheriff assignments use Deputy Sheriff.
+- Counties without their own authored condensed-world district currently resolve to a regional hub station anchor. This is a temporary compressed-map abstraction, not 67 individually modeled or geographically accurate stations.
+
+This milestone does not yet implement separate agency vehicle fleets, uniforms, agency-specific radio channels, jurisdiction-aware dispatch, inter-agency mutual aid, FHP post geometry, city department interiors, FWC boats, specialized units or complete station interiors. Those systems must be added and tested in stages. The current Marion station is the only physical station building in the greybox scene; other station anchors are data locations only.
+
+### Agency-system production order
+1. Author individual station locations and build enterable county/city/FHP/FWC station facilities.
+2. Add agency-specific uniforms, ranks, callsigns, patrol cars, liveries, equipment and vehicle permissions.
+3. Make dispatch calls jurisdiction-aware, with county, municipal, state-highway and marine responsibility.
+4. Add mutual aid, cross-jurisdiction pursuit handoff, radio channels and shared incident reports.
+5. Add specialized units: traffic enforcement, K-9, aviation, marine patrol, investigations, SWAT and FWC wildlife enforcement.
+6. Add fire/rescue/EMS agencies, crash response, tow services and civilian call-taking workflows.
+7. Verify station transfer, duty persistence, AI behavior, vehicle handling and touch UI on supported iPhone/iPad hardware.
+
+The goal is a coherent roleplay simulation, not merely a list of agency names. All listed future systems remain planned until implemented and verified.
