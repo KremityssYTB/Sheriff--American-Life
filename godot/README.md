@@ -8,20 +8,21 @@ This is the active Godot 4 development track. The original Unity source remains 
 - Third-person deputy controller with keyboard and on-screen touch controls.
 - Swipe-to-look camera control.
 - Basic sky, directional sun, road grid, sidewalks, civic-office anchor, placeholder buildings and palms.
-- First drivable Marion County-style patrol SUV prototype using Godot VehicleBody3D and VehicleWheel3D suspension.
-- Enter/exit vehicle interaction (E on keyboard or on-screen button).
-- On-screen accelerator, reverse, steering and brake controls.
+- First drivable patrol SUV prototype using Godot VehicleBody3D and VehicleWheel3D suspension.
+- Enter/exit vehicle interaction and on-screen driving controls.
 - Follow camera and alternating red/blue emergency lightbar prototype.
 
-## iOS build pipeline
-GitHub Actions now runs on pushes and pull requests to `godot4`:
-1. A Linux job imports the project with Godot 4 headless to catch project/script parse errors.
-2. A macOS job requires the `APPLE_TEAM_ID` GitHub Actions repository secret, exports the Godot iOS Xcode project as a ZIP, and uploads it as a workflow artifact.
+## iOS unsigned IPA pipeline
+GitHub Actions runs on pushes to `godot4` and manual dispatch:
+1. Linux imports the project with Godot 4 headless to catch project/script parse errors.
+2. macOS exports the Godot iOS Xcode project.
+3. Xcode builds the app with code signing disabled.
+4. The workflow packages the resulting `.app` inside `Payload/` as `SheriffAmericanLife-unsigned.ipa` and uploads it as the artifact `sheriff-american-life-unsigned-ipa`.
 
-Before running the iOS export, add a repository Actions secret named `APPLE_TEAM_ID` containing the 10-character Apple Developer Team ID. Open the repository's **Actions** tab, select **Godot iOS build**, open the latest successful run, and download `sheriff-american-life-ios-xcode-project`. The artifact is a ZIP containing the Xcode project, not an installable IPA. Pull requests run validation only.
+To retrieve it, open the repository's **Actions** tab, select **Godot iOS build**, open a successful run, and download the unsigned IPA artifact. No Apple Team ID or signing secrets are required for this unsigned build path.
 
-### IPA signing requirement
-A device-installable IPA requires Apple code signing with a valid Apple Developer team, certificate and provisioning profile. The current workflow deliberately does not contain signing credentials and does not claim to produce a signed IPA. Once signing credentials are safely configured as GitHub Actions secrets, a separate signing/export stage can be added. Never commit certificates, private keys, provisioning profiles or Apple account passwords to this repository.
+### Important: unsigned does not mean installable
+The IPA is an unsigned package for later signing. iOS normally will not install or launch it as-is. It must be signed with a valid certificate and provisioning profile for the intended installation method/device. This workflow does not produce a signed IPA and does not bypass Apple's signing requirements. Never commit certificates, private keys, provisioning profiles or Apple account passwords.
 
 ## Open locally
 Open the `godot/` folder in Godot 4 and run `scenes/main.tscn`.
@@ -33,14 +34,13 @@ Open the `godot/` folder in Godot 4 and run `scenes/main.tscn`.
 - Touch: on-screen movement and driving controls.
 
 ## Important status
-This is source implementation plus an automated build pipeline. The pipeline has not yet run successfully, so export success is not verified. Godot is not installed in the current build environment; no iPhone runtime, physics, camera, touch HUD or FPS test has been performed. Vehicle suspension, steering, collisions, camera transitions and mobile HUD layout remain unverified. The SUV and buildings are procedural placeholders, not production-grade real models. No actual Ocala GIS/map data or licensed vehicle assets are included yet.
+The new unsigned-IPA workflow has been committed but has not yet completed a successful run. Export success and IPA validity are therefore unverified. No iPhone runtime, physics, camera, touch HUD or FPS test has been performed. Vehicle suspension, steering, collisions, camera transitions and mobile HUD layout remain unverified. The SUV and buildings are procedural placeholders, not production-grade real models. No actual Ocala GIS/map data or licensed vehicle assets are included yet.
 
 ## Next milestones
-1. Get the first GitHub Actions validation and iOS export green.
-2. Establish secure Apple signing and IPA export.
-3. Install and test on a physical iPhone/iPad.
-4. Fix gameplay/parser/runtime issues found by those tests.
-5. Add a traffic-stop interaction and a basic dispatch call.
-6. Replace the first district blockout with sourced, properly licensed Marion County/Ocala road and building data.
-7. Add high-quality licensed vehicle/building/character assets and interiors.
-8. Profile on target hardware; 30/60 FPS are targets and 120 FPS is aspirational, not guaranteed.
+1. Get the first GitHub Actions validation and unsigned IPA export green.
+2. Sign the IPA for installation on a physical iPhone/iPad.
+3. Test on target devices and fix runtime issues.
+4. Add traffic-stop interaction and a basic dispatch call.
+5. Replace the first district blockout with sourced, properly licensed Marion County/Ocala road and building data.
+6. Add high-quality licensed vehicle/building/character assets and interiors.
+7. Profile on target hardware; 30/60 FPS are targets and 120 FPS is aspirational, not guaranteed.
