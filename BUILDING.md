@@ -1,5 +1,19 @@
 # Cloud build notes
 
+## Codemagic Unity workflow
+
+The repository now includes:
+- `codemagic.yaml` at the repository root
+- `Assets/Editor/CodemagicBuild.cs`, the Unity iOS export entry point
+
+In Codemagic, keep the app type set to **Unity**. Scan the `main` branch for the root `codemagic.yaml` and select the `sheriff-unity-ios` workflow. It exports the Unity project to an Xcode project, compiles an **unsigned** app, and packages it as `SHERIFF-unsigned.ipa`.
+
+**License restriction:** Codemagic's official Unity workflow requires Unity Plus or Pro and a serial number. Unity Personal does not meet this requirement. The workflow expects a Codemagic environment variable group named `unity_credentials` containing secret variables `UNITY_EMAIL`, `UNITY_PASSWORD`, and `UNITY_SERIAL`. Do not enter Personal account credentials as a substitute for a Plus/Pro serial; the build will not activate.
+
+**Signing restriction:** The generated IPA is unsigned and cannot be installed directly on an iPhone. A signed, installable IPA requires valid Apple signing and provisioning credentials. This workflow deliberately does not invent or embed those credentials.
+
+Official guide: https://docs.codemagic.io/yaml-quick-start/building-a-unity-app/
+
 ## Recommended cloud build path: Unity Build Automation
 
 Use Unity's hosted Build Automation service from the Unity Cloud Dashboard. This is the preferred $0 route for the phone-only workflow; it avoids renting a remote Windows PC and does not require placing a Unity Personal `.ulf` in GitHub Actions secrets for the Unity-managed build path.
