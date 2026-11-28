@@ -61,6 +61,7 @@ namespace SheriffAmericanLife
             citationBook = worldRoot.GetComponent<TrafficCitationBook>();
             driverHistoryBook = worldRoot.GetComponent<TrafficDriverHistoryBook>();
             arrestBookingBook = worldRoot.GetComponent<ArrestBookingBook>();
+            if (arrestBookingBook != null) arrestBookingBook.BookingsChanged += HandleBookingsChanged;
             interactions = worldRoot.GetComponent<OfficerInteractionController>();
             if (interactions != null)
             {
@@ -131,6 +132,7 @@ namespace SheriffAmericanLife
         private void OnDestroy()
         {
             if (interactions != null) interactions.ArrestCompleted -= HandleArrestCompleted;
+            if (arrestBookingBook != null) arrestBookingBook.BookingsChanged -= HandleBookingsChanged;
             if (touchControls != null)
             {
                 touchControls.ControlChanged -= HandleTouchControlChanged;
@@ -437,6 +439,29 @@ namespace SheriffAmericanLife
             }
 
             nearbyTrafficVehicle = nearest;
+        }
+
+        private void HandleBookingsChanged()
+        {
+            if (arrestBookingBook == null) return;
+            CivilianCharacter[] civilians = FindObjectsByType<CivilianCharacter>(FindObjectsSortMode.None);
+            foreach (ArrestBookingRecord booking in arrestBookingBook.Records)
+            {
+                if (booking == null || booking.status != BookingStatus.Released ||
+                    string.IsNullOrEmpty(booking.identificationNumber))
+                    continue;
+
+                foreach (CivilianCharacter civilian in civilians)
+                {
+                    if (civilian == null || civilian.IdentificationNumber != booking.identificationNumber ||
+                        !civilian.ReleaseFromCustody())
+                        continue;
+
+                    CivilianRoutineAgent routine = civilian.GetComponent<CivilianRoutineAgent>();
+                    if (routine != null) routine.enabled = true;
+                    break;
+                }
+            }
         }
 
         private void HandleArrestCompleted(CivilianCharacter civilian)
