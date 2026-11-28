@@ -78,7 +78,7 @@ jobs:
             exit 1
           fi
           DERIVED="$PWD/build/ios/DerivedData"
-          xcodebuild -project "$PROJECT" -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath "$DERIVED" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          xcodebuild -project "$PROJECT" -scheme SheriffAmericanLife -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath "$DERIVED" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
           APP="$(find "$DERIVED/Build/Products/Release-iphoneos" -maxdepth 1 -name '*.app' -print -quit)"
           if [ -z "$APP" ]; then
             echo "::error::Xcode completed without producing an .app bundle."
