@@ -565,6 +565,205 @@
         3500,
         -3200
       ]
+    },
+    {
+      "id": "pensacola_escambia",
+      "name": "Pensacola & Emerald Coast",
+      "county_id": "escambia",
+      "inspiration": "Pensacola, Perdido Key and Gulf Coast beach communities",
+      "biome": "Gulf coast and pine flatwoods",
+      "landmarks": [
+        "Pensacola waterfront",
+        "Perdido Key beach",
+        "Naval aviation inspired district"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Pensacola Bay",
+        "Santa Rosa Sound"
+      ],
+      "jurisdiction": "Escambia County Sheriff / Pensacola Police",
+      "anchor_m": [
+        -7000,
+        -6500
+      ]
+    },
+    {
+      "id": "panama_city_bay",
+      "name": "Panama City & Bay County",
+      "county_id": "bay",
+      "inspiration": "Panama City, St. Andrews and Panama City Beach",
+      "biome": "Gulf beaches and coastal pine",
+      "landmarks": [
+        "Panama City marina",
+        "beach strip",
+        "St. Andrews waterfront"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "St. Andrews Bay",
+        "Gulf passes"
+      ],
+      "jurisdiction": "Bay County Sheriff / Panama City Police",
+      "anchor_m": [
+        -7000,
+        -3500
+      ]
+    },
+    {
+      "id": "tallahassee_leon",
+      "name": "Tallahassee & Big Bend",
+      "county_id": "leon",
+      "inspiration": "Tallahassee civic district, canopy roads and Big Bend countryside",
+      "biome": "North Florida canopy forest",
+      "landmarks": [
+        "Capitol district",
+        "canopy roads",
+        "rural Big Bend communities"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Ochlockonee River reaches"
+      ],
+      "jurisdiction": "Leon County Sheriff / Tallahassee Police",
+      "anchor_m": [
+        -4300,
+        -7200
+      ]
+    },
+    {
+      "id": "daytona_volusia",
+      "name": "Daytona Beach & Volusia",
+      "county_id": "volusia",
+      "inspiration": "Daytona Beach, boardwalk, speedway district and coastal towns",
+      "biome": "Atlantic barrier island",
+      "landmarks": [
+        "Daytona beachfront",
+        "motorsports district",
+        "coastal highway"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Halifax River",
+        "Atlantic inlets"
+      ],
+      "jurisdiction": "Volusia County Sheriff / Daytona Beach Police",
+      "anchor_m": [
+        4800,
+        -4700
+      ]
+    },
+    {
+      "id": "sarasota_sarasota",
+      "name": "Sarasota & Gulf Coast",
+      "county_id": "sarasota",
+      "inspiration": "Sarasota waterfront, Siesta-inspired beaches and arts district",
+      "biome": "Gulf coastal urban",
+      "landmarks": [
+        "Sarasota bayfront",
+        "beach village",
+        "arts district"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Sarasota Bay",
+        "Intracoastal"
+      ],
+      "jurisdiction": "Sarasota County Sheriff / Sarasota Police",
+      "anchor_m": [
+        -6500,
+        3600
+      ]
+    },
+    {
+      "id": "fort_myers_lee",
+      "name": "Fort Myers & Lee County",
+      "county_id": "lee",
+      "inspiration": "Fort Myers river district, Cape Coral-style canals and barrier islands",
+      "biome": "River delta and canals",
+      "landmarks": [
+        "riverfront downtown",
+        "canal neighborhoods",
+        "causeway beach"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Caloosahatchee River",
+        "Gulf estuary"
+      ],
+      "jurisdiction": "Lee County Sheriff / Fort Myers Police",
+      "anchor_m": [
+        -3800,
+        5700
+      ]
+    },
+    {
+      "id": "naples_collier",
+      "name": "Naples & Collier County",
+      "county_id": "collier",
+      "inspiration": "Naples waterfront, resort streets and Big Cypress backcountry",
+      "biome": "Mangrove and subtropical wetlands",
+      "landmarks": [
+        "Naples pier district",
+        "marina row",
+        "Big Cypress backroads"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Gulf channels",
+        "mangrove creeks"
+      ],
+      "jurisdiction": "Collier County Sheriff / Naples Police",
+      "anchor_m": [
+        -900,
+        6800
+      ]
+    },
+    {
+      "id": "west_palm_palm_beach",
+      "name": "West Palm Beach & Palm Beach County",
+      "county_id": "palm_beach",
+      "inspiration": "West Palm Beach downtown, Palm Beach island and inland suburbs",
+      "biome": "Atlantic coastal metro",
+      "landmarks": [
+        "West Palm waterfront",
+        "Palm Beach island causeway",
+        "inland equestrian estates"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Lake Worth Lagoon",
+        "Intracoastal"
+      ],
+      "jurisdiction": "Palm Beach County Sheriff / West Palm Beach Police",
+      "anchor_m": [
+        5700,
+        1800
+      ]
     }
   ],
   "watercraft_access_points": [
@@ -621,6 +820,48 @@
       "district_id": "rural_heartland",
       "kind": "boat_ramp",
       "connects_to": "Lake Okeechobee"
+    },
+    {
+      "id": "pensacola_marina",
+      "district_id": "pensacola_escambia",
+      "kind": "marina",
+      "connects_to": "Pensacola Bay"
+    },
+    {
+      "id": "panama_city_ramp",
+      "district_id": "panama_city_bay",
+      "kind": "boat_ramp",
+      "connects_to": "St. Andrews Bay"
+    },
+    {
+      "id": "daytona_river_ramp",
+      "district_id": "daytona_volusia",
+      "kind": "boat_ramp",
+      "connects_to": "Halifax River"
+    },
+    {
+      "id": "sarasota_marina",
+      "district_id": "sarasota_sarasota",
+      "kind": "marina",
+      "connects_to": "Sarasota Bay"
+    },
+    {
+      "id": "fort_myers_ramp",
+      "district_id": "fort_myers_lee",
+      "kind": "boat_ramp",
+      "connects_to": "Caloosahatchee River"
+    },
+    {
+      "id": "naples_marina",
+      "district_id": "naples_collier",
+      "kind": "marina",
+      "connects_to": "Gulf channels"
+    },
+    {
+      "id": "west_palm_marina",
+      "district_id": "west_palm_palm_beach",
+      "kind": "marina",
+      "connects_to": "Lake Worth Lagoon"
     }
   ],
   "streaming": {
@@ -704,6 +945,54 @@
         "x_m": 3500,
         "z_m": -3200,
         "county_id": "brevard"
+      },
+      {
+        "id": "pensacola_escambia",
+        "x_m": -7000,
+        "z_m": -6500,
+        "county_id": "escambia"
+      },
+      {
+        "id": "panama_city_bay",
+        "x_m": -7000,
+        "z_m": -3500,
+        "county_id": "bay"
+      },
+      {
+        "id": "tallahassee_leon",
+        "x_m": -4300,
+        "z_m": -7200,
+        "county_id": "leon"
+      },
+      {
+        "id": "daytona_volusia",
+        "x_m": 4800,
+        "z_m": -4700,
+        "county_id": "volusia"
+      },
+      {
+        "id": "sarasota_sarasota",
+        "x_m": -6500,
+        "z_m": 3600,
+        "county_id": "sarasota"
+      },
+      {
+        "id": "fort_myers_lee",
+        "x_m": -3800,
+        "z_m": 5700,
+        "county_id": "lee"
+      },
+      {
+        "id": "naples_collier",
+        "x_m": -900,
+        "z_m": 6800,
+        "county_id": "collier"
+      },
+      {
+        "id": "west_palm_palm_beach",
+        "x_m": 5700,
+        "z_m": 1800,
+        "county_id": "palm_beach"
       }
     ],
     "road_edges": [
@@ -804,6 +1093,97 @@
         "to": "rural_heartland",
         "mode": "road",
         "road_class": "county_highway"
+      },
+      {
+        "id": "road_15",
+        "from": "pensacola_escambia",
+        "to": "panama_city_bay",
+        "mode": "road",
+        "road_class": "coastal_highway"
+      },
+      {
+        "id": "road_16",
+        "from": "panama_city_bay",
+        "to": "tallahassee_leon",
+        "mode": "road",
+        "road_class": "state_highway"
+      },
+      {
+        "id": "road_17",
+        "from": "tallahassee_leon",
+        "to": "jacksonville_duval",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": "road_18",
+        "from": "tallahassee_leon",
+        "to": "gainesville_alachua",
+        "mode": "road",
+        "road_class": "state_highway"
+      },
+      {
+        "id": "road_19",
+        "from": "daytona_volusia",
+        "to": "orlando_orange",
+        "mode": "road",
+        "road_class": "state_highway"
+      },
+      {
+        "id": "road_20",
+        "from": "daytona_volusia",
+        "to": "space_coast_brevard",
+        "mode": "road",
+        "road_class": "coastal_highway"
+      },
+      {
+        "id": "road_21",
+        "from": "sarasota_sarasota",
+        "to": "st_pete_pinellas",
+        "mode": "road",
+        "road_class": "coastal_highway"
+      },
+      {
+        "id": "road_22",
+        "from": "sarasota_sarasota",
+        "to": "fort_myers_lee",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": "road_23",
+        "from": "fort_myers_lee",
+        "to": "naples_collier",
+        "mode": "road",
+        "road_class": "coastal_highway"
+      },
+      {
+        "id": "road_24",
+        "from": "naples_collier",
+        "to": "fort_lauderdale_broward",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": "road_25",
+        "from": "west_palm_palm_beach",
+        "to": "fort_lauderdale_broward",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": "road_26",
+        "from": "west_palm_palm_beach",
+        "to": "orlando_orange",
+        "mode": "road",
+        "road_class": "interregional_highway"
+      },
+      {
+        "id": "road_27",
+        "from": "fort_myers_lee",
+        "to": "rural_heartland",
+        "mode": "road",
+        "road_class": "county_highway"
       }
     ],
     "water_edges": [
@@ -855,6 +1235,62 @@
         "to": "rural_heartland",
         "mode": "water",
         "route_type": "lake_and_canal_route"
+      },
+      {
+        "id": "water_08",
+        "from": "pensacola_escambia",
+        "to": "panama_city_bay",
+        "mode": "water",
+        "route_type": "Gulf coastal channel"
+      },
+      {
+        "id": "water_09",
+        "from": "panama_city_bay",
+        "to": "tampa_hillsborough",
+        "mode": "water",
+        "route_type": "Gulf coastal channel"
+      },
+      {
+        "id": "water_10",
+        "from": "daytona_volusia",
+        "to": "space_coast_brevard",
+        "mode": "water",
+        "route_type": "Intracoastal Waterway"
+      },
+      {
+        "id": "water_11",
+        "from": "sarasota_sarasota",
+        "to": "st_pete_pinellas",
+        "mode": "water",
+        "route_type": "Gulf and bay channel"
+      },
+      {
+        "id": "water_12",
+        "from": "sarasota_sarasota",
+        "to": "fort_myers_lee",
+        "mode": "water",
+        "route_type": "Gulf coastal channel"
+      },
+      {
+        "id": "water_13",
+        "from": "fort_myers_lee",
+        "to": "naples_collier",
+        "mode": "water",
+        "route_type": "Gulf coastal channel"
+      },
+      {
+        "id": "water_14",
+        "from": "naples_collier",
+        "to": "keys_monroe",
+        "mode": "water",
+        "route_type": "Ten Thousand Islands coastal route"
+      },
+      {
+        "id": "water_15",
+        "from": "west_palm_palm_beach",
+        "to": "fort_lauderdale_broward",
+        "mode": "water",
+        "route_type": "Intracoastal Waterway"
       }
     ]
   },
