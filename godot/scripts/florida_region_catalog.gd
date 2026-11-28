@@ -147,6 +147,8 @@ func get_stream_cell(world_position: Vector2) -> Vector2i:
 	if not is_inside_world(world_position):
 		return Vector2i(-1, -1)
 	var cell_size := int(data.get("streaming", {}).get("cell_size_m", 500))
+	if cell_size <= 0:
+		return Vector2i(-1, -1)
 	var bounds: Array = data.get("coordinate_system", {}).get("world_bounds_m", [])
 	var counts := get_stream_cell_count()
 	var cell_x := clampi(floori((world_position.x - float(bounds[0])) / float(cell_size)), 0, counts.x - 1)
