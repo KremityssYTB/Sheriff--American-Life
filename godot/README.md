@@ -152,3 +152,6 @@ The 15 km × 15 km design envelope is divided into a 30 × 30 grid of 500 m cell
 
 
 The destination set was expanded to cover more recognizable Florida areas: Pensacola/Emerald Coast, Panama City, Tallahassee/Big Bend, Daytona Beach, Sarasota, Fort Myers, Naples/Big Cypress and West Palm Beach, alongside Ocala, Orlando, Kissimmee, Tampa Bay, St. Petersburg, Miami, Fort Lauderdale, the Keys, Jacksonville, Gainesville, the Space Coast and rural Heartland. These are compressed regional districts inside the 225 km² game boundary, not full real-world city footprints.
+
+
+The catalog also exposes county-to-region and county-to-district lookup helpers. These will let dispatch, patrol boundaries and agency selection resolve a county consistently instead of hardcoding every call location. Most counties currently have statewide roster/region coverage but do not yet have a separately authored playable district or precise boundary polygon.
