@@ -487,3 +487,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `69fa626e2f0c6c48d1c2de75aa75d59048552ae1` changes the prisoner-transport prompt to use a responsive width derived from safe-area width and places it in the upper-left contextual column while a traffic stop is active. This separates it from the traffic-stop document/action controls in the upper-right column.
 - Commit `a1809d034e736dd3c38a79e95b2f16510134a554` records the layout rule in `DESIGN/MOBILE_MDT_INTERFACE.md`.
 - Static source/documentation update only. No Unity compile, Game view inspection, or device touch/layout test has been performed. Verify all contextual HUD combinations, narrow phones, iPad split view, and long names/booking identifiers before treating the layout as complete.
+
+
+## Prisoner-transport HUD placement refinement (2026-11-28)
+
+- Commit `6656ef8bc089498edf4f6552876b9972e721ca8f` replaces the transport panel's side-column layout with a compact center-bottom strip above the vehicle control row. The strip combines intake distance and prisoner name; the booking action appears only within intake range. Its lower edge is kept above the movement/throttle buttons by a scaled gap.
+- Commit `e7cdabde439ac9e0d67730cbcb83001e00586ab6` documents the new placement in `DESIGN/MOBILE_MDT_INTERFACE.md`.
+- This reduces known side-column collisions in the source layout but is not proof of full-screen fit. Short landscape safe areas, unusually long prisoner names, and all combinations of active traffic-stop controls still require Unity Game view and device validation. No compile or runtime test was performed.
