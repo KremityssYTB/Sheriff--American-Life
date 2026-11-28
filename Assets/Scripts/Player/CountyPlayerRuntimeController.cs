@@ -141,8 +141,14 @@ namespace SheriffAmericanLife
             }
         }
 
+        private void OnEnable()
+        {
+            if (touchControls != null) touchControls.SetControlsVisible(!settingsOpen);
+        }
+
         private void OnDisable()
         {
+            if (touchControls != null) touchControls.SetControlsVisible(false);
             if (touchControls != null) touchControls.ReleaseAll();
             ClearTouchState();
             moveInput = Vector2.zero;
