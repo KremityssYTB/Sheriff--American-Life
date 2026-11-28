@@ -192,7 +192,6 @@ namespace SheriffAmericanLife
                 }
                 else
                 {
-                    trafficActions.Add("traffic_end");
                     if (activeTrafficStop.IsPulledOver && activeDriverProfile != null)
                     {
                         trafficDetails = "DRIVER: " + activeDriverProfile.DriverName +
@@ -224,6 +223,7 @@ namespace SheriffAmericanLife
                                 trafficDetails += "\nSTOP DECISION RECORDED";
                         }
                     }
+                    trafficActions.Add("traffic_end");
                 }
                 touchControls.SetTrafficContext(trafficVisible, trafficHeader, trafficDetails, trafficActions.ToArray());
             }
