@@ -857,5 +857,62 @@
         "route_type": "lake_and_canal_route"
       }
     ]
-  }
+  },
+  "data_sources": [
+    {
+      "id": "fdot_roadway_gis",
+      "publisher": "Florida Department of Transportation",
+      "dataset_family": "Statewide road centerlines, roadway characteristics, bridges, functional classification and traffic layers",
+      "url": "https://www.fdot.gov/statistics/gis/default.shtm",
+      "source_notes": "FDOT describes statewide shapefile/geodatabase downloads and weekly updates; published projection is UTM 17 / NAD83 for the listed statewide layers.",
+      "license_review": "pending_per_layer_metadata_and_terms",
+      "planned_use": [
+        "road_geometry",
+        "road_classification",
+        "bridges",
+        "traffic_context"
+      ]
+    },
+    {
+      "id": "fgdl",
+      "publisher": "University of Florida GeoPlan Center",
+      "dataset_family": "Florida geospatial data library: transportation, hydrography, land cover, soils, boundaries and other layers",
+      "url": "https://fgdl.org/",
+      "source_notes": "FGDL aggregates data from multiple stewards. Check each layer's originator, metadata, currency and redistribution terms independently.",
+      "license_review": "pending_per_layer_metadata_and_terms",
+      "planned_use": [
+        "hydrography",
+        "land_cover",
+        "county_boundaries",
+        "terrain_context"
+      ]
+    },
+    {
+      "id": "fl_dep_open_data",
+      "publisher": "Florida Department of Environmental Protection",
+      "dataset_family": "Water resources, oceans and estuaries, wetlands-related environmental layers, land cover and recreation",
+      "url": "https://geodata.dep.state.fl.us/",
+      "source_notes": "DEP portal organizes public geospatial layers by categories including Water Resources, Oceans & Estuaries, Land Cover and Recreation & Tourism.",
+      "license_review": "pending_per_layer_metadata_and_terms",
+      "planned_use": [
+        "wetlands",
+        "water_features",
+        "coastal_context",
+        "recreation_sites"
+      ]
+    },
+    {
+      "id": "sfwmd_open_data",
+      "publisher": "South Florida Water Management District",
+      "dataset_family": "Hydrography, environmental, land resources, land use/land cover and water supply layers",
+      "url": "https://geo-sfwmd.hub.arcgis.com/",
+      "source_notes": "Useful regional source for South Florida hydrology and land/water systems; inspect each dataset's owner and download terms.",
+      "license_review": "pending_per_layer_metadata_and_terms",
+      "planned_use": [
+        "south_florida_hydrography",
+        "canals",
+        "water_management_features"
+      ]
+    }
+  ]
 }
