@@ -136,3 +136,30 @@ func find_route(start_id: String, end_id: String, mode: String = "road") -> Dict
 		cursor = str(previous[cursor])
 		path.push_front(cursor)
 	return {"found": true, "mode": mode, "nodes": path, "distance_m": float(distances[end_id])}
+
+func is_inside_world(world_position: Vector2) -> bool:
+	var bounds: Array = data.get("coordinate_system", {}).get("world_bounds_m", [])
+	if bounds.size() != 4:
+		return false
+	return world_position.x >= float(bounds[0]) and world_position.y >= float(bounds[1]) and world_position.x <= float(bounds[2]) and world_position.y <= float(bounds[3])
+
+func get_stream_cell(world_position: Vector2) -> Vector2i:
+	if not is_inside_world(world_position):
+		return Vector2i(-1, -1)
+	var cell_size := int(data.get("streaming", {}).get("cell_size_m", 500))
+	var bounds: Array = data.get("coordinate_system", {}).get("world_bounds_m", [])
+	var cell_x := floori((world_position.x - float(bounds[0])) / float(cell_size))
+	var cell_z := floori((world_position.y - float(bounds[1])) / float(cell_size))
+	return Vector2i(cell_x, cell_z)
+
+func get_stream_cell_count() -> Vector2i:
+	var bounds: Array = data.get("coordinate_system", {}).get("world_bounds_m", [])
+	if bounds.size() != 4:
+		return Vector2i.ZERO
+	var cell_size := int(data.get("streaming", {}).get("cell_size_m", 500))
+	if cell_size <= 0:
+		return Vector2i.ZERO
+	return Vector2i(
+		ceili((float(bounds[2]) - float(bounds[0])) / float(cell_size)),
+		ceili((float(bounds[3]) - float(bounds[1])) / float(cell_size))
+	)
