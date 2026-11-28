@@ -13,6 +13,8 @@ var lights_button: Button
 var vehicle_look_touch_id := -1
 
 func _ready() -> void:
+	# Supersample the desktop Forward+ path; keep iOS at native resolution.
+	get_viewport().scaling_3d_scale = 1.0 if OS.has_feature("mobile") else 1.25
 	_setup_input()
 	_build_environment()
 	_build_district()
@@ -105,8 +107,12 @@ func _build_environment() -> void:
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	# High-end desktop effects; keep the iOS/mobile path lightweight.
 	if not OS.has_feature("mobile"):
+		# High-end Forward+ lighting for desktop builds.
 		env.sdfgi_enabled = true
+		env.sdfgi_energy = 1.0
 		env.volumetric_fog_enabled = true
+		env.volumetric_fog_density = 0.012
+		env.volumetric_fog_albedo = Color(0.72, 0.78, 0.84)
 	world.environment = env
 	add_child(world)
 	var sun := DirectionalLight3D.new()
