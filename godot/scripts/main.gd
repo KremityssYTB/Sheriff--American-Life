@@ -142,13 +142,13 @@ func _build_district() -> void:
 func _spawn_player() -> void:
 	player = DeputyController.new()
 	player.name = "Deputy"
-	player.position = Vector3(-4,0.2,12)
+	player.position = Vector3(-1.5,0.2,12)
 	add_child(player)
 
 func _spawn_patrol_suv() -> void:
 	patrol_suv = PatrolSUVController.new()
 	patrol_suv.name = "MarionCountyPatrolSUV"
-	patrol_suv.position = Vector3(2.2,0.65,12)
+	patrol_suv.position = Vector3(2.2,0.0,12)
 	patrol_suv.rotation.y = PI
 	add_child(patrol_suv)
 
@@ -167,6 +167,7 @@ func _toggle_vehicle() -> void:
 			button.show()
 		enter_button.text = "EXIT VEHICLE"
 		enter_button.show()
+		lights_button.show()
 	else:
 		if patrol_suv.linear_velocity.length() > 1.5:
 			status_label.text = "Slow down before exiting."
@@ -184,6 +185,7 @@ func _toggle_vehicle() -> void:
 			button.hide()
 		enter_button.text = "ENTER VEHICLE"
 		enter_button.hide()
+		lights_button.hide()
 
 func _build_touch_hud() -> void:
 	var layer := CanvasLayer.new()
@@ -242,7 +244,6 @@ func _build_touch_hud() -> void:
 	lights_button.visible = false
 	lights_button.pressed.connect(func(): patrol_suv.toggle_lights())
 	layer.add_child(lights_button)
-	enter_button.toggled.connect(func(_pressed): pass)
 
 class TouchButton:
 	extends Button
