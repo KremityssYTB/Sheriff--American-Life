@@ -67,3 +67,72 @@ func get_district_by_id(district_id: String) -> Dictionary:
 
 func get_route_graph() -> Dictionary:
 	return data.get("route_graph", {})
+
+func find_route(start_id: String, end_id: String, mode: String = "road") -> Dictionary:
+	if mode != "road" and mode != "water":
+		return {"found": false, "reason": "Unsupported travel mode."}
+	var graph: Dictionary = get_route_graph()
+	var positions := {}
+	for node in graph.get("nodes", []):
+		positions[str(node.id)] = Vector2(float(node.x_m), float(node.z_m))
+	if not positions.has(start_id) or not positions.has(end_id):
+		return {"found": false, "reason": "Unknown route endpoint."}
+	if start_id == end_id:
+		return {"found": true, "mode": mode, "nodes": [start_id], "distance_m": 0.0}
+	var edges: Array = graph.get("road_edges", []) if mode == "road" else graph.get("water_edges", [])
+	var unvisited: Array = positions.keys()
+	var distances := {}
+	var previous := {}
+	for node_id in unvisited:
+		distances[node_id] = INF
+	distances[start_id] = 0.0
+	while not unvisited.is_empty():
+		var current := ""
+		var best_distance := INF
+		for candidate in unvisited:
+			if float(distances[candidate]) < best_distance:
+				best_distance = float(distances[candidate])
+				current = str(candidate)
+		if current.is_empty() or best_distance == INF:
+			break
+		unvisited.erase(current)
+		if current == end_id:
+			break
+		for edge in edges:
+			var neighbor := ""
+			if str(edge.from) == current:
+				neighbor = str(edge.to)
+			elif str(edge.to) == current:
+				neighbor = str(edge.from)
+			if neighbor.is_empty() or not unvisited.has(neighbor):
+				continue
+			var route_factor := 1.0
+			if mode == "road":
+				match str(edge.get("road_class", "")):
+					"interregional_highway":
+						route_factor = 0.92
+					"state_highway":
+						route_factor = 0.96
+					"urban_arterial":
+						route_factor = 1.12
+					"county_highway":
+						route_factor = 1.08
+					"causeway":
+						route_factor = 1.02
+			else:
+				route_factor = 1.18
+			var edge_distance: float = positions[current].distance_to(positions[neighbor]) * route_factor
+			var alternative: float = best_distance + edge_distance
+			if alternative < float(distances[neighbor]):
+				distances[neighbor] = alternative
+				previous[neighbor] = current
+	if float(distances[end_id]) == INF:
+		return {"found": false, "reason": "No connected route for this travel mode."}
+	var path: Array[String] = [end_id]
+	var cursor := end_id
+	while cursor != start_id:
+		if not previous.has(cursor):
+			return {"found": false, "reason": "Route reconstruction failed."}
+		cursor = str(previous[cursor])
+		path.push_front(cursor)
+	return {"found": true, "mode": mode, "nodes": path, "distance_m": float(distances[end_id])}
