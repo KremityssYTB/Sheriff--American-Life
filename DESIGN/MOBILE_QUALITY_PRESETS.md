@@ -24,7 +24,7 @@ These values are not promises of achieved frame rate, battery life, or visual qu
 - `SetPreset(MobileVisualQualityPreset.Balanced)`
 - `SetPreset(MobileVisualQualityPreset.High)`
 
-The quality choice and frame-rate choice are stored separately in PlayerPrefs. The default visual preset is Balanced; the default frame-rate mode is 120 FPS. The current Settings panel is an immediate-mode prototype, scales to fit shorter screens, and blocks gameplay controls while open. It still needs replacement with production mobile UI and safe-area/device validation.
+The quality choice and frame-rate choice are stored separately in PlayerPrefs. The default visual preset is Balanced; the default frame-rate mode is 60 FPS. This is a conservative baseline across the supported iPhone/iPad range. The optional 120 FPS setting remains available on devices with a ProMotion display; the iPhone 16e is limited to 60 Hz. The current Settings panel is an immediate-mode prototype, scales to fit shorter screens, and blocks gameplay controls while open. It still needs replacement with production mobile UI and safe-area/device validation.
 
 ## Validation gate
 
