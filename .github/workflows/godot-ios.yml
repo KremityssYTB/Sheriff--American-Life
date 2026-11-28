@@ -23,6 +23,8 @@ jobs:
           version: 4.5.1
           use-dotnet: false
           include-templates: true
+      - name: Validate Florida regional catalog
+        run: python3 godot/tools/validate_florida_catalog.py
       - name: Import project and check scripts
         run: godot --headless --editor --path godot --quit
 
