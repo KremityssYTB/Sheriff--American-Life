@@ -1,9 +1,10 @@
-name: Deploy Ocala browser preview
+name: Deploy SHERIFF website and browser preview
 
 on:
   push:
     branches: [main]
     paths:
+      - "site/**"
       - "web-demo/**"
       - ".github/workflows/deploy-web-demo.yml"
   workflow_dispatch:
@@ -30,10 +31,14 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Upload browser preview
+      - name: Assemble website and browser preview
+        run: |
+          mkdir -p site/playtest
+          cp -R web-demo/. site/playtest/
+      - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: web-demo
+          path: site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
