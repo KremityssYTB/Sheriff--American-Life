@@ -708,98 +708,98 @@
     ],
     "road_edges": [
       {
-        "id": null,
+        "id": "road_01",
         "from": "gainesville_alachua",
         "to": "ocala_marion",
         "mode": "road",
         "road_class": "county_highway"
       },
       {
-        "id": null,
+        "id": "road_02",
         "from": "gainesville_alachua",
         "to": "jacksonville_duval",
         "mode": "road",
         "road_class": "state_highway"
       },
       {
-        "id": null,
+        "id": "road_03",
         "from": "jacksonville_duval",
         "to": "space_coast_brevard",
         "mode": "road",
         "road_class": "interregional_highway"
       },
       {
-        "id": null,
+        "id": "road_04",
         "from": "ocala_marion",
         "to": "orlando_orange",
         "mode": "road",
         "road_class": "state_highway"
       },
       {
-        "id": null,
+        "id": "road_05",
         "from": "ocala_marion",
         "to": "tampa_hillsborough",
         "mode": "road",
         "road_class": "interregional_highway"
       },
       {
-        "id": null,
+        "id": "road_06",
         "from": "tampa_hillsborough",
         "to": "st_pete_pinellas",
         "mode": "road",
         "road_class": "causeway"
       },
       {
-        "id": null,
+        "id": "road_07",
         "from": "orlando_orange",
         "to": "kissimmee_osceola",
         "mode": "road",
         "road_class": "urban_arterial"
       },
       {
-        "id": null,
+        "id": "road_08",
         "from": "kissimmee_osceola",
         "to": "space_coast_brevard",
         "mode": "road",
         "road_class": "state_highway"
       },
       {
-        "id": null,
+        "id": "road_09",
         "from": "kissimmee_osceola",
         "to": "rural_heartland",
         "mode": "road",
         "road_class": "county_highway"
       },
       {
-        "id": null,
+        "id": "road_10",
         "from": "rural_heartland",
         "to": "fort_lauderdale_broward",
         "mode": "road",
         "road_class": "interregional_highway"
       },
       {
-        "id": null,
+        "id": "road_11",
         "from": "fort_lauderdale_broward",
         "to": "miami_dade",
         "mode": "road",
         "road_class": "urban_arterial"
       },
       {
-        "id": null,
+        "id": "road_12",
         "from": "miami_dade",
         "to": "keys_monroe",
         "mode": "road",
         "road_class": "overseas_highway"
       },
       {
-        "id": null,
+        "id": "road_13",
         "from": "orlando_orange",
         "to": "rural_heartland",
         "mode": "road",
         "road_class": "interregional_highway"
       },
       {
-        "id": null,
+        "id": "road_14",
         "from": "tampa_hillsborough",
         "to": "rural_heartland",
         "mode": "road",
@@ -808,49 +808,49 @@
     ],
     "water_edges": [
       {
-        "id": null,
+        "id": "water_01",
         "from": "ocala_marion",
         "to": "rural_heartland",
         "mode": "water",
         "route_type": "river_and_lake_route"
       },
       {
-        "id": null,
+        "id": "water_02",
         "from": "tampa_hillsborough",
         "to": "st_pete_pinellas",
         "mode": "water",
         "route_type": "bay_channel"
       },
       {
-        "id": null,
+        "id": "water_03",
         "from": "tampa_hillsborough",
         "to": "rural_heartland",
         "mode": "water",
         "route_type": "coastal_and_inland_waterway"
       },
       {
-        "id": null,
+        "id": "water_04",
         "from": "miami_dade",
         "to": "fort_lauderdale_broward",
         "mode": "water",
         "route_type": "intracoastal_waterway"
       },
       {
-        "id": null,
+        "id": "water_05",
         "from": "fort_lauderdale_broward",
         "to": "keys_monroe",
         "mode": "water",
         "route_type": "coastal_channel"
       },
       {
-        "id": null,
+        "id": "water_06",
         "from": "jacksonville_duval",
         "to": "space_coast_brevard",
         "mode": "water",
         "route_type": "intracoastal_waterway"
       },
       {
-        "id": null,
+        "id": "water_07",
         "from": "kissimmee_osceola",
         "to": "rural_heartland",
         "mode": "water",
