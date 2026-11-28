@@ -30,7 +30,7 @@ namespace SheriffAmericanLife
         private const string FrameRatePreferenceKey = "Sheriff.MobileFrameRate";
 
         [SerializeField] private MobileVisualQualityPreset defaultPreset = MobileVisualQualityPreset.Balanced;
-        [SerializeField] private MobileFrameRateMode defaultFrameRateMode = MobileFrameRateMode.Fps120;
+        [SerializeField] private MobileFrameRateMode defaultFrameRateMode = MobileFrameRateMode.Fps60;
         [SerializeField, Min(64f)] private float streamingMemoryBudgetMb = 256f;
 
         public MobileVisualQualityPreset CurrentPreset { get; private set; }
