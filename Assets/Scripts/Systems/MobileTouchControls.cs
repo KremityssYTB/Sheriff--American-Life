@@ -23,6 +23,11 @@ namespace SheriffAmericanLife
         private GameObject transportPanel;
         private TextMeshProUGUI transportDetails;
         private Button transportButton;
+        private GameObject settingsPanel;
+        private TextMeshProUGUI settingsQualityStatus;
+        private TextMeshProUGUI settingsFrameRateStatus;
+        private TextMeshProUGUI settingsPerformanceStatus;
+        private bool settingsVisible;
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
@@ -30,6 +35,18 @@ namespace SheriffAmericanLife
 
         public event Action<string, bool> ControlChanged;
         public event Action<string> ActionTriggered;
+
+        public void SetSettingsContext(bool visible, string quality, string frameRate, string performance)
+        {
+            if (settingsPanel == null) return;
+            settingsVisible = visible;
+            if (canvas != null) canvas.enabled = true;
+            settingsPanel.SetActive(visible);
+            if (!visible) return;
+            if (settingsQualityStatus != null) settingsQualityStatus.text = quality ?? "GRAPHICS SETTINGS";
+            if (settingsFrameRateStatus != null) settingsFrameRateStatus.text = frameRate ?? "FRAME RATE";
+            if (settingsPerformanceStatus != null) settingsPerformanceStatus.text = performance ?? "LIVE PERFORMANCE";
+        }
 
         public void SetTransportContext(bool visible, string details, bool canBook)
         {
@@ -132,9 +149,14 @@ namespace SheriffAmericanLife
 
         public void SetControlsVisible(bool visible)
         {
-            if (canvas != null && canvas.enabled == visible) return;
             if (!visible) ReleaseAll();
-            if (canvas != null) canvas.enabled = visible;
+            if (canvas != null) canvas.enabled = true;
+            if (safeRoot == null) return;
+            for (int i = 0; i < safeRoot.childCount; i++)
+            {
+                GameObject child = safeRoot.GetChild(i).gameObject;
+                child.SetActive(visible || (child == settingsPanel && settingsVisible));
+            }
         }
 
         public void ReleaseAll()
@@ -196,8 +218,93 @@ namespace SheriffAmericanLife
             AddActionButton("camera", "CAMERA", new Vector2(.84f,.58f), new Vector2(.975f,.69f));
             AddActionButton("settings", "SETTINGS", new Vector2(.84f,.48f), new Vector2(.975f,.59f));
             AddStatusLabel();\n            BuildCivilianPanel();\n            BuildTrafficPanel();\n            BuildTransportPanel();
+            BuildSettingsPanel();
         }
 
+
+        private void BuildSettingsPanel()
+        {
+            settingsPanel = new GameObject("Settings Panel", typeof(RectTransform), typeof(Image));
+            settingsPanel.transform.SetParent(safeRoot, false);
+            RectTransform panelRect = settingsPanel.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(.17f, .08f);
+            panelRect.anchorMax = new Vector2(.83f, .92f);
+            panelRect.offsetMin = Vector2.zero;
+            panelRect.offsetMax = Vector2.zero;
+            settingsPanel.GetComponent<Image>().color = new Color(.018f, .028f, .04f, .97f);
+
+            CreateSettingsLabel("Title", "GAME SETTINGS", new Vector2(.04f,.88f), new Vector2(.96f,.98f), 19f, out _);
+            CreateSettingsLabel("Graphics Heading", "GRAPHICS QUALITY", new Vector2(.05f,.75f), new Vector2(.95f,.85f), 14f, out settingsQualityStatus);
+            CreateSettingsButton("quality_performance", "PERFORMANCE", new Vector2(.05f,.63f), new Vector2(.34f,.74f));
+            CreateSettingsButton("quality_balanced", "BALANCED", new Vector2(.355f,.63f), new Vector2(.645f,.74f));
+            CreateSettingsButton("quality_high", "HIGH", new Vector2(.66f,.63f), new Vector2(.95f,.74f));
+
+            CreateSettingsLabel("Frame Rate Heading", "FRAME RATE", new Vector2(.05f,.49f), new Vector2(.95f,.59f), 14f, out settingsFrameRateStatus);
+            CreateSettingsButton("fps_30", "30 FPS", new Vector2(.05f,.37f), new Vector2(.48f,.48f));
+            CreateSettingsButton("fps_60", "60 FPS", new Vector2(.52f,.37f), new Vector2(.95f,.48f));
+            CreateSettingsButton("fps_120", "120 FPS", new Vector2(.05f,.24f), new Vector2(.48f,.35f));
+            CreateSettingsButton("fps_unlimited", "UNLIMITED", new Vector2(.52f,.24f), new Vector2(.95f,.35f));
+
+            CreateSettingsLabel("Performance Readout", "LIVE: Measuring frame performance...", new Vector2(.05f,.12f), new Vector2(.68f,.22f), 11f, out settingsPerformanceStatus);
+            CreateSettingsButton("settings_close", "CLOSE", new Vector2(.72f,.105f), new Vector2(.95f,.225f));
+            settingsPanel.SetActive(false);
+        }
+
+        private void CreateSettingsLabel(string objectName, string value, Vector2 anchorMin,
+            Vector2 anchorMax, float fontSize, out TextMeshProUGUI label)
+        {
+            GameObject labelObject = new GameObject(objectName, typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(settingsPanel.transform, false);
+            RectTransform rect = labelObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = new Vector2(3f,2f);
+            rect.offsetMax = new Vector2(-3f,-2f);
+            label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = value;
+            label.alignment = TextAlignmentOptions.Center;
+            label.fontSize = fontSize;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 9f;
+            label.fontSizeMax = fontSize;
+            label.fontStyle = FontStyles.Bold;
+            label.color = Color.white;
+            label.raycastTarget = false;
+        }
+
+        private void CreateSettingsButton(string action, string caption, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            GameObject buttonObject = new GameObject("Settings " + action, typeof(RectTransform), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(settingsPanel.transform, false);
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = new Color(.07f,.105f,.135f,.98f);
+            Button button = buttonObject.GetComponent<Button>();
+            button.targetGraphic = image;
+            button.onClick.AddListener(() => ActionTriggered?.Invoke(action));
+
+            GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(buttonObject.transform, false);
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(2f,2f);
+            labelRect.offsetMax = new Vector2(-2f,-2f);
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = caption;
+            label.alignment = TextAlignmentOptions.Center;
+            label.fontSize = 12f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 8f;
+            label.fontSizeMax = 12f;
+            label.fontStyle = FontStyles.Bold;
+            label.color = Color.white;
+            label.raycastTarget = false;
+        }
 
         private void BuildTransportPanel()
         {
