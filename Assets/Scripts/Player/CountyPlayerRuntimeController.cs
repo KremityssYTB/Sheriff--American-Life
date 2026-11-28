@@ -662,20 +662,20 @@ namespace SheriffAmericanLife
                 {
                     if (driverHistoryBook != null) driverHistoryBook.RecordCitation(activeDriverProfile, citation);
                     RecordTrafficStopAction("Citation " + citation.citationNumber,
-                        "Citation created for $" + citation.fineAmount + ". " + citation.violations);
+                        "Citation created for $" + citation.fineAmount + ". " + citation.violations, citation.caseId);
                 }
             }
             trafficStopDecisionRecorded = true;
         }
 
-        private void RecordTrafficStopAction(string action, string outcome)
+        private void RecordTrafficStopAction(string action, string outcome, string caseId = null)
         {
             if (reportBook == null || activeDriverProfile == null) return;
             reportBook.AddReport("Traffic stop", activeDriverProfile.DriverName, action, outcome,
                 "Vehicle plate " + activeDriverProfile.PlateNumber +
                 ". Driver license: " + activeDriverProfile.LicenseStatus +
                 ". Registration: " + activeDriverProfile.RegistrationStatus +
-                ". Insurance: " + activeDriverProfile.InsuranceStatus + ".");
+                ". Insurance: " + activeDriverProfile.InsuranceStatus + ".", null, caseId);
         }
 
         private void EndTrafficStop()
