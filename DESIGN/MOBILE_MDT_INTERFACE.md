@@ -133,7 +133,16 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - `CountyPlayerRuntimeController` receives the control states and maps them to its existing walker and vehicle inputs. The previous IMGUI movement and vehicle RepeatButtons have been removed to avoid duplicate inputs.
 - The adapter releases held inputs on focus loss, application pause, control-mode changes, settings-modal opening, and controller disable. Controls are hidden while the controller is disabled or the settings modal is open.
 - The touch Canvas currently has sorting order 40, below the MDT Canvas at 50. Duty status and the primary vehicle/duty/camera/settings actions are now Canvas elements; callbacks invoke the existing controller methods and labels refresh from duty/vehicle state.
-- The old IMGUI movement/vehicle RepeatButtons and top-level status/action buttons have been removed. Civilian interaction, traffic-stop, prisoner-transport, and Settings modal content remain IMGUI for later phases.
+- The old IMGUI movement/vehicle RepeatButtons and top-level status/action buttons have been removed. Civilian interaction is now a state-driven Canvas panel; traffic-stop, prisoner-transport, and Settings modal content remain IMGUI for later phases.
 - Vehicle gas/brake controls and the Settings action use separate screen regions to avoid a known hit-target overlap. The floating MDT toggle remains on its higher-sorting Canvas.
 
 **Not yet verified:** Unity compilation, runtime EventSystem behavior, multi-touch on device, safe-area layout in portrait/landscape and iPad split view, button hit areas, and interaction with the MDT Canvas. Do not treat this as a tested or production-ready control scheme.
+
+
+### Phase 3a — civilian interaction panel (2026-11-28)
+
+- `MobileTouchControls` now builds a contextual civilian panel inside the gameplay Canvas, with the nearby person's name and the existing Greet, Questions, ID, Warn, Cite, Detain, Arrest, and Release actions.
+- `CountyPlayerRuntimeController` updates panel visibility from the existing civilian-focus result and forwards each Canvas action to the existing `OfficerInteractionController` methods. No civilian gameplay rules were moved into the UI.
+- Removed the duplicate civilian interaction IMGUI label and buttons. The panel is hidden when no civilian is focused or when the player is in a vehicle; it is also hidden with the gameplay Canvas while Settings is open.
+- The panel uses safe-area-relative anchors and sits left of the primary action stack and clear of the foot movement controls. Actual overlap and readability still require Unity Game view inspection on narrow phones and iPad layouts.
+- Traffic-stop documents/decisions, prisoner transport, and Settings remain IMGUI and are not represented as migrated.
