@@ -176,6 +176,8 @@ namespace SheriffAmericanLife
             UpdatePrisonerEscort();
             if (touchControls != null)
                 touchControls.SetHudState(dutyState != null && dutyState.IsOnDuty, inVehicle);
+                touchControls.SetCivilianContext(!inVehicle && focusedCivilian != null && interactions != null,
+                    focusedCivilian != null ? focusedCivilian.FullName : null);
             if (walker && !inVehicle)
             {
                 walker.SetMoveInput(moveInput);
@@ -220,7 +222,6 @@ namespace SheriffAmericanLife
                 return;
             }
             if (touchControls != null) touchControls.SetControlsVisible(true);
-            DrawCivilianInteractionHud(s, pad);
             DrawTrafficStopHud(s, pad);
             DrawPrisonerTransportHud(s, pad);
 
@@ -244,6 +245,14 @@ namespace SheriffAmericanLife
                     settingsOpen = !settingsOpen;
                     if (touchControls != null) touchControls.SetControlsVisible(!settingsOpen);
                     break;
+                case "civilian_greet": if (interactions != null) interactions.Greet(); break;
+                case "civilian_questions": if (interactions != null) interactions.AskQuestions(); break;
+                case "civilian_id": if (interactions != null) interactions.RequestIdentification(); break;
+                case "civilian_warn": if (interactions != null) interactions.IssueWarning(); break;
+                case "civilian_cite": if (interactions != null) interactions.IssueCitation(); break;
+                case "civilian_detain": if (interactions != null) interactions.Detain(); break;
+                case "civilian_arrest": if (interactions != null) interactions.Arrest(); break;
+                case "civilian_release": if (interactions != null) interactions.Release(); break;
             }
         }
 
@@ -797,45 +806,6 @@ namespace SheriffAmericanLife
             if (focusedCivilian == civilian) return;
             focusedCivilian = civilian;
             if (interactions != null) interactions.SetFocusedCivilian(focusedCivilian);
-        }
-
-        private void DrawCivilianInteractionHud(float scale, float padding)
-        {
-            if (inVehicle || focusedCivilian == null || interactions == null) return;
-
-            GUI.Label(
-                new Rect(padding, padding + 34f * scale, 260f * scale, 28f * scale),
-                "NEARBY: " + focusedCivilian.FullName,
-                statusStyle);
-
-            float buttonWidth = 76f * scale;
-            float buttonHeight = 36f * scale;
-            float gap = 5f * scale;
-            float x = UiWidth - (buttonWidth * 2f + gap + padding);
-            float y = padding + 150f * scale;
-
-            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "GREET", buttonStyle))
-                interactions.Greet();
-            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "QUESTIONS", buttonStyle))
-                interactions.AskQuestions();
-
-            y += buttonHeight + gap;
-            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "ID", buttonStyle))
-                interactions.RequestIdentification();
-            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "WARN", buttonStyle))
-                interactions.IssueWarning();
-
-            y += buttonHeight + gap;
-            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "CITE", buttonStyle))
-                interactions.IssueCitation();
-            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "DETAIN", buttonStyle))
-                interactions.Detain();
-
-            y += buttonHeight + gap;
-            if (GUI.Button(new Rect(x, y, buttonWidth, buttonHeight), "ARREST", buttonStyle))
-                interactions.Arrest();
-            if (GUI.Button(new Rect(x + buttonWidth + gap, y, buttonWidth, buttonHeight), "RELEASE", buttonStyle))
-                interactions.Release();
         }
 
         private void ToggleVehicle()
