@@ -523,3 +523,13 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The first Canvas migration phases now cover held foot/vehicle controls and top-level status/actions. Civilian interactions, traffic-stop panels, prisoner transport, and the Settings modal remain IMGUI.
 - Static source checks confirm balanced braces, correct touch-button collection types, held pointer lifecycle handlers, safe-area logic, controller event wiring, primary action dispatch, no old movement RepeatButtons, and no old top-level IMGUI action buttons. These are text-level checks only.
 - Unity compile/runtime, actual multi-touch, visual layout, MDT overlap, portrait/landscape, iPad split view, cloud build, signing, and install remain unverified.
+
+
+## Gameplay HUD civilian interaction Canvas migration (2026-11-28)
+
+- Commit `bd7379dfd284ff4e15ad131a36608be0bba0b8b1` adds a contextual civilian panel to `MobileTouchControls`, including the nearby civilian name and eight interaction actions.
+- Commit `3841c336b1ff6af37247c4c2a021b41a247a7691` wires the Canvas actions to the existing `OfficerInteractionController` methods and removes the duplicate civilian IMGUI label/buttons.
+- Commit `afff9b8fa023319a63d1780afd89da9cb24dabfa` guards the per-frame contextual panel update when the touch-control component is unavailable.
+- The panel visibility follows the existing focused-civilian state, is hidden in vehicle mode, and is hidden whenever the gameplay Canvas is disabled for the Settings modal. It uses safe-area-relative anchors and remains separate from the top-level action stack and foot movement buttons.
+- `DESIGN/MOBILE_MDT_INTERFACE.md` records Phase 3a. Traffic-stop documents/decisions, prisoner transport, and Settings remain IMGUI; they are not migrated yet.
+- Source-level checks only. Unity compilation, runtime UI/event routing, touch behavior, panel readability, and layout on portrait/landscape iPhone and iPad remain unverified.
