@@ -27,7 +27,7 @@ jobs:
         run: godot --headless --editor --path godot --quit
 
   ios-export:
-    name: Export iOS Xcode project
+    name: Build unsigned iOS IPA
     runs-on: macos-14
     needs: validate
     if: github.event_name != 'pull_request'
@@ -40,23 +40,36 @@ jobs:
           version: 4.5.1
           use-dotnet: false
           include-templates: true
-      - name: Require Apple Team ID
-        env:
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          if [ -z "$APPLE_TEAM_ID" ]; then
-            echo "::error::Add the APPLE_TEAM_ID repository secret before running the iOS export job."
-            exit 1
-          fi
-          sed -i '' "s/application\/app_store_team_id=\"\"/application\/app_store_team_id=\"$APPLE_TEAM_ID\"/" godot/export_presets.cfg
       - name: Export iOS Xcode project
         run: |
           mkdir -p build/ios
           godot --headless --path godot --export-release "iOS" build/ios/SheriffAmericanLife.zip
-      - name: Upload iOS Xcode project
+          mkdir -p build/ios/xcode
+          unzip -q build/ios/SheriffAmericanLife.zip -d build/ios/xcode
+      - name: Build app without Apple signing
+        run: |
+          set -euo pipefail
+          PROJECT="$(find build/ios/xcode -maxdepth 4 -name '*.xcodeproj' -print -quit)"
+          if [ -z "$PROJECT" ]; then
+            echo "::error::Godot export did not contain an Xcode project."
+            find build/ios/xcode -maxdepth 3 -print
+            exit 1
+          fi
+          DERIVED="$PWD/build/ios/DerivedData"
+          xcodebuild -project "$PROJECT" -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath "$DERIVED" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          APP="$(find "$DERIVED/Build/Products/Release-iphoneos" -maxdepth 1 -name '*.app' -print -quit)"
+          if [ -z "$APP" ]; then
+            echo "::error::Xcode completed without producing an .app bundle."
+            exit 1
+          fi
+          mkdir -p build/ios/package/Payload
+          cp -R "$APP" build/ios/package/Payload/
+          (cd build/ios/package && /usr/bin/zip -qry "$PWD/../SheriffAmericanLife-unsigned.ipa" Payload)
+          test -s build/ios/SheriffAmericanLife-unsigned.ipa
+      - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4
         with:
-          name: sheriff-american-life-ios-xcode-project
-          path: build/ios/SheriffAmericanLife.zip
+          name: sheriff-american-life-unsigned-ipa
+          path: build/ios/SheriffAmericanLife-unsigned.ipa
           if-no-files-found: error
           retention-days: 7
