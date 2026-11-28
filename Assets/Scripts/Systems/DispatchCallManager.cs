@@ -154,7 +154,8 @@ namespace SheriffAmericanLife
             call.disposition = reason.Trim();
             if (reportBook != null)
                 reportBook.AddReport("Dispatch cancellation", call.title, "Cancel call", call.disposition,
-                    "Call " + call.callId + " was cancelled. " + call.description, call.sourceIncidentId);
+                    "Call " + call.callId + " was cancelled. " + call.description,
+                    call.sourceIncidentId, call.caseId);
             Save();
             CallUpdated?.Invoke(call);
             return true;
