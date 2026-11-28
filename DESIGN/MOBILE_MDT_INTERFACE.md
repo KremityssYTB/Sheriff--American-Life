@@ -89,3 +89,10 @@ Street addresses and real road routing are not implemented yet.
 ## Data and persistence limitations
 
 All calls, reports, and witness statements are currently session-only. No save/load, server CAD, multiplayer unit synchronization, GPS routing, or rendered MDT screen exists yet. The screen remains a prototype: it has no county map rendering, address lookup, route guidance, radio audio, custom icons, saved case data, or multiplayer synchronization. Visual sizing and touch behavior still require testing on an actual iPhone.
+
+### Responsive layout validation notes
+
+- The runtime-generated MDT Canvas uses a safe-area root and a scale-with-screen-size CanvasScaler. Its call-list/case-panel split switches between landscape and portrait arrangements based on screen orientation.
+- The deputy's separate IMGUI HUD now derives its scale from both safe-area width and height, rather than width alone. This reduces oversized controls on short landscape screens; the status label is constrained to the remaining width beside the top-right action stack.
+- Movement and vehicle buttons retain a minimum 54-point GUI hit rectangle after scaling. This is a source-level sizing rule, not a measured physical-pixel guarantee across display densities.
+- Remaining validation: inspect smallest supported iPhone, large iPhone, iPad portrait/landscape, split-screen/resizing, text clipping, and overlapping contextual HUD panels in Unity and on devices. The current IMGUI control scheme remains a prototype, not a final virtual joystick.
