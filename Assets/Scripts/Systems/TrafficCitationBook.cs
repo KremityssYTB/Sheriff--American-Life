@@ -97,6 +97,19 @@ namespace SheriffAmericanLife
             return citation;
         }
 
+
+        public bool LinkToCase(string citationNumber, string caseId)
+        {
+            if (string.IsNullOrWhiteSpace(caseId)) return false;
+            TrafficCitation citation = citations.Find(item =>
+                item != null && item.citationNumber == citationNumber);
+            if (citation == null) return false;
+            citation.caseId = caseId.Trim();
+            Save();
+            CitationUpdated?.Invoke(citation);
+            return true;
+        }
+
         public bool SetPaymentStatus(string citationNumber, CitationPaymentStatus status)
         {
             TrafficCitation citation = citations.Find(item =>
