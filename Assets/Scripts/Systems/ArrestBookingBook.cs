@@ -65,6 +65,18 @@ namespace SheriffAmericanLife
             return record;
         }
 
+
+        public bool LinkToCase(string bookingId, string caseId)
+        {
+            if (string.IsNullOrWhiteSpace(caseId)) return false;
+            ArrestBookingRecord record = Find(bookingId);
+            if (record == null) return false;
+            record.caseId = caseId.Trim();
+            Save();
+            BookingsChanged?.Invoke();
+            return true;
+        }
+
         public bool MarkBooked(string bookingId)
         {
             ArrestBookingRecord record = Find(bookingId);
