@@ -30,6 +30,9 @@ func _ready() -> void:
 	region_catalog = FloridaRegionCatalog.new()
 	if region_catalog.load_catalog():
 		print("Florida region catalog loaded: %d counties, %d playable districts, %.0f km2." % [region_catalog.get_county_count(), region_catalog.get_districts().size(), region_catalog.get_map_area_km2()])
+		var road_test: Dictionary = region_catalog.find_route("ocala_marion", "miami_dade", "road")
+		var water_test: Dictionary = region_catalog.find_route("ocala_marion", "rural_heartland", "water")
+		print("Florida route checks — Ocala to Miami road: %s; Ocala to Heartland water: %s." % [road_test.get("found", false), water_test.get("found", false)])
 	_build_environment()
 	_build_district()
 	_spawn_player()
