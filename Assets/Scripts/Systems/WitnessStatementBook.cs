@@ -9,6 +9,7 @@ namespace SheriffAmericanLife
     {
         public string statementId;
         public string incidentId;
+        public string caseId;
         public string witnessName;
         public string incidentDescription;
         public string subjectDescription;
@@ -46,6 +47,7 @@ namespace SheriffAmericanLife
         {
             if (statement == null) return;
             statement.statementId = "WS-" + nextSequence.ToString("000000");
+            if (string.IsNullOrWhiteSpace(statement.caseId)) statement.caseId = statement.incidentId;
             statement.recordedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             statement.confidence = Mathf.Clamp01(statement.confidence);
             nextSequence++;
@@ -72,6 +74,8 @@ namespace SheriffAmericanLife
             }
             statements.Clear();
             statements.AddRange(data.statements.FindAll(item => item != null));
+            foreach (WitnessStatement item in statements)
+                if (string.IsNullOrWhiteSpace(item.caseId)) item.caseId = item.incidentId;
             if (statements.Count > MaximumStatements) statements.RemoveRange(MaximumStatements, statements.Count - MaximumStatements);
             nextSequence = Math.Max(1, data.nextSequence);
             foreach (WitnessStatement item in statements)
