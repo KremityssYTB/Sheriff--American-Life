@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#101820">
+<meta name="theme-color" content="#101b26">
 <title>SHERIFF: AMERICAN LIFE — 3D Ocala Playtest</title>
 <style>
-:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#101820;color:#f4f6f7}
+:root{color-scheme:dark;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#101b26;color:#f1eee5;--gold:#d5b36a;--navy:#101b26}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;background:#101820}
 #scene{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #hud{position:fixed;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);pointer-events:none}
-.panel{pointer-events:auto;background:#101820dc;border:1px solid #ffffff25;border-radius:13px;padding:9px 11px;box-shadow:0 5px 20px #0005;backdrop-filter:blur(8px)}
+.panel{pointer-events:auto;background:#101b26e8;border:1px solid #d5b36a55;border-radius:4px;padding:9px 11px;box-shadow:0 5px 20px #0005;backdrop-filter:blur(8px)}
 #top{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-#brand{font-size:12px;font-weight:850;letter-spacing:.09em}#status{font-size:10px;color:#c0ccd1;margin-top:3px}
+#brand{font-size:12px;font-weight:950;letter-spacing:.13em;color:#f1eee5}#status{font-size:10px;color:#d5b36a;margin-top:3px;letter-spacing:.08em}
 #topActions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;pointer-events:auto}
-button{min-height:40px;padding:9px 11px;border:1px solid #ffffff28;border-radius:10px;background:#263a46;color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em;touch-action:none;user-select:none;-webkit-user-select:none}
-button:active,.held{background:#466a7c;border-color:#a4d4e6}
+button,.social{min-height:40px;padding:9px 11px;border:1px solid #d5b36a70;border-radius:3px;background:#1b2b39;color:#f1eee5;font-size:10px;font-weight:900;letter-spacing:.08em;touch-action:manipulation;user-select:none;-webkit-user-select:none;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+button:active,.held,.social:hover{background:#d5b36a;color:#101b26;border-color:#f1d99b}
 #mission{position:absolute;left:10px;top:78px;max-width:min(290px,72vw);font-size:11px;line-height:1.35}
 #mission strong{display:block;margin-top:3px;font-size:12px}
 #mapTag{position:absolute;right:12px;top:82px;text-align:right;font-size:9px;color:#e2e9e8;text-shadow:0 2px 4px #000}
@@ -37,10 +37,10 @@ button:active,.held{background:#466a7c;border-color:#a4d4e6}
 <div id="hud">
  <div id="top">
   <div class="panel"><div id="brand">SHERIFF: AMERICAN LIFE</div><div id="status">MARION COUNTY • OCALA • 3D PLAYTEST</div></div>
-  <div id="topActions"><button id="duty">GO OFF DUTY</button><button id="lights">LIGHTS OFF</button><button id="dispatch">911 CALL</button></div>
+  <div id="topActions"><a class="social" href="https://x.com/officalsalgame" target="_blank" rel="noopener">OFFICIAL X ↗</a><button id="duty">GO OFF DUTY</button><button id="lights">LIGHTS OFF</button><button id="dispatch">911 CALL</button></div>
  </div>
  <div id="mission" class="panel">PATROL STATUS<strong id="missionText">Start outside the Marion County Sheriff Office.</strong><span id="subText">Move with the left pad. Drag the world to rotate your camera.</span></div>
- <div id="mapTag">OCALA TEST DISTRICT<br>THREE.JS • WEBGL</div>
+ <div id="mapTag">MARION COUNTY • FLORIDA<br>OCALA TEST DISTRICT<br>THREE.JS • WEBGL</div>
  <div id="toast"></div><div id="help">DRAG TO LOOK • TAP ENTER NEAR THE SUV</div><div id="fps">-- FPS</div>
  <div id="controls">
   <div id="pad"><button class="up" data-move="forward">▲</button><button class="left" data-move="left">◀</button><button class="down" data-move="back">▼</button><button class="right" data-move="right">▶</button></div>
