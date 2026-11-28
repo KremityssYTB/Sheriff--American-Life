@@ -194,3 +194,11 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - The source audit found a custody-state conflict: the deputy could arrest a second civilian while already escorting one prisoner. `OfficerInteractionController` created the second AwaitingTransport booking before the runtime escort handler rejected the second escort, leaving an arrested civilian and booking with no transport path.
 - The civilian Canvas now disables ARREST while an escort is active, and the controller independently rejects the action if invoked despite the disabled UI. The existing one-prisoner escort rule and booking workflow remain authoritative.
 - This is a targeted source-level guard. It does not add multi-prisoner transport or alter arrest/booking data. Unity compilation, UI interaction, arrest/transport runtime tests, and device tests remain outstanding.
+
+
+### Phase 7 — booking release lifecycle audit (2026-11-28)
+
+- Found that the MDT could change a booking from Booked to Released while the matching `CivilianCharacter` remained Arrested and its `CivilianRoutineAgent` stayed disabled after transport.
+- Added `CivilianCharacter.ReleaseFromCustody()` and subscribed the player runtime to booking-ledger changes. When a booking is Released, the matching in-scene civilian returns to Free and their routine agent is re-enabled. The subscription is removed when the player controller is destroyed.
+- The booking ledger remains the source of the release decision; the runtime mirrors that state into the civilian actor. Matching currently uses the saved identification number, so production identity uniqueness and duplicate-identity handling remain future data-model work.
+- Static source review only. No Unity compile, MDT interaction, jail release simulation, or runtime test has been performed.
