@@ -168,8 +168,16 @@ namespace SheriffAmericanLife
                 buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 18, wordWrap = true };
                 statusStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, normal = { textColor = Color.white } };
             }
-            float s = Mathf.Clamp(UiWidth / 390f, .8f, 1.25f);
-            float w = 66f*s, h = 58f*s, pad = 12f*s;
+            // Scale against both safe-area dimensions so short landscape screens do not
+            // inherit oversized portrait controls. Keep touch targets at least 54 GUI points.
+            float widthScale = UiWidth / 390f;
+            float heightScale = UiHeight / 640f;
+            float s = Mathf.Clamp(Mathf.Min(widthScale, heightScale), .8f, 1.25f);
+            buttonStyle.fontSize = Mathf.RoundToInt(18f * s);
+            statusStyle.fontSize = Mathf.RoundToInt(18f * s);
+            float w = Mathf.Max(54f, 66f*s);
+            float h = Mathf.Max(54f, 58f*s);
+            float pad = 12f*s;
             if (settingsOpen)
             {
                 moveInput = Vector2.zero;
@@ -180,7 +188,10 @@ namespace SheriffAmericanLife
                 GUI.matrix = previousGuiMatrix;
                 return;
             }
-            GUI.Label(new Rect(pad, pad, 260*s, 30*s), dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY", statusStyle);
+            float statusWidth = Mathf.Max(80f, UiWidth - 136f*s);
+            GUI.Label(new Rect(pad, pad, statusWidth, 30*s),
+                dutyState != null && dutyState.IsOnDuty ? "MARION COUNTY SHERIFF  •  ON DUTY" : "OFF DUTY",
+                statusStyle);
             if (GUI.Button(new Rect(UiWidth-112*s,pad,100*s,42*s), inVehicle ? "EXIT" : "ENTER", buttonStyle))
                 ToggleVehicle();
             if (GUI.Button(new Rect(UiWidth-112*s,pad+50*s,100*s,42*s), dutyState != null && dutyState.IsOnDuty ? "GO OFF DUTY" : "GO ON DUTY", buttonStyle))
