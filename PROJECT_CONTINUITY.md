@@ -465,3 +465,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit updates `MobilePerformanceBootstrap` to default to 60 FPS instead of 120 FPS. This avoids requesting a refresh rate above the 60 Hz display capability of the primary iPhone 16e target and provides a conservative baseline across supported iPhones/iPads.
 - The optional 120 FPS and Unlimited modes remain user-selectable; the iOS ProMotion Info.plist postprocessor remains in place for compatible devices. Actual sustained performance and refresh behavior still require device profiling.
 - Static source/documentation update only. No Unity compile, cloud build, Xcode build, signing, installation, or runtime test was performed.
+
+
+## Mobile MDT safe-area pass (2026-11-28)
+
+- Commit `8894fcdd52c74f2243f4de9b2f53196e3fbd037a` adds a dedicated safe-area RectTransform to the runtime-generated MDT Canvas. The MDT window and floating MDT toggle are now parented under that area, with anchors updated from `Screen.safeArea` when device insets or orientation change.
+- Updated `DESIGN/MOBILE_MDT_INTERFACE.md` to record the implementation. This complements the existing IMGUI player HUD safe-area pass.
+- Static source/documentation edit only. Unity compilation, notch/home-indicator layout inspection, portrait/landscape touch testing, and real iPhone/iPad validation remain outstanding.
