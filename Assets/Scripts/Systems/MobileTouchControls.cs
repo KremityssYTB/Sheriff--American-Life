@@ -16,6 +16,10 @@ namespace SheriffAmericanLife
         private readonly Dictionary<string, Button> contextButtons = new Dictionary<string, Button>();
         private GameObject civilianPanel;
         private TextMeshProUGUI civilianHeader;
+        private GameObject trafficPanel;
+        private TextMeshProUGUI trafficHeader;
+        private TextMeshProUGUI trafficDetails;
+        private readonly Dictionary<string, Button> trafficButtons = new Dictionary<string, Button>();
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
@@ -23,6 +27,17 @@ namespace SheriffAmericanLife
 
         public event Action<string, bool> ControlChanged;
         public event Action<string> ActionTriggered;
+
+        public void SetTrafficContext(bool visible, string header, string details, string[] visibleActions)
+        {
+            if (trafficPanel == null) return;
+            trafficPanel.SetActive(visible);
+            if (!visible) return;
+            if (trafficHeader != null) trafficHeader.text = header ?? "TRAFFIC STOP";
+            if (trafficDetails != null) trafficDetails.text = details ?? string.Empty;
+            foreach (KeyValuePair<string, Button> pair in trafficButtons)
+                pair.Value.gameObject.SetActive(visibleActions != null && Array.IndexOf(visibleActions, pair.Key) >= 0);
+        }
 
         public void SetCivilianContext(bool visible, string personName)
         {
@@ -147,9 +162,98 @@ namespace SheriffAmericanLife
             AddActionButton("duty", "GO ON DUTY", new Vector2(.84f,.71f), new Vector2(.975f,.82f));
             AddActionButton("camera", "CAMERA", new Vector2(.84f,.58f), new Vector2(.975f,.69f));
             AddActionButton("settings", "SETTINGS", new Vector2(.84f,.48f), new Vector2(.975f,.59f));
-            AddStatusLabel();\n            BuildCivilianPanel();
+            AddStatusLabel();\n            BuildCivilianPanel();\n            BuildTrafficPanel();
         }
 
+
+        private void BuildTrafficPanel()
+        {
+            trafficPanel = new GameObject("Traffic Stop Panel", typeof(RectTransform), typeof(Image));
+            trafficPanel.transform.SetParent(safeRoot, false);
+            RectTransform panelRect = trafficPanel.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(.025f, .40f);
+            panelRect.anchorMax = new Vector2(.43f, .88f);
+            panelRect.offsetMin = Vector2.zero;
+            panelRect.offsetMax = Vector2.zero;
+            trafficPanel.GetComponent<Image>().color = new Color(.025f, .04f, .055f, .91f);
+
+            trafficHeader = AddTrafficText("Traffic Header", new Vector2(.04f,.84f), new Vector2(.96f,.98f), 15f, true);
+            trafficDetails = AddTrafficText("Traffic Details", new Vector2(.04f,.43f), new Vector2(.96f,.82f), 12f, false);
+            trafficDetails.alignment = TextAlignmentOptions.TopLeft;
+
+            string[] ids = { "traffic_pull_over", "traffic_calm", "traffic_firm", "traffic_license",
+                "traffic_registration", "traffic_insurance", "traffic_warning", "traffic_citation", "traffic_end" };
+            string[] captions = { "PULL OVER", "CALM APPROACH", "FIRM APPROACH", "CHECK LICENSE",
+                "CHECK REG", "CHECK INSURANCE", "WARNING", "CITATION", "END / CANCEL STOP" };
+            for (int i = 0; i < ids.Length; i++)
+            {
+                int column = i == 8 ? 0 : i % 2;
+                int row = i == 8 ? 4 : i / 2;
+                float xMin = .04f + column * .48f;
+                float xMax = i == 8 ? .96f : xMin + .44f;
+                float yMax = .39f - row * .085f;
+                float yMin = yMax - .075f;
+                AddTrafficButton(ids[i], captions[i], new Vector2(xMin,yMin), new Vector2(xMax,yMax));
+            }
+            trafficPanel.SetActive(false);
+        }
+
+        private TextMeshProUGUI AddTrafficText(string objectName, Vector2 anchorMin, Vector2 anchorMax,
+            float fontSize, bool centered)
+        {
+            GameObject labelObject = new GameObject(objectName, typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(trafficPanel.transform, false);
+            RectTransform rect = labelObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = new Vector2(3f,2f);
+            rect.offsetMax = new Vector2(-3f,-2f);
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.fontSize = fontSize;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 8f;
+            label.fontSizeMax = fontSize;
+            label.fontStyle = centered ? FontStyles.Bold : FontStyles.Normal;
+            label.alignment = centered ? TextAlignmentOptions.Center : TextAlignmentOptions.TopLeft;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            return label;
+        }
+
+        private void AddTrafficButton(string id, string caption, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            GameObject buttonObject = new GameObject("Traffic Action " + id, typeof(RectTransform), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(trafficPanel.transform, false);
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = new Color(.08f, .12f, .15f, .98f);
+            Button button = buttonObject.GetComponent<Button>();
+            button.targetGraphic = image;
+            button.onClick.AddListener(() => ActionTriggered?.Invoke(id));
+
+            GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(buttonObject.transform, false);
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(2f,2f);
+            labelRect.offsetMax = new Vector2(-2f,-2f);
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = caption;
+            label.alignment = TextAlignmentOptions.Center;
+            label.fontSize = 11f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 7f;
+            label.fontSizeMax = 11f;
+            label.fontStyle = FontStyles.Bold;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            trafficButtons.Add(id, button);
+        }
 
         private void BuildCivilianPanel()
         {
