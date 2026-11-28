@@ -282,3 +282,12 @@ The project is following a 60-phase roadmap. Phases 1–10 are recorded as compl
 - Existing lifecycle guards remain in place. Resolve/cancel still add incident reports through the configured report book. Records are local to the device, with no server CAD or multiplayer synchronization.
 - Writes stage through a temporary file before copying to the primary path. Load/save errors are caught and logged. Schema migration and automatic corruption recovery are not implemented.
 - Static source review only. Unity compilation, JSON round-trip, restart lifecycle tests, iOS filesystem behavior, and device tests remain outstanding.
+
+
+## Phase 14 — shared local save infrastructure (2026-11-28)
+
+- Added `LocalJsonSave` as a shared helper for versioned local JSON ledgers. It validates file names, loads typed JSON payloads, writes through a temporary file, and logs failures without throwing into gameplay callers.
+- If JSON parsing fails, the helper attempts to preserve a timestamped `.invalid-*` copy for inspection instead of silently overwriting the only original. It does not claim to repair the data. Unsupported schema versions remain the responsibility of each ledger.
+- Refactored incident reports, witness statements, and dispatch calls to use the shared helper while retaining their existing per-ledger schema versions, sequence reconciliation, record caps, and lifecycle behavior.
+- Existing booking, citation, and driver-history ledgers have not yet been migrated to this helper. This phase establishes the common path for subsequent consistency work.
+- Static source review only. Unity compilation, JSON round-trip, corruption recovery, iOS filesystem behavior, and device tests remain outstanding.
