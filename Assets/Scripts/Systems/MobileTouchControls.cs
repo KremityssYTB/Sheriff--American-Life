@@ -130,12 +130,12 @@ namespace SheriffAmericanLife
             AddButton("steer_left", "LEFT", new Vector2(.025f,.055f), new Vector2(.15f,.22f));
             AddButton("steer_right", "RIGHT", new Vector2(.17f,.055f), new Vector2(.295f,.22f));
             AddButton("gas", "GAS", new Vector2(.84f,.12f), new Vector2(.975f,.30f));
-            AddButton("brake", "BRAKE\nREV", new Vector2(.84f,.32f), new Vector2(.975f,.50f));
+            AddButton("brake", "BRAKE\nREV", new Vector2(.84f,.32f), new Vector2(.975f,.46f));
 
             AddActionButton("vehicle", "ENTER VEHICLE", new Vector2(.84f,.84f), new Vector2(.975f,.95f));
             AddActionButton("duty", "GO ON DUTY", new Vector2(.84f,.71f), new Vector2(.975f,.82f));
             AddActionButton("camera", "CAMERA", new Vector2(.84f,.58f), new Vector2(.975f,.69f));
-            AddActionButton("settings", "SETTINGS", new Vector2(.84f,.45f), new Vector2(.975f,.56f));
+            AddActionButton("settings", "SETTINGS", new Vector2(.84f,.48f), new Vector2(.975f,.59f));
             AddStatusLabel();
         }
 
