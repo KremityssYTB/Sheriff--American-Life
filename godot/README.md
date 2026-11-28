@@ -88,16 +88,26 @@ This is still a greybox environment, not a geographically accurate Marion County
 
 ## Final world scale target (design specification)
 
-The current 240 m × 240 m scene is a temporary first-district greybox and must not define the final map size. The intended world is a broad, connected regional simulation with a proposed **33 mi × 33 mi (approximately 53 km × 53 km) playable envelope**. This is a design target, not a claim that the current build contains this area.
+The final playable region is **225 km² total**, counting both land and water. This replaces the earlier 33 mi × 33 mi proposal. A square of 225 km² would be 15 km × 15 km, but the actual region should use an irregular, believable regional shape rather than a square boundary. The current 240 m × 240 m scene remains a temporary first-district greybox; this target is a design specification, not implemented map content.
 
-### World layout and travel pacing
-- Build a coherent road network rather than stretching the current five-by-five grid. Include a dense Ocala urban core, suburban neighborhoods, industrial/commercial corridors, small towns, rural communities, farms, forests, lakes, and long two-lane county roads.
-- Major destinations and district-to-district journeys should commonly take about **10–20 minutes by road**, depending on route, traffic, speed limits, and starting point. Do not force every short trip to take that long.
-- A single continuous region should connect the districts; no artificial loading screens between ordinary neighboring areas.
-- Use streamed world cells and level-of-detail tiers. Keep nearby streets, buildings, traffic and pedestrians detailed; simplify distant scenery and unload far-away simulation actors.
-- Keep roads, intersections, addresses, speed limits, jurisdiction boundaries and destination nodes in shared data so GPS, dispatch, traffic and civilian navigation use the same network.
-- Treat county lines and neighboring jurisdictions as explicit world geography. Do not imply that a 33 mi square contains every surrounding Florida county; add neighboring county/town coverage only where the chosen geographic footprint supports it.
-- Validate drive times with measured in-game routes at realistic vehicle speeds before locking the final map dimensions.
+### Land, water and regional layout
+- Design a connected Florida-inspired region with a dense Ocala-style urban center, suburbs, commercial and industrial corridors, smaller towns, rural communities, farms, forests, wetlands, lakes, rivers and navigable waterways.
+- The 225 km² budget includes all land and water. Do not count water as extra area outside the stated total. Set the final land/water balance through the authored geography; do not assume a percentage before the regional layout is designed.
+- Water must have gameplay purpose: navigable routes, shoreline access, bridges, boat ramps, docks, marinas and suitable waterfront locations. Waterways should connect naturally where geography allows, not appear as disconnected decorative pools.
+- Support road vehicles including patrol SUVs, civilian cars, trucks and motorcycles, plus boats for suitable rivers, lakes and coastal/inlet areas. Vehicle and boat handling, access points, fuel/maintenance and emergency response behavior should be developed as separate gameplay systems.
+- Build a coherent road network rather than stretching the current five-by-five grid. Include highways, county roads, local streets, bridges, rural connectors and distinct neighborhoods.
+- Major destinations and district-to-district journeys should commonly take about **10–20 minutes by road or water**, depending on distance, route, vehicle, traffic and speed. Do not force every short trip to take that long.
+- Keep the region connected and avoid artificial loading screens between ordinary neighboring areas.
+- Use streamed world cells and level-of-detail tiers. Keep nearby streets, buildings, vehicles, boats and pedestrians detailed; simplify distant scenery and reduce simulation for far-away actors.
+- Keep roads, waterways, intersections, bridges, addresses, speed limits, jurisdiction boundaries, docks, boat ramps and destination nodes in shared world data so GPS, dispatch, traffic, civilian navigation and marine navigation use consistent routes.
+- Treat county lines and neighboring jurisdictions as explicit world geography. Validate route lengths and travel times in-game before locking district boundaries.
 
-### Scale decision still requiring confirmation
-“33 × 33” must be confirmed as **miles**, not kilometres, before detailed world coordinates are authored. The proposed 33-mile square is the stronger fit for the requested 10–20 minute regional drives. The map remains a staged production target and will be built outward from the current Ocala prototype, not generated as one enormous dense scene.
+### Production sequence
+1. Define the region boundary and land/water geography within the 225 km² total.
+2. Build the shared road-and-water route graph, including bridges, docks and launch points.
+3. Divide the region into streamable cells with mobile LOD and simulation budgets.
+4. Expand outward from the current Ocala prototype with named districts, towns and rural areas.
+5. Add road vehicles and marine craft with separate, testable handling and interaction systems.
+6. Validate performance and realistic travel times on supported iPhones and iPads before increasing world density.
+
+The map is intended to deliver the scale, variety and systemic open-world feel requested, without copying another game's map or assets. It remains a staged production target; the current build does not yet contain this 225 km² region.
