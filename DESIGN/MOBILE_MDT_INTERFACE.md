@@ -100,3 +100,29 @@ All calls, reports, and witness statements are currently session-only. No save/l
 - The prisoner-transport prompt now uses a responsive panel width and shifts to the upper-left contextual column while a traffic stop is active, avoiding the shared upper-right action column used by document checks. This is a deterministic source-level collision avoidance rule; other combinations and narrow-screen clipping still need visual testing.
 
 - Follow-up layout refinement: the prisoner-transport HUD is now a compact center-bottom strip above the vehicle control row. It combines intake distance and prisoner name into one status line and only shows the booking action when within intake range. This keeps it out of both traffic-stop side columns and leaves the steering/throttle hit areas clear by a scaled vertical gap.
+
+
+## Gameplay HUD migration plan
+
+The gameplay HUD is separate from the MDT. The MDT already uses a runtime-generated Screen Space Overlay Canvas, a CanvasScaler, a safe-area root, and the Input System UI module. The deputy gameplay HUD in `CountyPlayerRuntimeController` still uses IMGUI and should be migrated without rewriting gameplay systems.
+
+### Migration boundaries
+
+1. **Touch movement and vehicle controls:** move directional movement, sprint, steering, throttle, and brake/reverse to Canvas controls. Use pointer-down/pointer-up semantics for continuous inputs; a normal Button onClick is not sufficient for held controls. Preserve the controller's existing `moveInput`, `throttle`, and `steering` gameplay values as the adapter boundary.
+2. **Top-level status and actions:** migrate duty, enter/exit vehicle, camera, and settings actions to Canvas buttons. Keep their existing controller methods as the action targets.
+3. **Contextual interactions:** migrate civilian interaction, traffic-stop documents/decisions, and prisoner transport into separate contextual panels. Panels must be state-driven and must not overlap one another or the driving controls.
+4. **Settings:** move graphics and frame-rate selectors into a Canvas modal, preserving `MobilePerformanceBootstrap` as the settings authority.
+
+### Implementation constraints
+
+- Do not duplicate controls: once a Canvas control owns an input, remove its IMGUI counterpart in the same change.
+- Continuous controls must release safely on pointer-up, pointer-exit, focus loss, HUD disable, and vehicle-mode changes. A lost pointer-up must never leave throttle or movement stuck.
+- Support simultaneous touch where appropriate (movement plus sprint; steering plus throttle) and prevent UI touches from leaking into world interaction.
+- Keep controls within `Screen.safeArea`; scale from available safe-area dimensions, not raw screen dimensions.
+- Keep large touch targets and readable labels, but allow compact layouts on short landscape screens and iPad split view.
+- Preserve the existing MDT Canvas rather than creating a second EventSystem. If HUD initialization can occur before the MDT, safely reuse or create exactly one EventSystem and Input System UI module.
+- Keep gameplay rules in `CountyPlayerRuntimeController` and domain controllers; Canvas components should only present state and forward input/actions.
+
+### Current migration status
+
+Planning and source audit only. The MDT Canvas is an architectural reference, not yet a shared HUD framework. No gameplay IMGUI controls have been removed, no Canvas gameplay controls have been added, and no Unity compile or device test has been performed. Implement the touch-control layer first, then migrate the action and contextual panels in separate verified changes.
