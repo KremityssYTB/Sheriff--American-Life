@@ -55,9 +55,26 @@ namespace SheriffAmericanLife
         {
             string license = Normalize(licenseNumber);
             string plate = Normalize(plateNumber);
-            return records.Find(record => record != null &&
-                ((!string.IsNullOrEmpty(license) && Normalize(record.licenseNumber) == license) ||
-                 (!string.IsNullOrEmpty(plate) && Normalize(record.plateNumber) == plate)));
+
+            if (!string.IsNullOrEmpty(license))
+            {
+                DriverHistoryRecord licenseMatch = records.Find(record =>
+                    record != null && Normalize(record.licenseNumber) == license);
+                if (licenseMatch != null)
+                    return string.IsNullOrEmpty(plate) || string.IsNullOrEmpty(Normalize(licenseMatch.plateNumber)) ||
+                        Normalize(licenseMatch.plateNumber) == plate ? licenseMatch : null;
+            }
+
+            if (!string.IsNullOrEmpty(plate))
+            {
+                DriverHistoryRecord plateMatch = records.Find(record =>
+                    record != null && Normalize(record.plateNumber) == plate);
+                if (plateMatch != null)
+                    return string.IsNullOrEmpty(license) || string.IsNullOrEmpty(Normalize(plateMatch.licenseNumber)) ||
+                        Normalize(plateMatch.licenseNumber) == license ? plateMatch : null;
+            }
+
+            return null;
         }
 
         public DriverHistoryRecord RecordWarning(TrafficStopDriverProfile profile, string details)
