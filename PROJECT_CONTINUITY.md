@@ -578,3 +578,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `82bf3d66604b2ef5e89829029322c9de01ad196d` documents the source-level audit in `DESIGN/MOBILE_MDT_INTERFACE.md`.
 - Static checks confirm traffic action rows use the revised in-panel spacing, transport and Settings anchors use the revised regions, action/status auto-sizing is enabled, and `MobileTouchControls.cs` braces balance.
 - This was a source/normalized-anchor audit only. No Unity Editor, device rendering, safe-area rotation, touch target, or runtime tests were available. Actual pixel sizing and any remaining overlaps must be validated in Unity on portrait/landscape iPhone and iPad layouts.
+
+
+## Phase 6 — gameplay interaction lifecycle audit (2026-11-28)
+
+- Audited civilian interaction, arrest booking, prisoner escort/transport, traffic stop, incident reports, citations, dispatch lifecycle, and MDT event subscriptions.
+- Found and fixed a one-prisoner capacity bug: a second arrest could create an AwaitingTransport booking even though `HandleArrestCompleted` refused to start a second escort. `MobileTouchControls.SetCivilianContext` now disables ARREST while an escort is active, and `CountyPlayerRuntimeController.HandleHudAction` repeats the guard so the rule is enforced outside the UI too.
+- The existing controller remains gameplay authority; the Canvas only reflects availability and forwards the action.
+- Static review only. No Unity compile, Play Mode, arrest/transport simulation, or iPhone/iPad runtime validation was performed.
