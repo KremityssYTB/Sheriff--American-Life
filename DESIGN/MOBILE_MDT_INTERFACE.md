@@ -125,4 +125,13 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 
 ### Current migration status
 
-Planning and source audit only. The MDT Canvas is an architectural reference, not yet a shared HUD framework. No gameplay IMGUI controls have been removed, no Canvas gameplay controls have been added, and no Unity compile or device test has been performed. Implement the touch-control layer first, then migrate the action and contextual panels in separate verified changes.
+**Phase 1 source implementation is committed; Unity validation is still pending.**
+
+- `Assets/Scripts/Systems/MobileTouchControls.cs` creates a Screen Space Overlay Canvas with a CanvasScaler, safe-area root, and held pointer controls. It reuses the current EventSystem or creates one with the Input System UI module when none exists.
+- Foot mode provides four directional controls and sprint. Vehicle mode provides left/right steering, gas, and brake/reverse. Each control uses pointer-down, pointer-up, pointer-exit, and disable release semantics.
+- Independent controls can be held together, supporting movement plus sprint and steering plus throttle/brake.
+- `CountyPlayerRuntimeController` receives the control states and maps them to its existing walker and vehicle inputs. The previous IMGUI movement and vehicle RepeatButtons have been removed to avoid duplicate inputs.
+- The adapter releases held inputs on focus loss, application pause, control-mode changes, settings-modal opening, and controller disable. Controls are hidden while the controller is disabled or the settings modal is open.
+- The touch Canvas currently has sorting order 40, below the MDT Canvas at 50. The top-level duty/vehicle/camera/settings actions and contextual panels remain IMGUI and are the next migration phases.
+
+**Not yet verified:** Unity compilation, runtime EventSystem behavior, multi-touch on device, safe-area layout in portrait/landscape and iPad split view, button hit areas, and interaction with the MDT Canvas. Do not treat this as a tested or production-ready control scheme.
