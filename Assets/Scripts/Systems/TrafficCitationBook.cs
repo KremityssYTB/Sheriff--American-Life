@@ -76,7 +76,7 @@ namespace SheriffAmericanLife
             if (violations.Count == 0) return null;
             var citation = new TrafficCitation {
                 citationNumber = "MC-" + nextSequence.ToString("000000"),
-                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : null,
+                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : "CASE-MC-" + nextSequence.ToString("000000"),
                 driverName = profile.DriverName,
                 licenseNumber = profile.LicenseNumber,
                 plateNumber = profile.PlateNumber,
