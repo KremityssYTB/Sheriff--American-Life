@@ -458,3 +458,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The browser-preview workflow run #8 completed successfully for commit de0e4a142792d6d3fbee67a1ce5a045938e93f7a. GitHub Actions reported the Configure GitHub Pages, upload, and Deploy steps successful.
 - Published preview URL: https://kremityssytb.github.io/Sheriff--American-Life/
 - The deployment result confirms the workflow completed; it does not confirm that the page has been opened or that Three.js/WebGL works on a real iPhone or iPad. Those device checks remain outstanding.
+
+
+## iOS frame-rate default adjustment (2026-11-28)
+
+- Commit updates `MobilePerformanceBootstrap` to default to 60 FPS instead of 120 FPS. This avoids requesting a refresh rate above the 60 Hz display capability of the primary iPhone 16e target and provides a conservative baseline across supported iPhones/iPads.
+- The optional 120 FPS and Unlimited modes remain user-selectable; the iOS ProMotion Info.plist postprocessor remains in place for compatible devices. Actual sustained performance and refresh behavior still require device profiling.
+- Static source/documentation update only. No Unity compile, cloud build, Xcode build, signing, installation, or runtime test was performed.
