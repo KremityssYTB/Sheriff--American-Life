@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace SheriffAmericanLife
@@ -57,8 +56,6 @@ namespace SheriffAmericanLife
         private readonly List<DispatchCall> calls = new List<DispatchCall>();
         private readonly Dictionary<string, DispatchCall> callsByIncident = new Dictionary<string, DispatchCall>();
         private int nextSequence = 1;
-        private string SavePath => Path.Combine(Application.persistentDataPath, "dispatch-calls.json");
-        private string TemporarySavePath => SavePath + ".tmp";
         private IncidentReportBook reportBook;
 
         public void Configure(IncidentReportBook reports) => reportBook = reports;
@@ -180,60 +177,34 @@ namespace SheriffAmericanLife
 
         private void Load()
         {
-            try
+            if (!LocalJsonSave.TryLoad<SaveData>("dispatch-calls.json", out SaveData data)) return;
+            if (data.version != SaveVersion || data.calls == null)
             {
-                if (!File.Exists(SavePath)) return;
-                SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(SavePath));
-                if (data == null || data.version != SaveVersion || data.calls == null)
-                {
-                    Debug.LogWarning("Dispatch save has an unsupported or invalid format; starting with an empty in-memory ledger.");
-                    return;
-                }
-
-                calls.Clear();
-                callsByIncident.Clear();
-                calls.AddRange(data.calls.FindAll(item => item != null && !string.IsNullOrEmpty(item.callId)));
-                if (calls.Count > MaximumCalls)
-                    calls.RemoveRange(0, calls.Count - MaximumCalls);
-
-                nextSequence = Math.Max(1, data.nextSequence);
-                foreach (DispatchCall item in calls)
-                {
-                    if (!string.IsNullOrEmpty(item.callId) &&
-                        item.callId.StartsWith("CAD-", StringComparison.Ordinal))
-                    {
-                        int number;
-                        if (int.TryParse(item.callId.Substring(4), out number))
-                            nextSequence = Math.Max(nextSequence, number + 1);
-                    }
-
-                    if (!string.IsNullOrEmpty(item.sourceIncidentId) &&
-                        !callsByIncident.ContainsKey(item.sourceIncidentId))
-                        callsByIncident.Add(item.sourceIncidentId, item);
-                }
+                Debug.LogWarning("Dispatch save has an unsupported format; starting with an empty in-memory ledger.");
+                return;
             }
-            catch (Exception exception)
+            calls.Clear();
+            callsByIncident.Clear();
+            calls.AddRange(data.calls.FindAll(item => item != null && !string.IsNullOrEmpty(item.callId)));
+            if (calls.Count > MaximumCalls) calls.RemoveRange(0, calls.Count - MaximumCalls);
+            nextSequence = Math.Max(1, data.nextSequence);
+            foreach (DispatchCall item in calls)
             {
-                calls.Clear();
-                callsByIncident.Clear();
-                nextSequence = 1;
-                Debug.LogWarning("Could not load local dispatch calls: " + exception.Message);
+                if (item.callId.StartsWith("CAD-", StringComparison.Ordinal))
+                {
+                    int number;
+                    if (int.TryParse(item.callId.Substring(4), out number))
+                        nextSequence = Math.Max(nextSequence, number + 1);
+                }
+                if (!string.IsNullOrEmpty(item.sourceIncidentId) && !callsByIncident.ContainsKey(item.sourceIncidentId))
+                    callsByIncident.Add(item.sourceIncidentId, item);
             }
         }
 
         private void Save()
         {
-            try
-            {
-                var data = new SaveData { nextSequence = nextSequence, calls = calls };
-                File.WriteAllText(TemporarySavePath, JsonUtility.ToJson(data, true));
-                File.Copy(TemporarySavePath, SavePath, true);
-                File.Delete(TemporarySavePath);
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning("Could not save local dispatch calls: " + exception.Message);
-            }
+            LocalJsonSave.TrySave("dispatch-calls.json",
+                new SaveData { nextSequence = nextSequence, calls = calls });
         }
 
         private static DispatchPriority GetPriority(WorldIncidentType type)
