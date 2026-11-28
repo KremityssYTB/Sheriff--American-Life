@@ -616,3 +616,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Phase 6–9 fixes remain committed: prevent second arrest during an active escort; synchronize a released booking back to the matching in-scene civilian and re-enable their routine; avoid driver-history merges on conflicting identifiers; require nonblank dispatch assignment/closure details.
 - Static source checks performed: inspected C# brace balance and verified the expected guard/subscription patterns in the current `main` sources. No Unity compilation, Play Mode, automated tests, device validation, cloud build, signing, or IPA installation was performed.
 - Stop point reached: Phase 10. Do not begin Phase 11 until the user explicitly asks to continue.
+
+
+## 60-phase roadmap and Phase 11 update (2026-11-28)
+
+- The user expanded the project plan from 20 to 60 phases. The ordered plan is stored at `DESIGN/60_PHASE_DEVELOPMENT_ROADMAP.md`; Phases 1–10 are complete, and Phase 11 is the current active milestone. Continue in order and do not treat planned phases as implemented.
+- Phase 11: `IncidentReportBook` now loads/saves a versioned local JSON ledger at `Application.persistentDataPath/incident-reports.json`. Report IDs use a persisted sequence, are reconciled against loaded records, and the ledger is capped at 1,000 newest records. Writes stage through a `.tmp` file before copying to the primary path. Errors are caught/logged; there is no cloud sync or automatic migration/recovery yet.
+- Phase 11 source and documentation commits are recorded in Git history. No Unity compilation, Play Mode, JSON round-trip, iOS filesystem, or iPhone/iPad runtime test has been performed.
+- Current next phase: Phase 12 — persist witness statements with versioned JSON and stable statement numbering. Fetch current source and blob SHAs before editing.
