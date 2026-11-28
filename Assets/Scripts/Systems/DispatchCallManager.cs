@@ -95,7 +95,8 @@ namespace SheriffAmericanLife
 
         public bool Accept(string callId, string unitName)
         {
-            return Transition(callId, DispatchCallStatus.Available, DispatchCallStatus.Accepted, unitName);
+            if (string.IsNullOrWhiteSpace(unitName)) return false;
+            return Transition(callId, DispatchCallStatus.Available, DispatchCallStatus.Accepted, unitName.Trim());
         }
 
         public bool MarkEnRoute(string callId)
@@ -110,6 +111,7 @@ namespace SheriffAmericanLife
 
         public bool Resolve(string callId, string disposition)
         {
+            if (string.IsNullOrWhiteSpace(disposition)) return false;
             DispatchCall call = Find(callId);
             if (call == null || call.status != DispatchCallStatus.OnScene) return false;
             call.status = DispatchCallStatus.Resolved;
@@ -124,6 +126,7 @@ namespace SheriffAmericanLife
 
         public bool Cancel(string callId, string reason)
         {
+            if (string.IsNullOrWhiteSpace(reason)) return false;
             DispatchCall call = Find(callId);
             if (call == null || call.status == DispatchCallStatus.Resolved ||
                 call.status == DispatchCallStatus.Cancelled) return false;
