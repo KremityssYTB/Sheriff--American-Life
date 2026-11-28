@@ -45,16 +45,12 @@ namespace SheriffAmericanLife
         private Vector2 moveInput;
         private float throttle;
         private float steering;
-        private GUIStyle buttonStyle;
-        private GUIStyle statusStyle;
         private MobilePerformanceBootstrap performanceSettings;
         private bool settingsOpen;
         private MobileTouchControls touchControls;
         private bool touchMoveLeft, touchMoveRight, touchMoveUp, touchMoveDown, touchSprint;
         private bool touchSteerLeft, touchSteerRight, touchGas, touchBrake;
 
-        private float UiWidth => Screen.safeArea.width;
-        private float UiHeight => Screen.safeArea.height;
 
         public void Initialize(Transform worldRoot)
         {
@@ -251,6 +247,20 @@ namespace SheriffAmericanLife
                     : string.Empty;
                 touchControls.SetTransportContext(transportVisible, transportDetails,
                     transportVisible && intakeDistance <= 18f);
+                string qualityText = performanceSettings != null
+                    ? "GRAPHICS: " + performanceSettings.CurrentPreset.ToString().ToUpperInvariant()
+                    : "GRAPHICS SETTINGS UNAVAILABLE";
+                string frameRateText = performanceSettings != null
+                    ? performanceSettings.CurrentFrameRateMode == MobileFrameRateMode.Unlimited
+                        ? "FRAME RATE: UNLIMITED"
+                        : "FRAME RATE: " + (int)performanceSettings.CurrentFrameRateMode + " FPS"
+                    : "FRAME RATE SETTINGS UNAVAILABLE";
+                string livePerformance = performanceSettings != null &&
+                    performanceSettings.MeasuredFramesPerSecond > 0f
+                    ? "LIVE: " + performanceSettings.MeasuredFramesPerSecond.ToString("0") +
+                        " FPS / " + performanceSettings.MeasuredFrameTimeMilliseconds.ToString("0.0") + " ms"
+                    : "LIVE: Measuring frame performance...";
+                touchControls.SetSettingsContext(settingsOpen, qualityText, frameRateText, livePerformance);
             }
             if (walker && !inVehicle)
             {
@@ -262,42 +272,6 @@ namespace SheriffAmericanLife
                 vehicle.SetThrottle(inVehicle ? throttle : 0f);
                 vehicle.SetSteering(inVehicle ? steering : 0f);
             }
-        }
-
-        private void OnGUI()
-        {
-            Rect safeArea = Screen.safeArea;
-            Matrix4x4 previousGuiMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Translate(new Vector3(
-                safeArea.xMin, Screen.height - safeArea.yMax, 0f)) * previousGuiMatrix;
-
-            if (buttonStyle == null)
-            {
-                buttonStyle = new GUIStyle(GUI.skin.button) { fontSize = 18, wordWrap = true };
-                statusStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, normal = { textColor = Color.white } };
-            }
-            // Scale against both safe-area dimensions so short landscape screens do not
-            // inherit oversized portrait controls. Keep touch targets at least 54 GUI points.
-            float widthScale = UiWidth / 390f;
-            float heightScale = UiHeight / 640f;
-            float s = Mathf.Clamp(Mathf.Min(widthScale, heightScale), .8f, 1.25f);
-            buttonStyle.fontSize = Mathf.RoundToInt(18f * s);
-            statusStyle.fontSize = Mathf.RoundToInt(18f * s);
-            float pad = 12f*s;
-            if (settingsOpen)
-            {
-                if (touchControls != null) touchControls.SetControlsVisible(false);
-                moveInput = Vector2.zero;
-                throttle = 0f;
-                steering = 0f;
-                if (walker != null) walker.SetSprint(false);
-                DrawSettingsPanel(s);
-                GUI.matrix = previousGuiMatrix;
-                return;
-            }
-            if (touchControls != null) touchControls.SetControlsVisible(true);
-
-            GUI.matrix = previousGuiMatrix;
         }
 
         private void HandleHudAction(string action)
@@ -316,6 +290,31 @@ namespace SheriffAmericanLife
                 case "settings":
                     settingsOpen = !settingsOpen;
                     if (touchControls != null) touchControls.SetControlsVisible(!settingsOpen);
+                    break;
+                case "settings_close":
+                    settingsOpen = false;
+                    if (touchControls != null) touchControls.SetControlsVisible(true);
+                    break;
+                case "quality_performance":
+                    if (performanceSettings != null) performanceSettings.SetPreset(MobileVisualQualityPreset.Performance);
+                    break;
+                case "quality_balanced":
+                    if (performanceSettings != null) performanceSettings.SetPreset(MobileVisualQualityPreset.Balanced);
+                    break;
+                case "quality_high":
+                    if (performanceSettings != null) performanceSettings.SetPreset(MobileVisualQualityPreset.High);
+                    break;
+                case "fps_30":
+                    if (performanceSettings != null) performanceSettings.SetFrameRateMode(MobileFrameRateMode.Fps30);
+                    break;
+                case "fps_60":
+                    if (performanceSettings != null) performanceSettings.SetFrameRateMode(MobileFrameRateMode.Fps60);
+                    break;
+                case "fps_120":
+                    if (performanceSettings != null) performanceSettings.SetFrameRateMode(MobileFrameRateMode.Fps120);
+                    break;
+                case "fps_unlimited":
+                    if (performanceSettings != null) performanceSettings.SetFrameRateMode(MobileFrameRateMode.Unlimited);
                     break;
                 case "civilian_greet": if (interactions != null) interactions.Greet(); break;
                 case "civilian_questions": if (interactions != null) interactions.AskQuestions(); break;
@@ -375,82 +374,6 @@ namespace SheriffAmericanLife
             touchMoveLeft = touchMoveRight = touchMoveUp = touchMoveDown = touchSprint = false;
             touchSteerLeft = touchSteerRight = touchGas = touchBrake = false;
             RefreshTouchInputs();
-        }
-
-        private void DrawSettingsPanel(float scale)
-        {
-            scale = Mathf.Min(scale, Mathf.Max(.6f, (UiHeight - 20f) / 360f));
-            float width = 350f * scale;
-            float height = 360f * scale;
-            float x = (UiWidth - width) * .5f;
-            float y = (UiHeight - height) * .5f;
-            GUI.Box(new Rect(x, y, width, height), "GAME SETTINGS");
-
-            GUI.Label(new Rect(x + 14f * scale, y + 34f * scale, width - 28f * scale, 24f * scale),
-                "GRAPHICS QUALITY", statusStyle);
-            float qualityY = y + 62f * scale;
-            float qualityGap = 5f * scale;
-            float qualityWidth = (width - 38f * scale - qualityGap * 2f) / 3f;
-            DrawQualityButton(x + 14f * scale, qualityY, qualityWidth, "PERFORMANCE",
-                MobileVisualQualityPreset.Performance, scale);
-            DrawQualityButton(x + 19f * scale + qualityWidth, qualityY, qualityWidth, "BALANCED",
-                MobileVisualQualityPreset.Balanced, scale);
-            DrawQualityButton(x + 24f * scale + qualityWidth * 2f, qualityY, qualityWidth, "HIGH",
-                MobileVisualQualityPreset.High, scale);
-
-            GUI.Label(new Rect(x + 14f * scale, y + 112f * scale, width - 28f * scale, 24f * scale),
-                "FRAME RATE", statusStyle);
-            float buttonY = y + 142f * scale;
-            float buttonWidth = (width - 40f * scale) * .5f;
-            DrawFrameRateButton(x + 14f * scale, buttonY, buttonWidth, "30 FPS", MobileFrameRateMode.Fps30, scale);
-            DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY, buttonWidth, "60 FPS", MobileFrameRateMode.Fps60, scale);
-            DrawFrameRateButton(x + 14f * scale, buttonY + 46f * scale, buttonWidth, "120 FPS", MobileFrameRateMode.Fps120, scale);
-            DrawFrameRateButton(x + 26f * scale + buttonWidth, buttonY + 46f * scale, buttonWidth, "UNLIMITED", MobileFrameRateMode.Unlimited, scale);
-
-            string quality = performanceSettings != null
-                ? "GRAPHICS: " + performanceSettings.CurrentPreset.ToString().ToUpperInvariant()
-                : "GRAPHICS SETTINGS UNAVAILABLE";
-            string frameRate = performanceSettings != null
-                ? performanceSettings.CurrentFrameRateMode == MobileFrameRateMode.Unlimited
-                    ? "FRAME RATE: UNLIMITED"
-                    : "FRAME RATE: " + (int)performanceSettings.CurrentFrameRateMode + " FPS"
-                : "FRAME RATE SETTINGS UNAVAILABLE";
-            GUI.Label(new Rect(x + 14f * scale, y + 240f * scale, width - 28f * scale, 22f * scale),
-                quality, statusStyle);
-            GUI.Label(new Rect(x + 14f * scale, y + 264f * scale, width - 28f * scale, 22f * scale),
-                frameRate, statusStyle);
-
-            string performanceReadout = performanceSettings != null &&
-                performanceSettings.MeasuredFramesPerSecond > 0f
-                ? "LIVE: " + performanceSettings.MeasuredFramesPerSecond.ToString("0") +
-                  " FPS  /  " + performanceSettings.MeasuredFrameTimeMilliseconds.ToString("0.0") + " ms"
-                : "LIVE: Measuring frame performance...";
-            GUI.Label(new Rect(x + 14f * scale, y + 290f * scale, width - 130f * scale, 22f * scale),
-                performanceReadout, statusStyle);
-
-            if (GUI.Button(new Rect(x + width - 104f * scale, y + height - 46f * scale,
-                90f * scale, 32f * scale), "CLOSE", buttonStyle))
-                settingsOpen = false;
-        }
-
-        private void DrawQualityButton(float x, float y, float width, string label,
-            MobileVisualQualityPreset preset, float scale)
-        {
-            bool selected = performanceSettings != null && performanceSettings.CurrentPreset == preset;
-            string caption = selected ? "SELECTED\n" + label : label;
-            if (GUI.Button(new Rect(x, y, width, 42f * scale), caption, buttonStyle) &&
-                performanceSettings != null)
-                performanceSettings.SetPreset(preset);
-        }
-
-        private void DrawFrameRateButton(float x, float y, float width, string label,
-            MobileFrameRateMode mode, float scale)
-        {
-            bool selected = performanceSettings != null && performanceSettings.CurrentFrameRateMode == mode;
-            string caption = selected ? "SELECTED: " + label : label;
-            if (GUI.Button(new Rect(x, y, width, 40f * scale), caption, buttonStyle) &&
-                performanceSettings != null)
-                performanceSettings.SetFrameRateMode(mode);
         }
 
         private Renderer CreateLightbarSegment(string segmentName, Vector3 localPosition,
