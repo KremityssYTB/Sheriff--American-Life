@@ -265,3 +265,11 @@ The project is following a 60-phase roadmap. Phases 1–10 are recorded as compl
 - Writes use a temporary file before copying into the primary save path. Load/save exceptions are caught and logged so a storage failure does not crash the gameplay flow; a failed save may leave the current session record only.
 - This is local device storage, not cloud sync or a real police records system. Unsupported/corrupt save data is not automatically migrated or repaired in this phase.
 - Static source review only. Unity compilation, JSON round-trip, iOS filesystem behavior, and device tests remain outstanding.
+
+
+## Phase 12 — persistent witness statements (2026-11-28)
+
+- `WitnessStatementBook` now loads and saves fictional witness statements to `Application.persistentDataPath/witness-statements.json` using versioned JSON.
+- Statement IDs use a persisted sequence and reconcile against loaded IDs. The ledger is capped at 2,000 newest statements; confidence is clamped to the supported 0–1 range when a statement is added.
+- Writes stage through a temporary file before copying to the primary path. Load/save exceptions are caught and logged. Unsupported/corrupt save data is not automatically migrated or repaired, and records remain local to the device.
+- Static source review only. Unity compilation, JSON round-trip, iOS filesystem behavior, and device tests remain outstanding.
