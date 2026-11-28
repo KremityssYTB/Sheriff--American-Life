@@ -238,23 +238,23 @@ namespace SheriffAmericanLife
             settingsPanel = new GameObject("Settings Panel", typeof(RectTransform), typeof(Image));
             settingsPanel.transform.SetParent(safeRoot, false);
             RectTransform panelRect = settingsPanel.GetComponent<RectTransform>();
-            panelRect.anchorMin = new Vector2(.04f, .08f);
-            panelRect.anchorMax = new Vector2(.96f, .92f);
+            panelRect.anchorMin = new Vector2(.04f, .02f);
+            panelRect.anchorMax = new Vector2(.96f, .98f);
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             settingsPanel.GetComponent<Image>().color = new Color(.018f, .028f, .04f, .97f);
 
             CreateSettingsLabel("Title", "GAME SETTINGS", new Vector2(.04f,.88f), new Vector2(.96f,.98f), 19f, out _);
             CreateSettingsLabel("Graphics Heading", "GRAPHICS QUALITY", new Vector2(.05f,.75f), new Vector2(.95f,.85f), 14f, out settingsQualityStatus);
-            CreateSettingsButton("quality_performance", "PERFORMANCE", new Vector2(.05f,.63f), new Vector2(.34f,.74f));
-            CreateSettingsButton("quality_balanced", "BALANCED", new Vector2(.355f,.63f), new Vector2(.645f,.74f));
-            CreateSettingsButton("quality_high", "HIGH", new Vector2(.66f,.63f), new Vector2(.95f,.74f));
+            CreateSettingsButton("quality_performance", "PERFORMANCE", new Vector2(.05f,.60f), new Vector2(.34f,.73f));
+            CreateSettingsButton("quality_balanced", "BALANCED", new Vector2(.355f,.60f), new Vector2(.645f,.73f));
+            CreateSettingsButton("quality_high", "HIGH", new Vector2(.66f,.60f), new Vector2(.95f,.73f));
 
             CreateSettingsLabel("Frame Rate Heading", "FRAME RATE", new Vector2(.05f,.49f), new Vector2(.95f,.59f), 14f, out settingsFrameRateStatus);
-            CreateSettingsButton("fps_30", "30 FPS", new Vector2(.05f,.37f), new Vector2(.48f,.48f));
-            CreateSettingsButton("fps_60", "60 FPS", new Vector2(.52f,.37f), new Vector2(.95f,.48f));
-            CreateSettingsButton("fps_120", "120 FPS", new Vector2(.05f,.24f), new Vector2(.48f,.35f));
-            CreateSettingsButton("fps_unlimited", "UNLIMITED", new Vector2(.52f,.24f), new Vector2(.95f,.35f));
+            CreateSettingsButton("fps_30", "30 FPS", new Vector2(.05f,.31f), new Vector2(.48f,.44f));
+            CreateSettingsButton("fps_60", "60 FPS", new Vector2(.52f,.31f), new Vector2(.95f,.44f));
+            CreateSettingsButton("fps_120", "120 FPS", new Vector2(.05f,.16f), new Vector2(.48f,.29f));
+            CreateSettingsButton("fps_unlimited", "UNLIMITED", new Vector2(.52f,.16f), new Vector2(.95f,.29f));
 
             CreateSettingsLabel("Performance Readout", "LIVE: Measuring frame performance...", new Vector2(.05f,.12f), new Vector2(.68f,.22f), 11f, out settingsPerformanceStatus);
             CreateSettingsButton("settings_close", "CLOSE", new Vector2(.72f,.105f), new Vector2(.95f,.225f));
