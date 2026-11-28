@@ -148,8 +148,9 @@ func get_stream_cell(world_position: Vector2) -> Vector2i:
 		return Vector2i(-1, -1)
 	var cell_size := int(data.get("streaming", {}).get("cell_size_m", 500))
 	var bounds: Array = data.get("coordinate_system", {}).get("world_bounds_m", [])
-	var cell_x := floori((world_position.x - float(bounds[0])) / float(cell_size))
-	var cell_z := floori((world_position.y - float(bounds[1])) / float(cell_size))
+	var counts := get_stream_cell_count()
+	var cell_x := clampi(floori((world_position.x - float(bounds[0])) / float(cell_size)), 0, counts.x - 1)
+	var cell_z := clampi(floori((world_position.y - float(bounds[1])) / float(cell_size)), 0, counts.y - 1)
 	return Vector2i(cell_x, cell_z)
 
 func get_stream_cell_count() -> Vector2i:
