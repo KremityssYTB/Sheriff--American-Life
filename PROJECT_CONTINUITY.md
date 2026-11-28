@@ -557,3 +557,14 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `87af666329205c73f15eae4a866c7b3e9b7e038f` documents Phase 3c in `DESIGN/MOBILE_MDT_INTERFACE.md`.
 - Commit `69b173b1d458f7e64b09dd6b4e252c5b71d0370c` removes the obsolete `DrawPrisonerTransportHud` call and sizing helper after the method removal; the IMGUI transport path is fully disconnected.
 - Civilian interaction, traffic-stop, and prisoner transport interfaces are now Canvas-based. Settings modal remains IMGUI. Static source inspection only; Unity compile, Play Mode, touch testing, visual layout, cloud build, signing, and IPA installation remain unverified.
+
+
+## Gameplay HUD Settings Canvas migration (2026-11-28)
+
+- Commit `28a1ddcd6553f96a8bb9378e7754ed88538da157` adds the runtime Canvas Settings modal and controls.
+- Commit `d84ebcfebbeb0815dbd3a5c39a8193207e8aa910` wires the UI to the existing `MobilePerformanceBootstrap` quality and frame-rate setters and live performance readouts, and removes the old Settings IMGUI drawing methods and controller `OnGUI` method.
+- Commit `904ec6fbff6d5d3f2879e705b0c7992850f23d37` preserves each gameplay HUD element's prior active state while the modal is open, restores that state on close, and widens the modal for narrow screens.
+- Commit `546b2013b66c44177fa8197b2817cda6e7ec4c2a` documents Phase 4 in `DESIGN/MOBILE_MDT_INTERFACE.md`.
+- The Canvas exposes Performance/Balanced/High graphics presets and 30/60/120/Unlimited frame-rate modes. It displays the active settings and existing measured FPS/frame time. Existing PlayerPrefs persistence and rendering configuration remain in `MobilePerformanceBootstrap`.
+- All four gameplay HUD areas—civilian interaction, traffic stop, prisoner transport, and Settings—are now Canvas-based. Settings opening releases held inputs and hides other HUD elements; closing restores their prior visibility state.
+- Static source checks confirm all eight settings action IDs exist in the UI and controller, the settings context is state-driven, the old Settings IMGUI methods and `OnGUI` are absent, and braces balance. Unity compilation, Play Mode, touch testing, visual layout on portrait/landscape iPhone/iPad, cloud build, signing, and IPA installation remain unverified.
