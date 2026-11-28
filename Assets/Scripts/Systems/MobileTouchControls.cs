@@ -12,12 +12,33 @@ namespace SheriffAmericanLife
     public sealed class MobileTouchControls : MonoBehaviour
     {
         private readonly Dictionary<string, MobileHoldButton> buttons = new Dictionary<string, MobileHoldButton>();
+        private readonly Dictionary<string, TextMeshProUGUI> actionLabels = new Dictionary<string, TextMeshProUGUI>();
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
         private bool vehicleMode;
 
         public event Action<string, bool> ControlChanged;
+        public event Action<string> ActionTriggered;
+
+        public void SetHudState(bool onDuty, bool inVehicle)
+        {
+            SetActionLabel("vehicle", inVehicle ? "EXIT VEHICLE" : "ENTER VEHICLE");
+            SetActionLabel("duty", onDuty ? "GO OFF DUTY" : "GO ON DUTY");
+            SetStatus("MARION COUNTY SHERIFF  |  " + (onDuty ? "ON DUTY" : "OFF DUTY"));
+        }
+
+        private void SetStatus(string value)
+        {
+            if (actionLabels.TryGetValue("status", out TextMeshProUGUI label) && label.text != value)
+                label.text = value;
+        }
+
+        private void SetActionLabel(string id, string value)
+        {
+            if (actionLabels.TryGetValue(id, out TextMeshProUGUI label) && label.text != value)
+                label.text = value;
+        }
 
         private void Awake()
         {
@@ -110,6 +131,64 @@ namespace SheriffAmericanLife
             AddButton("steer_right", "RIGHT", new Vector2(.17f,.055f), new Vector2(.295f,.22f));
             AddButton("gas", "GAS", new Vector2(.84f,.12f), new Vector2(.975f,.30f));
             AddButton("brake", "BRAKE\nREV", new Vector2(.84f,.32f), new Vector2(.975f,.50f));
+
+            AddActionButton("vehicle", "ENTER VEHICLE", new Vector2(.84f,.84f), new Vector2(.975f,.95f));
+            AddActionButton("duty", "GO ON DUTY", new Vector2(.84f,.71f), new Vector2(.975f,.82f));
+            AddActionButton("camera", "CAMERA", new Vector2(.84f,.58f), new Vector2(.975f,.69f));
+            AddActionButton("settings", "SETTINGS", new Vector2(.84f,.45f), new Vector2(.975f,.56f));
+            AddStatusLabel();
+        }
+
+
+        private void AddStatusLabel()
+        {
+            GameObject labelObject = new GameObject("Deputy Status", typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(safeRoot, false);
+            RectTransform rect = labelObject.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(.025f,.90f);
+            rect.anchorMax = new Vector2(.70f,.98f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = "MARION COUNTY SHERIFF  |  OFF DUTY";
+            label.fontSize = 17f;
+            label.fontStyle = FontStyles.Bold;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            actionLabels.Add("status", label);
+        }
+
+        private void AddActionButton(string id, string caption, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            GameObject buttonObject = new GameObject("HUD Action " + id, typeof(RectTransform),
+                typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(safeRoot, false);
+            RectTransform rect = buttonObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            Image image = buttonObject.GetComponent<Image>();
+            image.color = new Color(.055f,.075f,.095f,.88f);
+            Button button = buttonObject.GetComponent<Button>();
+            button.targetGraphic = image;
+            button.onClick.AddListener(() => ActionTriggered?.Invoke(id));
+
+            GameObject labelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            labelObject.transform.SetParent(buttonObject.transform, false);
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(3f,3f);
+            labelRect.offsetMax = new Vector2(-3f,-3f);
+            TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
+            label.text = caption;
+            label.alignment = TextAlignmentOptions.Center;
+            label.fontSize = 15f;
+            label.fontStyle = FontStyles.Bold;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            actionLabels.Add(id, label);
         }
 
         private void AddButton(string id, string label, Vector2 anchorMin, Vector2 anchorMax)
