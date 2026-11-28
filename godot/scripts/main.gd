@@ -4,6 +4,7 @@ const DeputyController = preload("res://scripts/player_controller.gd")
 const PatrolSUVController = preload("res://scripts/patrol_suv.gd")
 const DispatchManager = preload("res://scripts/dispatch_manager.gd")
 const FloridaRegionCatalog = preload("res://scripts/florida_region_catalog.gd")
+const LawEnforcementCareer = preload("res://scripts/law_enforcement_career.gd")
 var player: CharacterBody3D
 var patrol_suv: VehicleBody3D
 var in_vehicle := false
@@ -22,12 +23,18 @@ var dispatch_request_button: Button
 var dispatch_accept_button: Button
 var dispatch_clear_button: Button
 var dispatch_marker: Node3D
+var career: RefCounted
+var county_picker: OptionButton
+var agency_picker: OptionButton
+var transfer_button: Button
+var agency_assignment_label: Label
 
 func _ready() -> void:
 	# Supersample the desktop Forward+ path; keep iOS at native resolution.
 	get_viewport().scaling_3d_scale = 1.0 if OS.has_feature("mobile") else 1.25
 	_setup_input()
 	region_catalog = FloridaRegionCatalog.new()
+	career = LawEnforcementCareer.new()
 	if region_catalog.load_catalog():
 		print("Florida region catalog loaded: %d counties, %d playable districts, %.0f km2." % [region_catalog.get_county_count(), region_catalog.get_districts().size(), region_catalog.get_map_area_km2()])
 		var stream_grid: Vector2i = region_catalog.get_stream_cell_count()
@@ -44,6 +51,17 @@ func _ready() -> void:
 	dispatch_manager.state_changed.connect(_refresh_dispatch_ui)
 	add_child(dispatch_manager)
 	_build_touch_hud()
+
+func _request_agency_transfer() -> void:
+	if not is_instance_valid(player) or county_picker.selected < 0:
+		return
+	var county_id: String = str(county_picker.get_item_metadata(county_picker.selected))
+	var agency_type: String = agency_picker.get_item_text(agency_picker.selected)
+	if career.request_transfer(county_id, agency_type, player.global_position, region_catalog):
+		agency_assignment_label.text = career.get_assignment_label()
+		status_label.text = "UNIT %s  •  %s  •  RADIO 1" % [career.callsign, career.rank_name.to_upper()]
+	else:
+		agency_assignment_label.text = career.last_message.to_upper()
 
 func _setup_input() -> void:
 	_add_key("move_forward", KEY_W)
@@ -81,6 +99,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		patrol_suv.vehicle_camera.rotation.x = clamp(patrol_suv.vehicle_camera.rotation.x - event.relative.y * 0.002, -0.55, 0.1)
 
 func _process(_delta: float) -> void:
+	if is_instance_valid(transfer_button) and is_instance_valid(player):
+		var selected_county: String = str(county_picker.get_item_metadata(county_picker.selected))
+		var station_position: Vector3 = career.get_station_position(selected_county, region_catalog)
+		transfer_button.disabled = not is_finite(station_position.x) or player.global_position.distance_to(station_position) > 22.0
 	if not in_vehicle and is_instance_valid(player) and is_instance_valid(patrol_suv):
 		var near_vehicle := player.global_position.distance_to(patrol_suv.global_position) < 4.2
 		enter_button.visible = near_vehicle
@@ -296,10 +318,35 @@ func _build_touch_hud() -> void:
 	header_content.add_theme_constant_override("separation", 4)
 	header.add_child(header_content)
 	var title := Label.new()
-	title.text = "MARION COUNTY  /  SHERIFF'S OFFICE"
+	title.text = "FLORIDA LAW ENFORCEMENT"
 	title.add_theme_font_size_override("font_size", 13)
 	title.add_theme_color_override("font_color", Color(0.76, 0.84, 0.91))
 	header_content.add_child(title)
+	agency_assignment_label = Label.new()
+	agency_assignment_label.text = career.get_assignment_label()
+	agency_assignment_label.add_theme_font_size_override("font_size", 10)
+	agency_assignment_label.add_theme_color_override("font_color", Color(0.48, 0.78, 0.72))
+	header_content.add_child(agency_assignment_label)
+	county_picker = OptionButton.new()
+	county_picker.custom_minimum_size = Vector2(138, 32)
+	for county in career.get_counties():
+		county_picker.add_item(county.name)
+		county_picker.set_item_metadata(county_picker.item_count - 1, county.id)
+		if county.id == career.county_id:
+			county_picker.select(county_picker.item_count - 1)
+	agency_picker = OptionButton.new()
+	agency_picker.custom_minimum_size = Vector2(138, 32)
+	for agency_type in career.get_agency_types():
+		agency_picker.add_item(agency_type)
+	var career_row := HBoxContainer.new()
+	career_row.add_child(county_picker)
+	career_row.add_child(agency_picker)
+	header_content.add_child(career_row)
+	transfer_button = Button.new()
+	transfer_button.text = "CLOCK IN / TRANSFER AT STATION"
+	transfer_button.custom_minimum_size = Vector2(276, 30)
+	transfer_button.pressed.connect(_request_agency_transfer)
+	header_content.add_child(transfer_button)
 	status_label = Label.new()
 	status_label.text = "UNIT 214  •  AVAILABLE  •  ON FOOT"
 	status_label.add_theme_font_size_override("font_size", 12)
