@@ -210,3 +210,10 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Matching now prioritizes an exact normalized license match, then an exact normalized plate match, and rejects a candidate when the other supplied identifier conflicts. Missing identifiers may still match a record that lacks that field.
 - This reduces accidental record merging but does not provide authoritative DMV identity resolution; generated profiles and local fictional records remain prototype data.
 - Static source review only. No Unity compile or citation/history runtime test was performed.
+
+
+### Phase 9 — dispatch lifecycle validation audit (2026-11-28)
+
+- Tightened dispatch state entry validation: accepting a call now requires a non-empty unit name; resolving a call requires a non-empty disposition; cancelling a call requires a non-empty reason. Accepted unit names are trimmed before storage.
+- Existing transition ordering remains unchanged: Available → Accepted → EnRoute → OnScene → Resolved. Cancellation remains available for non-terminal calls, and terminal calls cannot be resolved/cancelled again.
+- This prevents blank assignment and closure metadata from entering the session-only CAD log. Static source review only; no Unity compile or MDT runtime workflow test was performed.
