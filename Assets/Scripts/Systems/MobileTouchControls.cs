@@ -36,7 +36,23 @@ namespace SheriffAmericanLife
             if (trafficHeader != null) trafficHeader.text = header ?? "TRAFFIC STOP";
             if (trafficDetails != null) trafficDetails.text = details ?? string.Empty;
             foreach (KeyValuePair<string, Button> pair in trafficButtons)
-                pair.Value.gameObject.SetActive(visibleActions != null && Array.IndexOf(visibleActions, pair.Key) >= 0);
+                pair.Value.gameObject.SetActive(false);
+            if (visibleActions == null) return;
+            for (int i = 0; i < visibleActions.Length; i++)
+            {
+                if (!trafficButtons.TryGetValue(visibleActions[i], out Button button)) continue;
+                RectTransform rect = button.GetComponent<RectTransform>();
+                int column = i % 2;
+                int row = i / 2;
+                float xMin = .04f + column * .48f;
+                float xMax = xMin + .44f;
+                float yMax = .48f - row * .11f;
+                rect.anchorMin = new Vector2(xMin, yMax - .10f);
+                rect.anchorMax = new Vector2(xMax, yMax);
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+                button.gameObject.SetActive(true);
+            }
         }
 
         public void SetCivilianContext(bool visible, string personName)
@@ -171,14 +187,14 @@ namespace SheriffAmericanLife
             trafficPanel = new GameObject("Traffic Stop Panel", typeof(RectTransform), typeof(Image));
             trafficPanel.transform.SetParent(safeRoot, false);
             RectTransform panelRect = trafficPanel.GetComponent<RectTransform>();
-            panelRect.anchorMin = new Vector2(.025f, .40f);
-            panelRect.anchorMax = new Vector2(.43f, .88f);
+            panelRect.anchorMin = new Vector2(.025f, .22f);
+            panelRect.anchorMax = new Vector2(.43f, .90f);
             panelRect.offsetMin = Vector2.zero;
             panelRect.offsetMax = Vector2.zero;
             trafficPanel.GetComponent<Image>().color = new Color(.025f, .04f, .055f, .91f);
 
-            trafficHeader = AddTrafficText("Traffic Header", new Vector2(.04f,.84f), new Vector2(.96f,.98f), 15f, true);
-            trafficDetails = AddTrafficText("Traffic Details", new Vector2(.04f,.43f), new Vector2(.96f,.82f), 12f, false);
+            trafficHeader = AddTrafficText("Traffic Header", new Vector2(.04f,.85f), new Vector2(.96f,.98f), 15f, true);
+            trafficDetails = AddTrafficText("Traffic Details", new Vector2(.04f,.50f), new Vector2(.96f,.83f), 12f, false);
             trafficDetails.alignment = TextAlignmentOptions.TopLeft;
 
             string[] ids = { "traffic_pull_over", "traffic_calm", "traffic_firm", "traffic_license",
@@ -187,12 +203,12 @@ namespace SheriffAmericanLife
                 "CHECK REG", "CHECK INSURANCE", "WARNING", "CITATION", "END / CANCEL STOP" };
             for (int i = 0; i < ids.Length; i++)
             {
-                int column = i == 8 ? 0 : i % 2;
-                int row = i == 8 ? 4 : i / 2;
+                int column = i % 2;
+                int row = i / 2;
                 float xMin = .04f + column * .48f;
-                float xMax = i == 8 ? .96f : xMin + .44f;
-                float yMax = .39f - row * .085f;
-                float yMin = yMax - .075f;
+                float xMax = xMin + .44f;
+                float yMax = .48f - row * .11f;
+                float yMin = yMax - .10f;
                 AddTrafficButton(ids[i], captions[i], new Vector2(xMin,yMin), new Vector2(xMax,yMax));
             }
             trafficPanel.SetActive(false);
