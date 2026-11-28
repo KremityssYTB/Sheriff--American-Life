@@ -142,3 +142,10 @@ The regional catalog now includes twelve authored district anchor points within 
 ### Shared route query milestone
 
 The Florida catalog now exposes a shortest-path query for the authored road graph and the separate marine graph. It returns an ordered district-node path and an estimated route length based on compressed anchor coordinates and basic road-class multipliers. Startup performs a small road-route and water-route connectivity smoke check. This is an early navigation foundation: route lengths are design estimates, not real drive/boat times, and the graph does not yet contain street-level intersections, turn restrictions, one-way roads, bridges with clearance, tides, hazards or live traffic. Those are required before production GPS, dispatch routing or realistic marine navigation.
+
+
+### GIS source registry and streaming grid
+
+The catalog now records official source families for FDOT roadway GIS, the University of Florida GeoPlan Florida Geographic Data Library, Florida DEP geospatial open data and the South Florida Water Management District portal. FDOT's published GIS page describes statewide road/bridge/traffic shapefile layers and notes UTM 17 / NAD83 for listed statewide downloads; source data must be transformed into the game's local metric coordinate system. FGDL layers may originate with different agencies, so the publisher and terms must be checked per layer. The project deliberately marks all source licensing checks as pending: no dataset is cleared for redistribution merely because it is publicly viewable or downloadable.
+
+The 15 km × 15 km design envelope is divided into a 30 × 30 grid of 500 m cells. The catalog exposes world-bound checks and world-position-to-cell lookup to support a future streamer. This is only the coordinate/cell foundation; no runtime cell loading, terrain generation or GIS geometry import is implemented yet.
