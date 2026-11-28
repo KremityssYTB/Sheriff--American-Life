@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace SheriffAmericanLife
@@ -34,8 +33,6 @@ namespace SheriffAmericanLife
         private const int MaximumStatements = 2000;
         private readonly List<WitnessStatement> statements = new List<WitnessStatement>();
         private int nextSequence = 1;
-        private string SavePath => Path.Combine(Application.persistentDataPath, "witness-statements.json");
-        private string TemporarySavePath => SavePath + ".tmp";
 
         public IReadOnlyList<WitnessStatement> Statements => statements;
         public event Action<WitnessStatement> StatementAdded;
@@ -67,54 +64,31 @@ namespace SheriffAmericanLife
 
         private void Load()
         {
-            try
+            if (!LocalJsonSave.TryLoad<SaveData>("witness-statements.json", out SaveData data)) return;
+            if (data.version != SaveVersion || data.statements == null)
             {
-                if (!File.Exists(SavePath)) return;
-                SaveData data = JsonUtility.FromJson<SaveData>(File.ReadAllText(SavePath));
-                if (data == null || data.version != SaveVersion || data.statements == null)
-                {
-                    Debug.LogWarning("Witness statement save has an unsupported or invalid format; starting with an empty in-memory ledger.");
-                    return;
-                }
-
-                statements.Clear();
-                statements.AddRange(data.statements.FindAll(item => item != null));
-                if (statements.Count > MaximumStatements)
-                    statements.RemoveRange(MaximumStatements, statements.Count - MaximumStatements);
-
-                nextSequence = Math.Max(1, data.nextSequence);
-                foreach (WitnessStatement item in statements)
-                {
-                    if (!string.IsNullOrEmpty(item.statementId) &&
-                        item.statementId.StartsWith("WS-", StringComparison.Ordinal))
-                    {
-                        int number;
-                        if (int.TryParse(item.statementId.Substring(3), out number))
-                            nextSequence = Math.Max(nextSequence, number + 1);
-                    }
-                }
+                Debug.LogWarning("Witness statement save has an unsupported format; starting with an empty in-memory ledger.");
+                return;
             }
-            catch (Exception exception)
+            statements.Clear();
+            statements.AddRange(data.statements.FindAll(item => item != null));
+            if (statements.Count > MaximumStatements) statements.RemoveRange(MaximumStatements, statements.Count - MaximumStatements);
+            nextSequence = Math.Max(1, data.nextSequence);
+            foreach (WitnessStatement item in statements)
             {
-                statements.Clear();
-                nextSequence = 1;
-                Debug.LogWarning("Could not load local witness statements: " + exception.Message);
+                if (!string.IsNullOrEmpty(item.statementId) && item.statementId.StartsWith("WS-", StringComparison.Ordinal))
+                {
+                    int number;
+                    if (int.TryParse(item.statementId.Substring(3), out number))
+                        nextSequence = Math.Max(nextSequence, number + 1);
+                }
             }
         }
 
         private void Save()
         {
-            try
-            {
-                var data = new SaveData { nextSequence = nextSequence, statements = statements };
-                File.WriteAllText(TemporarySavePath, JsonUtility.ToJson(data, true));
-                File.Copy(TemporarySavePath, SavePath, true);
-                File.Delete(TemporarySavePath);
-            }
-            catch (Exception exception)
-            {
-                Debug.LogWarning("Could not save local witness statements: " + exception.Message);
-            }
+            LocalJsonSave.TrySave("witness-statements.json",
+                new SaveData { nextSequence = nextSequence, statements = statements });
         }
     }
 }
