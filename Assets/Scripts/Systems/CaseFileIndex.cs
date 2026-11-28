@@ -52,6 +52,37 @@ namespace SheriffAmericanLife
             bookings = bookingBook;
         }
 
+        public List<string> GetKnownCaseIds(string query = null)
+        {
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            if (reports != null)
+                foreach (IncidentReport item in reports.Reports)
+                    AddId(ids, item != null ? item.caseId : null);
+            if (witnesses != null)
+                foreach (WitnessStatement item in witnesses.Statements)
+                    AddId(ids, item != null ? item.caseId : null);
+            if (dispatch != null)
+                foreach (DispatchCall item in dispatch.Calls)
+                    AddId(ids, item != null ? item.caseId : null);
+            if (citations != null)
+                foreach (TrafficCitation item in citations.Citations)
+                    AddId(ids, item != null ? item.caseId : null);
+            if (bookings != null)
+                foreach (ArrestBookingRecord item in bookings.Records)
+                    AddId(ids, item != null ? item.caseId : null);
+
+            var results = new List<string>(ids);
+            results.Sort(StringComparer.Ordinal);
+            if (!string.IsNullOrWhiteSpace(query))
+                results.RemoveAll(id => id.IndexOf(query.Trim(), StringComparison.OrdinalIgnoreCase) < 0);
+            return results;
+        }
+
+        private static void AddId(HashSet<string> ids, string caseId)
+        {
+            if (!string.IsNullOrWhiteSpace(caseId)) ids.Add(caseId.Trim());
+        }
+
         public CaseFileSnapshot FindCase(string caseId)
         {
             if (string.IsNullOrWhiteSpace(caseId)) return null;
