@@ -30,6 +30,8 @@ func _ready() -> void:
 	region_catalog = FloridaRegionCatalog.new()
 	if region_catalog.load_catalog():
 		print("Florida region catalog loaded: %d counties, %d playable districts, %.0f km2." % [region_catalog.get_county_count(), region_catalog.get_districts().size(), region_catalog.get_map_area_km2()])
+		var stream_grid: Vector2i = region_catalog.get_stream_cell_count()
+		print("Florida world streaming grid: %d x %d cells at %d m per cell." % [stream_grid.x, stream_grid.y, int(region_catalog.data.get("streaming", {}).get("cell_size_m", 500))])
 		var road_test: Dictionary = region_catalog.find_route("ocala_marion", "miami_dade", "road")
 		var water_test: Dictionary = region_catalog.find_route("ocala_marion", "rural_heartland", "water")
 		print("Florida route checks — Ocala to Miami road: %s; Ocala to Heartland water: %s." % [road_test.get("found", false), water_test.get("found", false)])
