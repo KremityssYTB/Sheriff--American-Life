@@ -28,7 +28,7 @@ jobs:
 
   ios-export:
     name: Build unsigned iOS IPA
-    runs-on: macos-14
+    runs-on: macos-15
     needs: validate
     if: github.event_name != 'pull_request'
     steps:
