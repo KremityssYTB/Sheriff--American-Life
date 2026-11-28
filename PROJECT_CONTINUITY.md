@@ -594,3 +594,10 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Added `CivilianCharacter.ReleaseFromCustody()`. `CountyPlayerRuntimeController` now listens to `ArrestBookingBook.BookingsChanged`, finds the matching Released booking's civilian by identification number, resets legal state to Free, and re-enables the civilian routine. The event subscription is cleaned up on controller destruction.
 - This remains a prototype-level identity link. Duplicate identification numbers and release of offline/not-loaded civilians are not resolved by this scene-local synchronization.
 - Static source/documentation checks only; no Unity compilation or runtime release test was performed.
+
+
+## Phase 8 — traffic driver-history identity audit (2026-11-28)
+
+- Fixed a false-merge risk in `TrafficDriverHistoryBook.FindByLicenseOrPlate`: the previous OR-match could join a driver to an unrelated history when only one of license or plate matched despite the other identifier conflicting.
+- Matching now checks normalized license first, then plate, and rejects conflicting secondary identifiers. A record missing the secondary identifier may still be completed by a matching encounter.
+- This is a local prototype identity heuristic, not a real identity verification system. Static source inspection only; no Unity compile or runtime test.
