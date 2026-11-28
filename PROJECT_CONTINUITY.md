@@ -607,3 +607,12 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 
 - `DispatchCallManager.Accept` now rejects blank unit names and trims accepted names. `Resolve` rejects blank dispositions. `Cancel` rejects blank reasons. Existing status-transition checks and terminal-state protection remain in place.
 - These guards prevent incomplete assignment/closure metadata in the session-only dispatch ledger. Static source review only; no Unity compile or runtime MDT workflow test.
+
+
+## Phase 10 — cross-system data lifecycle and persistence audit (2026-11-28)
+
+- Audited the source paths for civilian interactions, custody/booking, traffic citations and driver history, witness statements, incident reports, dispatch calls, and MDT subscriptions.
+- Verified storage boundaries: `ArrestBookingBook`, `TrafficCitationBook`, and `TrafficDriverHistoryBook` persist local JSON under `Application.persistentDataPath`. `IncidentReportBook`, `WitnessStatementBook`, and `DispatchCallManager` are session-only/in-memory. The MDT presents these stores but does not persist their session-only records.
+- Phase 6–9 fixes remain committed: prevent second arrest during an active escort; synchronize a released booking back to the matching in-scene civilian and re-enable their routine; avoid driver-history merges on conflicting identifiers; require nonblank dispatch assignment/closure details.
+- Static source checks performed: inspected C# brace balance and verified the expected guard/subscription patterns in the current `main` sources. No Unity compilation, Play Mode, automated tests, device validation, cloud build, signing, or IPA installation was performed.
+- Stop point reached: Phase 10. Do not begin Phase 11 until the user explicitly asks to continue.
