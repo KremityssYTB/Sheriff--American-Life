@@ -533,3 +533,16 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - The panel visibility follows the existing focused-civilian state, is hidden in vehicle mode, and is hidden whenever the gameplay Canvas is disabled for the Settings modal. It uses safe-area-relative anchors and remains separate from the top-level action stack and foot movement buttons.
 - `DESIGN/MOBILE_MDT_INTERFACE.md` records Phase 3a. Traffic-stop documents/decisions, prisoner transport, and Settings remain IMGUI; they are not migrated yet.
 - Source-level checks only. Unity compilation, runtime UI/event routing, touch behavior, panel readability, and layout on portrait/landscape iPhone and iPad remain unverified.
+
+
+## Gameplay HUD traffic-stop Canvas migration (2026-11-28)
+
+- Commit `d27b1a967909d8038b25de03a7bd41c446d4f482` adds the traffic-stop panel and contextual Canvas action buttons to `MobileTouchControls`.
+- Commit `19c93a753fbe3924f80a0372f15d501c309da0b8` refines the panel safe-area placement and dynamically lays out only the currently available actions.
+- Commit `8565aa1b24d45949031568667eae1442005d7903` connects traffic-panel actions to existing controller methods and removes the duplicate traffic-stop IMGUI panel.
+- Commit `4802bc347c46537b6c8a2a922891379bd0b98f1d` corrects line-break escaping in driver detail text.
+- Commit `05dbf994d171b9eadf20fcc3038cbd3d41880604` moves End/Cancel Stop to the final position in the contextual action list.
+- The Canvas shows the active stop status, driver name, plate, behavior disposition/response, available document checks, warning/citation choices, and stop termination. Pull Over appears for an eligible nearby traffic vehicle while on duty.
+- The existing traffic-stop methods remain authoritative for driver responses, document checks, report logging, citations, driver history, and lightbar behavior. The old `DrawTrafficStopHud` IMGUI method and its call were removed.
+- `DESIGN/MOBILE_MDT_INTERFACE.md` records Phase 3b. Civilian interactions and traffic stops are now Canvas panels; prisoner transport and the Settings modal remain IMGUI.
+- Static checks confirm all nine UI action IDs exist and dispatch, the old traffic-stop IMGUI method/call are absent, and braces balance. No Unity compile, Play Mode, visual inspection, device touch test, cloud build, signing, or IPA installation has been performed.
