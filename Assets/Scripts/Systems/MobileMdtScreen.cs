@@ -16,6 +16,8 @@ namespace SheriffAmericanLife
         private MobileMdtController mdt;
         private Canvas canvas;
         private RectTransform root;
+        private RectTransform safeAreaRoot;
+        private Rect lastSafeArea;
         private RectTransform callList;
         private RectTransform detailsContent;
         private TextMeshProUGUI statusText;
@@ -44,7 +46,26 @@ namespace SheriffAmericanLife
         private void Update()
         {
             if (canvas != null) canvas.enabled = true;
+            ApplySafeArea();
             if (root != null) ApplyResponsiveLayout();
+        }
+
+        private void ApplySafeArea()
+        {
+            if (safeAreaRoot == null || Screen.width <= 0 || Screen.height <= 0) return;
+
+            Rect safeArea = Screen.safeArea;
+            if (safeArea == lastSafeArea) return;
+            lastSafeArea = safeArea;
+
+            safeAreaRoot.anchorMin = new Vector2(
+                safeArea.xMin / Screen.width,
+                safeArea.yMin / Screen.height);
+            safeAreaRoot.anchorMax = new Vector2(
+                safeArea.xMax / Screen.width,
+                safeArea.yMax / Screen.height);
+            safeAreaRoot.offsetMin = Vector2.zero;
+            safeAreaRoot.offsetMax = Vector2.zero;
         }
 
         private void BuildScreen()
@@ -65,7 +86,12 @@ namespace SheriffAmericanLife
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 0.5f;
 
-            window = Panel("MDT Window", canvasObject.transform, new Color(.035f,.055f,.075f,.97f));
+            GameObject safeAreaObject = new GameObject("MDT Safe Area", typeof(RectTransform));
+            safeAreaObject.transform.SetParent(canvasObject.transform, false);
+            safeAreaRoot = safeAreaObject.GetComponent<RectTransform>();
+            ApplySafeArea();
+
+            window = Panel("MDT Window", safeAreaRoot, new Color(.035f,.055f,.075f,.97f));
             root = window.GetComponent<RectTransform>();
             root.anchorMin = new Vector2(.025f,.04f);
             root.anchorMax = new Vector2(.975f,.96f);
@@ -100,7 +126,7 @@ namespace SheriffAmericanLife
             ScrollArea detail = CreateScrollArea(right, new Vector2(.025f,.16f), new Vector2(.975f,.89f));
             detailsContent = detail.content;
             CreateActionButtons(right);
-            CreateFloatingToggle(canvasObject.transform);
+            CreateFloatingToggle(safeAreaRoot);
             Refresh();
         }
 
