@@ -90,12 +90,14 @@ namespace SheriffAmericanLife
             }
         }
 
-        public void SetCivilianContext(bool visible, string personName)
+        public void SetCivilianContext(bool visible, string personName, bool canArrest)
         {
             if (civilianPanel == null) return;
             civilianPanel.SetActive(visible);
             if (civilianHeader != null)
                 civilianHeader.text = string.IsNullOrEmpty(personName) ? "CIVILIAN CONTACT" : "NEARBY: " + personName;
+            if (contextButtons.TryGetValue("civilian_arrest", out Button arrestButton))
+                arrestButton.interactable = canArrest;
         }
 
         public void SetHudState(bool onDuty, bool inVehicle)
