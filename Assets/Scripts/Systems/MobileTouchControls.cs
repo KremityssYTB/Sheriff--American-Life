@@ -560,6 +560,9 @@ namespace SheriffAmericanLife
             TextMeshProUGUI label = labelObject.GetComponent<TextMeshProUGUI>();
             label.text = "MARION COUNTY SHERIFF  |  OFF DUTY";
             label.fontSize = 17f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 9f;
+            label.fontSizeMax = 17f;
             label.fontStyle = FontStyles.Bold;
             label.color = Color.white;
             label.raycastTarget = false;
@@ -593,6 +596,9 @@ namespace SheriffAmericanLife
             label.text = caption;
             label.alignment = TextAlignmentOptions.Center;
             label.fontSize = 15f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 7f;
+            label.fontSizeMax = 15f;
             label.fontStyle = FontStyles.Bold;
             label.color = Color.white;
             label.raycastTarget = false;
