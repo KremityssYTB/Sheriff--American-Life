@@ -20,6 +20,9 @@ namespace SheriffAmericanLife
         private TextMeshProUGUI trafficHeader;
         private TextMeshProUGUI trafficDetails;
         private readonly Dictionary<string, Button> trafficButtons = new Dictionary<string, Button>();
+        private GameObject transportPanel;
+        private TextMeshProUGUI transportDetails;
+        private Button transportButton;
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
@@ -27,6 +30,20 @@ namespace SheriffAmericanLife
 
         public event Action<string, bool> ControlChanged;
         public event Action<string> ActionTriggered;
+
+        public void SetTransportContext(bool visible, string details, bool canBook)
+        {
+            if (transportPanel == null) return;
+            transportPanel.SetActive(visible);
+            if (!visible) return;
+            if (transportDetails != null) transportDetails.text = details ?? "PRISONER TRANSPORT";
+            if (transportButton != null)
+            {
+                transportButton.gameObject.SetActive(canBook);
+                TextMeshProUGUI label = transportButton.GetComponentInChildren<TextMeshProUGUI>();
+                if (label != null) label.text = "BOOK INTAKE";
+            }
+        }
 
         public void SetTrafficContext(bool visible, string header, string details, string[] visibleActions)
         {
@@ -178,9 +195,71 @@ namespace SheriffAmericanLife
             AddActionButton("duty", "GO ON DUTY", new Vector2(.84f,.71f), new Vector2(.975f,.82f));
             AddActionButton("camera", "CAMERA", new Vector2(.84f,.58f), new Vector2(.975f,.69f));
             AddActionButton("settings", "SETTINGS", new Vector2(.84f,.48f), new Vector2(.975f,.59f));
-            AddStatusLabel();\n            BuildCivilianPanel();\n            BuildTrafficPanel();
+            AddStatusLabel();\n            BuildCivilianPanel();\n            BuildTrafficPanel();\n            BuildTransportPanel();
         }
 
+
+        private void BuildTransportPanel()
+        {
+            transportPanel = new GameObject("Prisoner Transport Panel", typeof(RectTransform), typeof(Image));
+            transportPanel.transform.SetParent(safeRoot, false);
+            RectTransform panelRect = transportPanel.GetComponent<RectTransform>();
+            panelRect.anchorMin = new Vector2(.20f, .12f);
+            panelRect.anchorMax = new Vector2(.80f, .23f);
+            panelRect.offsetMin = Vector2.zero;
+            panelRect.offsetMax = Vector2.zero;
+            transportPanel.GetComponent<Image>().color = new Color(.025f, .04f, .055f, .92f);
+
+            GameObject detailObject = new GameObject("Transport Details", typeof(RectTransform), typeof(TextMeshProUGUI));
+            detailObject.transform.SetParent(transportPanel.transform, false);
+            RectTransform detailRect = detailObject.GetComponent<RectTransform>();
+            detailRect.anchorMin = new Vector2(.03f, .05f);
+            detailRect.anchorMax = new Vector2(.62f, .95f);
+            detailRect.offsetMin = new Vector2(3f, 2f);
+            detailRect.offsetMax = new Vector2(-3f, -2f);
+            transportDetails = detailObject.GetComponent<TextMeshProUGUI>();
+            transportDetails.text = "PRISONER TRANSPORT";
+            transportDetails.fontSize = 13f;
+            transportDetails.enableAutoSizing = true;
+            transportDetails.fontSizeMin = 8f;
+            transportDetails.fontSizeMax = 13f;
+            transportDetails.fontStyle = FontStyles.Bold;
+            transportDetails.color = Color.white;
+            transportDetails.alignment = TextAlignmentOptions.Center;
+            transportDetails.raycastTarget = false;
+
+            GameObject buttonObject = new GameObject("Book Intake", typeof(RectTransform), typeof(Image), typeof(Button));
+            buttonObject.transform.SetParent(transportPanel.transform, false);
+            RectTransform buttonRect = buttonObject.GetComponent<RectTransform>();
+            buttonRect.anchorMin = new Vector2(.65f, .08f);
+            buttonRect.anchorMax = new Vector2(.97f, .92f);
+            buttonRect.offsetMin = Vector2.zero;
+            buttonRect.offsetMax = Vector2.zero;
+            Image buttonImage = buttonObject.GetComponent<Image>();
+            buttonImage.color = new Color(.08f, .12f, .15f, .98f);
+            transportButton = buttonObject.GetComponent<Button>();
+            transportButton.targetGraphic = buttonImage;
+            transportButton.onClick.AddListener(() => ActionTriggered?.Invoke("transport_book"));
+
+            GameObject buttonLabelObject = new GameObject("Label", typeof(RectTransform), typeof(TextMeshProUGUI));
+            buttonLabelObject.transform.SetParent(buttonObject.transform, false);
+            RectTransform buttonLabelRect = buttonLabelObject.GetComponent<RectTransform>();
+            buttonLabelRect.anchorMin = Vector2.zero;
+            buttonLabelRect.anchorMax = Vector2.one;
+            buttonLabelRect.offsetMin = new Vector2(2f, 2f);
+            buttonLabelRect.offsetMax = new Vector2(-2f, -2f);
+            TextMeshProUGUI buttonLabel = buttonLabelObject.GetComponent<TextMeshProUGUI>();
+            buttonLabel.text = "BOOK INTAKE";
+            buttonLabel.alignment = TextAlignmentOptions.Center;
+            buttonLabel.fontSize = 11f;
+            buttonLabel.enableAutoSizing = true;
+            buttonLabel.fontSizeMin = 8f;
+            buttonLabel.fontSizeMax = 11f;
+            buttonLabel.fontStyle = FontStyles.Bold;
+            buttonLabel.color = Color.white;
+            buttonLabel.raycastTarget = false;
+            transportPanel.SetActive(false);
+        }
 
         private void BuildTrafficPanel()
         {
