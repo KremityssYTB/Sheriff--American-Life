@@ -84,3 +84,20 @@ The current Godot scene is still an early procedural prototype. It does not yet 
 The procedural test cross has been replaced with a connected five-by-five street grid spanning the current playable blockout. The center corridor is wider than neighborhood streets; road edges, dashed center markings, sidewalks, central crosswalks, varied building footprints, a sheriff office parking area and Florida palm landscaping establish a more coherent county-town layout.
 
 This is still a greybox environment, not a geographically accurate Marion County recreation. The next map pass should introduce named districts, a road graph for GPS/dispatch routing, intersections with turning geometry, traffic signals, parking access, rural connectors and authored landmark silhouettes. Replace primitive building and vehicle meshes with original or properly licensed production assets before describing the map as photorealistic.
+
+
+## Final world scale target (design specification)
+
+The current 240 m × 240 m scene is a temporary first-district greybox and must not define the final map size. The intended world is a broad, connected regional simulation with a proposed **33 mi × 33 mi (approximately 53 km × 53 km) playable envelope**. This is a design target, not a claim that the current build contains this area.
+
+### World layout and travel pacing
+- Build a coherent road network rather than stretching the current five-by-five grid. Include a dense Ocala urban core, suburban neighborhoods, industrial/commercial corridors, small towns, rural communities, farms, forests, lakes, and long two-lane county roads.
+- Major destinations and district-to-district journeys should commonly take about **10–20 minutes by road**, depending on route, traffic, speed limits, and starting point. Do not force every short trip to take that long.
+- A single continuous region should connect the districts; no artificial loading screens between ordinary neighboring areas.
+- Use streamed world cells and level-of-detail tiers. Keep nearby streets, buildings, traffic and pedestrians detailed; simplify distant scenery and unload far-away simulation actors.
+- Keep roads, intersections, addresses, speed limits, jurisdiction boundaries and destination nodes in shared data so GPS, dispatch, traffic and civilian navigation use the same network.
+- Treat county lines and neighboring jurisdictions as explicit world geography. Do not imply that a 33 mi square contains every surrounding Florida county; add neighboring county/town coverage only where the chosen geographic footprint supports it.
+- Validate drive times with measured in-game routes at realistic vehicle speeds before locking the final map dimensions.
+
+### Scale decision still requiring confirmation
+“33 × 33” must be confirmed as **miles**, not kilometres, before detailed world coordinates are authored. The proposed 33-mile square is the stronger fit for the requested 10–20 minute regional drives. The map remains a staged production target and will be built outward from the current Ocala prototype, not generated as one enormous dense scene.
