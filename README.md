@@ -273,3 +273,12 @@ The project is following a 60-phase roadmap. Phases 1–10 are recorded as compl
 - Statement IDs use a persisted sequence and reconcile against loaded IDs. The ledger is capped at 2,000 newest statements; confidence is clamped to the supported 0–1 range when a statement is added.
 - Writes stage through a temporary file before copying to the primary path. Load/save exceptions are caught and logged. Unsupported/corrupt save data is not automatically migrated or repaired, and records remain local to the device.
 - Static source review only. Unity compilation, JSON round-trip, iOS filesystem behavior, and device tests remain outstanding.
+
+
+## Phase 13 — persistent dispatch calls (2026-11-28)
+
+- `DispatchCallManager` now loads and saves dispatch calls to `Application.persistentDataPath/dispatch-calls.json` using versioned JSON. Call IDs use a persisted sequence; loaded source-incident IDs are rebuilt into the duplicate-prevention index.
+- Creating a call and each valid lifecycle transition (accept, en route, on scene, resolve, cancel) trigger a save. Unit names and terminal dispositions are trimmed. The local ledger is capped at 1,000 calls.
+- Existing lifecycle guards remain in place. Resolve/cancel still add incident reports through the configured report book. Records are local to the device, with no server CAD or multiplayer synchronization.
+- Writes stage through a temporary file before copying to the primary path. Load/save errors are caught and logged. Schema migration and automatic corruption recovery are not implemented.
+- Static source review only. Unity compilation, JSON round-trip, restart lifecycle tests, iOS filesystem behavior, and device tests remain outstanding.
