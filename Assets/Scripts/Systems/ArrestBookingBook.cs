@@ -11,6 +11,7 @@ namespace SheriffAmericanLife
     public sealed class ArrestBookingRecord
     {
         public string bookingId;
+        public string caseId;
         public string personName;
         public string identificationNumber;
         public string arrestReason;
@@ -43,11 +44,12 @@ namespace SheriffAmericanLife
 
         private void Awake() => Load();
 
-        public ArrestBookingRecord CreateBooking(CivilianCharacter person, string reason, IList<string> property)
+        public ArrestBookingRecord CreateBooking(CivilianCharacter person, string reason, IList<string> property, string caseId = null)
         {
             if (person == null || string.IsNullOrWhiteSpace(reason)) return null;
             var record = new ArrestBookingRecord {
                 bookingId = "MCB-" + nextSequence.ToString("000000"),
+                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : null,
                 personName = person.FullName,
                 identificationNumber = person.IdentificationNumber,
                 arrestReason = reason,
