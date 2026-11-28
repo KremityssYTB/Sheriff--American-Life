@@ -103,6 +103,10 @@ func _build_environment() -> void:
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	# High-end desktop effects; keep the iOS/mobile path lightweight.
+	if not OS.has_feature("mobile"):
+		env.sdfgi_enabled = true
+		env.volumetric_fog_enabled = true
 	world.environment = env
 	add_child(world)
 	var sun := DirectionalLight3D.new()
