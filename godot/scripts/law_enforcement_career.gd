@@ -32,6 +32,26 @@ func get_station_position(target_county: String, catalog: RefCounted) -> Vector3
 		var anchor: Array = district.get("anchor_m", [])
 		if anchor.size() >= 2:
 			return Vector3(float(anchor[0]), 0.0, float(anchor[1]))
+	# Counties without a dedicated condensed-world district use their regional
+	# headquarters hub until an individual station site is authored.
+	var region: Dictionary = catalog.get_region_for_county(target_county)
+	var hub_by_region := {
+		"panhandle": "pensacola_escambia",
+		"north_central": "gainesville_alachua",
+		"northeast": "jacksonville_duval",
+		"central_north": "ocala_marion",
+		"central": "orlando_orange",
+		"tampa_bay": "tampa_hillsborough",
+		"southwest": "sarasota_sarasota",
+		"southeast": "miami_dade",
+		"keys": "keys_monroe"
+	}
+	var hub_id: String = str(hub_by_region.get(str(region.get("id", "")), ""))
+	for district in catalog.get_districts():
+		if str(district.get("id", "")) == hub_id:
+			var hub_anchor: Array = district.get("anchor_m", [])
+			if hub_anchor.size() >= 2:
+				return Vector3(float(hub_anchor[0]), 0.0, float(hub_anchor[1]))
 	return Vector3(INF, 0.0, INF)
 
 func request_transfer(target_county: String, target_type: String, world_position: Vector3, catalog: RefCounted) -> bool:
