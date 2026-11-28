@@ -125,7 +125,7 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 
 ### Current migration status
 
-**Phase 1 source implementation is committed; Unity validation is still pending.**
+**Phases 1–2 source implementation are committed; Unity validation is still pending.**
 
 - `Assets/Scripts/Systems/MobileTouchControls.cs` creates a Screen Space Overlay Canvas with a CanvasScaler, safe-area root, and held pointer controls. It reuses the current EventSystem or creates one with the Input System UI module when none exists.
 - Foot mode provides four directional controls and sprint. Vehicle mode provides left/right steering, gas, and brake/reverse. Each control uses pointer-down, pointer-up, pointer-exit, and disable release semantics.
