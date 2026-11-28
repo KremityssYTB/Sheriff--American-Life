@@ -1,0 +1,72 @@
+workflows:
+  sheriff-unity-ios:
+    name: SHERIFF - Unity iOS export
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    environment:
+      unity: 6000.3.25f1
+      groups:
+        - unity_credentials
+      vars:
+        UNITY_IOS_EXPORT_DIR: build/ios
+
+    scripts:
+      - name: Check Unity license variables
+        script: |
+          for key in UNITY_EMAIL UNITY_PASSWORD UNITY_SERIAL; do
+            if [ -z "${!key:-}" ]; then
+              echo "Missing ${key} in Codemagic environment group unity_credentials."
+              echo "Codemagic Unity builds require a Unity Plus or Pro serial license."
+              exit 1
+            fi
+          done
+
+      - name: Activate Unity license
+        script: |
+          "$UNITY_HOME/Contents/MacOS/Unity" -batchmode -quit -logFile - \
+            -serial "$UNITY_SERIAL" \
+            -username "$UNITY_EMAIL" \
+            -password "$UNITY_PASSWORD"
+
+      - name: Export iOS Xcode project from Unity
+        script: |
+          "$UNITY_HOME/Contents/MacOS/Unity" -batchmode -quit -logFile - \
+            -projectPath "$CM_BUILD_DIR" \
+            -buildTarget iOS \
+            -executeMethod SheriffAmericanLife.Editor.CodemagicBuild.BuildIOS \
+            -nographics
+
+      - name: Compile unsigned iOS app
+        script: |
+          xcodebuild \
+            -project "$UNITY_IOS_EXPORT_DIR/Unity-iPhone.xcodeproj" \
+            -scheme Unity-iPhone \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath "$CM_BUILD_DIR/build/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+
+      - name: Package unsigned IPA
+        script: |
+          APP_PATH="$CM_BUILD_DIR/build/DerivedData/Build/Products/Release-iphoneos/Unity-iPhone.app"
+          test -d "$APP_PATH"
+          mkdir -p "$CM_BUILD_DIR/build/ipa/Payload"
+          cp -R "$APP_PATH" "$CM_BUILD_DIR/build/ipa/Payload/"
+          cd "$CM_BUILD_DIR/build/ipa"
+          /usr/bin/zip -qry "$CM_BUILD_DIR/SHERIFF-unsigned.ipa" Payload
+
+    artifacts:
+      - SHERIFF-unsigned.ipa
+      - build/ios/**
+
+    publishing:
+      scripts:
+        - name: Return Unity license
+          script: |
+            "$UNITY_HOME/Contents/MacOS/Unity" -batchmode -quit -logFile - \
+              -returnlicense \
+              -username "$UNITY_EMAIL" \
+              -password "$UNITY_PASSWORD"
