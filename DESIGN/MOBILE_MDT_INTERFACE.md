@@ -178,3 +178,12 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - The panel expands to 92% of safe-area width and 96% of safe-area height; the quality and frame-rate buttons use larger vertical anchor bands to improve touch targets on landscape phones, while portrait layouts retain a broad panel. Actual touch sizing, text fit, and orientation behavior still require Unity visual/device testing.
 - Removed the old Settings IMGUI drawing methods and the controller's now-unused OnGUI path. No audio or additional gameplay settings existed in the migrated panel, so none were invented.
 - Unity compilation, Play Mode, visual inspection, and device testing have not been performed.
+
+
+### Phase 5 — source-level mobile HUD layout audit (2026-11-28)
+
+- Corrected traffic-stop action spacing: five possible two-column rows now remain inside the traffic panel instead of the final row extending below its lower edge.
+- Repositioned the prisoner transport strip to a center-right band above the lower movement/steering controls and between the traffic/civilian panel regions.
+- Reworked the Settings modal's lower frame-rate row and bottom performance/close row so their normalized vertical regions no longer overlap.
+- Enabled TMP auto-sizing for top-level action labels and deputy status text to reduce clipping on narrow screens.
+- Verified normalized anchor regions and the source-level changes by inspection. This is not a substitute for checking actual rendered pixel sizes, device safe areas, touch interaction, or orientation changes in Unity.
