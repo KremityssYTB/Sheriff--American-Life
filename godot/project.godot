@@ -16,4 +16,5 @@ window/stretch/mode="canvas_items"
 [rendering]
 renderer/rendering_method="forward_plus"
 renderer/rendering_method.mobile="mobile"
+scaling_3d/scale=1.0
 environment/defaults/default_clear_color=Color(0.42, 0.62, 0.78, 1)
