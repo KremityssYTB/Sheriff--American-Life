@@ -494,3 +494,11 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Commit `6656ef8bc089498edf4f6552876b9972e721ca8f` replaces the transport panel's side-column layout with a compact center-bottom strip above the vehicle control row. The strip combines intake distance and prisoner name; the booking action appears only within intake range. Its lower edge is kept above the movement/throttle buttons by a scaled gap.
 - Commit `e7cdabde439ac9e0d67730cbcb83001e00586ab6` documents the new placement in `DESIGN/MOBILE_MDT_INTERFACE.md`.
 - This reduces known side-column collisions in the source layout but is not proof of full-screen fit. Short landscape safe areas, unusually long prisoner names, and all combinations of active traffic-stop controls still require Unity Game view and device validation. No compile or runtime test was performed.
+
+
+## Gameplay HUD Canvas migration audit (2026-11-28)
+
+- Re-inspected current `CountyPlayerRuntimeController.cs` (blob `a6abbb9057279e909f5c0e9eb493069cd5a6a128`) and `MobileMdtScreen.cs` (blob `d416107ad1c924f75b793d6a83d70495c3e56e28`). The MDT is already a runtime-generated Screen Space Overlay Canvas with CanvasScaler, safe-area root, and InputSystemUIInputModule. The gameplay HUD remains IMGUI in `CountyPlayerRuntimeController.OnGUI`.
+- Recorded a phased migration plan in `DESIGN/MOBILE_MDT_INTERFACE.md`, commit `cdc08108da687f519ca6457acf62e7f590989e48`. Order: (1) held touch movement/vehicle controls, (2) top-level duty/vehicle/camera/settings actions, (3) civilian/traffic-stop/transport contextual panels, (4) settings modal.
+- Key safety requirement: held inputs must release on pointer-up, pointer-exit, focus loss, HUD disable, and vehicle-mode changes; movement/sprint and steering/throttle must support simultaneous touches. Canvas controls should forward to existing gameplay state rather than reimplement gameplay rules.
+- This was a source audit and documentation-only step. No Canvas gameplay controls were implemented, no IMGUI controls were removed, and no Unity compile, Game view, or device test was performed. Next implementation step is the touch-control adapter, with duplicate IMGUI movement/vehicle controls removed in the same change.
