@@ -83,11 +83,18 @@ namespace SheriffAmericanLife
         public void Release()
         {
             if (legalState == CivilianLegalState.Detained)
-            {
-                legalState = CivilianLegalState.Free;
-                stress = Mathf.Max(0f, stress - 15f);
-                Reaction?.Invoke(fullName + " is released.");
-            }
+                ReleaseFromCustody();
+        }
+
+        public bool ReleaseFromCustody()
+        {
+            if (legalState != CivilianLegalState.Detained && legalState != CivilianLegalState.Arrested)
+                return false;
+
+            legalState = CivilianLegalState.Free;
+            stress = Mathf.Max(0f, stress - 15f);
+            Reaction?.Invoke(fullName + " is released from custody.");
+            return true;
         }
 
         public void SetWarrantForTesting(bool value) => hasOutstandingWarrant = value;
