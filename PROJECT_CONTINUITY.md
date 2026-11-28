@@ -601,3 +601,9 @@ The Unity iOS workflow's latest run stopped at its explicit preflight: missing `
 - Fixed a false-merge risk in `TrafficDriverHistoryBook.FindByLicenseOrPlate`: the previous OR-match could join a driver to an unrelated history when only one of license or plate matched despite the other identifier conflicting.
 - Matching now checks normalized license first, then plate, and rejects conflicting secondary identifiers. A record missing the secondary identifier may still be completed by a matching encounter.
 - This is a local prototype identity heuristic, not a real identity verification system. Static source inspection only; no Unity compile or runtime test.
+
+
+## Phase 9 — dispatch lifecycle validation audit (2026-11-28)
+
+- `DispatchCallManager.Accept` now rejects blank unit names and trims accepted names. `Resolve` rejects blank dispositions. `Cancel` rejects blank reasons. Existing status-transition checks and terminal-state protection remain in place.
+- These guards prevent incomplete assignment/closure metadata in the session-only dispatch ledger. Static source review only; no Unity compile or runtime MDT workflow test.
