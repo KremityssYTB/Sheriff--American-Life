@@ -167,3 +167,14 @@ The gameplay HUD is separate from the MDT. The MDT already uses a runtime-genera
 - Removed the duplicate center-bottom IMGUI transport strip. The Canvas panel uses safe-area-relative anchors and remains hidden unless a valid escorted booking is pending.
 - The actual layout and touch target still require Unity visual inspection on compact phones, landscape, and iPad. Unity compilation and runtime booking tests have not been performed.
 - Settings remains the final IMGUI HUD section to migrate.
+
+
+### Phase 4 — Settings Canvas modal (2026-11-28)
+
+- Replaced the remaining gameplay Settings IMGUI window with a runtime-generated Canvas modal inside the existing safe-area root.
+- Preserved the existing three graphics presets (Performance, Balanced, High) and four frame-rate modes (30, 60, 120, Unlimited). Each button calls the existing `MobilePerformanceBootstrap` setters, which continue to apply and persist the selected values through PlayerPrefs.
+- The modal displays the active graphics preset, active frame-rate mode, and live measured FPS/frame time. These are read from the existing performance bootstrap; no new performance claims or targets are introduced.
+- Added a Close action. Opening the modal releases held touch inputs and hides gameplay controls/panels; their previous active states are restored when the modal closes. Settings remains visible above the gameplay Canvas while open.
+- The panel expands to 92% of safe-area width and 84% of safe-area height to accommodate narrow portrait layouts. Actual touch sizing, text fit, and orientation behavior still require Unity visual/device testing.
+- Removed the old Settings IMGUI drawing methods and the controller's now-unused OnGUI path. No audio or additional gameplay settings existed in the migrated panel, so none were invented.
+- Unity compilation, Play Mode, visual inspection, and device testing have not been performed.
