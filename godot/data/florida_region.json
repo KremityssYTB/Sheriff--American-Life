@@ -1,0 +1,585 @@
+{
+  "schema_version": 1,
+  "project": "SHERIFF: AMERICAN LIFE",
+  "map_area_km2": 225,
+  "geography_mode": "condensed_florida",
+  "geography_note": "A fictional compressed game region inspired by real Florida places. The statewide county roster represents jurisdiction coverage, not a full-scale rendering of all 67 county boundaries.",
+  "coordinate_system": {
+    "units": "meters",
+    "origin": "regional_world_center",
+    "x_axis": "east_west",
+    "z_axis": "north_south",
+    "world_bounds_m": [
+      -7500,
+      -7500,
+      7500,
+      7500
+    ]
+  },
+  "transport_modes": [
+    "road",
+    "water"
+  ],
+  "regions": [
+    {
+      "id": "panhandle",
+      "name": "Panhandle",
+      "county_ids": [
+        "escambia",
+        "santa_rosa",
+        "okaloosa",
+        "walton",
+        "holmes",
+        "washington",
+        "bay",
+        "jackson",
+        "calhoun",
+        "gulf",
+        "franklin",
+        "liberty",
+        "gadsden",
+        "leon",
+        "wakulla"
+      ],
+      "themes": [
+        "pine forests",
+        "Gulf beaches",
+        "marsh",
+        "small towns"
+      ]
+    },
+    {
+      "id": "north_central",
+      "name": "North Central",
+      "county_ids": [
+        "jefferson",
+        "madison",
+        "taylor",
+        "hamilton",
+        "suwannee",
+        "lafayette",
+        "dixie",
+        "gilchrist",
+        "columbia",
+        "union",
+        "bradford",
+        "alachua",
+        "levy"
+      ],
+      "themes": [
+        "springs",
+        "farms",
+        "forests",
+        "two-lane roads"
+      ]
+    },
+    {
+      "id": "northeast",
+      "name": "Northeast",
+      "county_ids": [
+        "baker",
+        "clay",
+        "duval",
+        "nassau",
+        "st_johns",
+        "putnam",
+        "flagler",
+        "brevard"
+      ],
+      "themes": [
+        "riverfront",
+        "port",
+        "beaches",
+        "marsh"
+      ]
+    },
+    {
+      "id": "central_north",
+      "name": "Central North",
+      "county_ids": [
+        "marion",
+        "volusia",
+        "lake",
+        "seminole"
+      ],
+      "themes": [
+        "horse country",
+        "lakes",
+        "suburbs",
+        "rural highways"
+      ]
+    },
+    {
+      "id": "central",
+      "name": "Central Florida",
+      "county_ids": [
+        "sumter",
+        "citrus",
+        "hernando",
+        "pasco",
+        "polk",
+        "orange",
+        "osceola"
+      ],
+      "themes": [
+        "tourism",
+        "suburbs",
+        "farms",
+        "wetlands"
+      ]
+    },
+    {
+      "id": "tampa_bay",
+      "name": "Tampa Bay",
+      "county_ids": [
+        "pinellas",
+        "hillsborough",
+        "manatee"
+      ],
+      "themes": [
+        "downtown",
+        "bridges",
+        "port",
+        "beaches"
+      ]
+    },
+    {
+      "id": "southwest",
+      "name": "Southwest",
+      "county_ids": [
+        "sarasota",
+        "charlotte",
+        "lee",
+        "collier"
+      ],
+      "themes": [
+        "waterfront",
+        "mangroves",
+        "marinas",
+        "rural inland"
+      ]
+    },
+    {
+      "id": "southeast",
+      "name": "Southeast",
+      "county_ids": [
+        "desoto",
+        "hardee",
+        "highlands",
+        "okeechobee",
+        "glades",
+        "hendry",
+        "indian_river",
+        "martin",
+        "palm_beach",
+        "broward",
+        "miami_dade",
+        "st_lucie"
+      ],
+      "themes": [
+        "metro corridor",
+        "agriculture",
+        "canals",
+        "coast"
+      ]
+    },
+    {
+      "id": "keys",
+      "name": "Florida Keys",
+      "county_ids": [
+        "monroe"
+      ],
+      "themes": [
+        "islands",
+        "Overseas Highway",
+        "marinas",
+        "open water"
+      ]
+    }
+  ],
+  "county_roster": [
+    "alachua",
+    "baker",
+    "bay",
+    "bradford",
+    "brevard",
+    "broward",
+    "calhoun",
+    "charlotte",
+    "citrus",
+    "clay",
+    "collier",
+    "columbia",
+    "desoto",
+    "dixie",
+    "duval",
+    "escambia",
+    "flagler",
+    "franklin",
+    "gadsden",
+    "gilchrist",
+    "glades",
+    "gulf",
+    "hamilton",
+    "hardee",
+    "hendry",
+    "hernando",
+    "highlands",
+    "hillsborough",
+    "holmes",
+    "indian_river",
+    "jackson",
+    "jefferson",
+    "lafayette",
+    "lake",
+    "lee",
+    "leon",
+    "levy",
+    "liberty",
+    "madison",
+    "manatee",
+    "marion",
+    "martin",
+    "miami_dade",
+    "monroe",
+    "nassau",
+    "okaloosa",
+    "okeechobee",
+    "orange",
+    "osceola",
+    "palm_beach",
+    "pasco",
+    "pinellas",
+    "polk",
+    "putnam",
+    "santa_rosa",
+    "sarasota",
+    "seminole",
+    "st_johns",
+    "st_lucie",
+    "sumter",
+    "suwannee",
+    "taylor",
+    "union",
+    "volusia",
+    "wakulla",
+    "walton",
+    "washington"
+  ],
+  "districts": [
+    {
+      "id": "ocala_marion",
+      "name": "Ocala & Marion County",
+      "county_id": "marion",
+      "inspiration": "Ocala, Silver Springs and horse farms",
+      "biome": "pine forest and pasture",
+      "landmarks": [
+        "Downtown Ocala",
+        "Silver Springs",
+        "horse country",
+        "rural farm roads"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Silver River spring run",
+        "small lakes"
+      ],
+      "jurisdiction": "Marion County Sheriff"
+    },
+    {
+      "id": "orlando_orange",
+      "name": "Orlando Metro",
+      "county_id": "orange",
+      "inspiration": "Orlando, International Drive and theme-park corridor",
+      "biome": "metro lakes",
+      "landmarks": [
+        "Downtown Orlando",
+        "tourism strip",
+        "convention district"
+      ],
+      "primary_modes": [
+        "road"
+      ],
+      "water_features": [
+        "urban lakes"
+      ],
+      "jurisdiction": "Orange County / Orlando Police"
+    },
+    {
+      "id": "kissimmee_osceola",
+      "name": "Kissimmee & Osceola",
+      "county_id": "osceola",
+      "inspiration": "Kissimmee, ranchland and lake country",
+      "biome": "lakes and pasture",
+      "landmarks": [
+        "Historic Kissimmee",
+        "ranch country",
+        "Lake Tohopekaliga"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Lake Tohopekaliga",
+        "canals"
+      ],
+      "jurisdiction": "Osceola County Sheriff"
+    },
+    {
+      "id": "tampa_hillsborough",
+      "name": "Tampa Bay",
+      "county_id": "hillsborough",
+      "inspiration": "Tampa, historic entertainment streets, port and bay bridges",
+      "biome": "bayfront urban",
+      "landmarks": [
+        "Downtown Tampa",
+        "historic quarter",
+        "port industrial"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Tampa Bay",
+        "Hillsborough River"
+      ],
+      "jurisdiction": "Hillsborough Sheriff / Tampa Police"
+    },
+    {
+      "id": "st_pete_pinellas",
+      "name": "St. Petersburg & Pinellas",
+      "county_id": "pinellas",
+      "inspiration": "St. Petersburg, Gulf beaches and causeways",
+      "biome": "coastal urban",
+      "landmarks": [
+        "Waterfront downtown",
+        "Gulf beach strip",
+        "causeway"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Boca Ciega Bay",
+        "Intracoastal"
+      ],
+      "jurisdiction": "Pinellas Sheriff / St. Petersburg Police"
+    },
+    {
+      "id": "miami_dade",
+      "name": "Miami Metro",
+      "county_id": "miami_dade",
+      "inspiration": "Miami, South Beach-inspired waterfront and high-rises",
+      "biome": "tropical metro",
+      "landmarks": [
+        "Downtown Miami",
+        "beachfront strip",
+        "industrial port"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Biscayne Bay",
+        "Intracoastal"
+      ],
+      "jurisdiction": "Miami-Dade Sheriff / Miami Police"
+    },
+    {
+      "id": "fort_lauderdale_broward",
+      "name": "Fort Lauderdale & Broward",
+      "county_id": "broward",
+      "inspiration": "Fort Lauderdale, canals, marinas and beach streets",
+      "biome": "canal coastal urban",
+      "landmarks": [
+        "Las Olas-inspired district",
+        "canal neighborhoods",
+        "marina row"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Intracoastal Waterway",
+        "residential canals"
+      ],
+      "jurisdiction": "Broward Sheriff / local police"
+    },
+    {
+      "id": "keys_monroe",
+      "name": "Florida Keys",
+      "county_id": "monroe",
+      "inspiration": "Key Largo and island-chain atmosphere",
+      "biome": "tropical islands",
+      "landmarks": [
+        "Overseas Highway",
+        "island village",
+        "fishing marina"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "ocean channels",
+        "backcountry flats"
+      ],
+      "jurisdiction": "Monroe County Sheriff"
+    },
+    {
+      "id": "jacksonville_duval",
+      "name": "Jacksonville & Northeast",
+      "county_id": "duval",
+      "inspiration": "Jacksonville riverfront, port, bridges and marshes",
+      "biome": "river estuary urban",
+      "landmarks": [
+        "Downtown riverfront",
+        "port yards",
+        "marsh edge"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "St. Johns River",
+        "tidal marsh"
+      ],
+      "jurisdiction": "Jacksonville Sheriff"
+    },
+    {
+      "id": "gainesville_alachua",
+      "name": "Gainesville & Alachua",
+      "county_id": "alachua",
+      "inspiration": "College town, springs, wooded roads and farms",
+      "biome": "north central forest",
+      "landmarks": [
+        "College district",
+        "historic main street",
+        "rural spring roads"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "springs and creeks"
+      ],
+      "jurisdiction": "Alachua County Sheriff"
+    },
+    {
+      "id": "rural_heartland",
+      "name": "Rural Florida Heartland",
+      "county_id": "okeechobee",
+      "inspiration": "Okeechobee, cattle ranches, citrus groves and long county roads",
+      "biome": "ranch and wetland",
+      "landmarks": [
+        "Ranch towns",
+        "citrus groves",
+        "lakefront fishing"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Lake Okeechobee edge",
+        "canals",
+        "marshes"
+      ],
+      "jurisdiction": "Regional county sheriff agencies"
+    },
+    {
+      "id": "space_coast_brevard",
+      "name": "Space Coast",
+      "county_id": "brevard",
+      "inspiration": "Cape Canaveral area, beach towns and launch-coast atmosphere",
+      "biome": "barrier island lagoon",
+      "landmarks": [
+        "Coastal town",
+        "causeway",
+        "launch viewpoint"
+      ],
+      "primary_modes": [
+        "road",
+        "water"
+      ],
+      "water_features": [
+        "Indian River Lagoon",
+        "Atlantic inlets"
+      ],
+      "jurisdiction": "Brevard County Sheriff"
+    }
+  ],
+  "watercraft_access_points": [
+    {
+      "id": "silver_springs_launch",
+      "district_id": "ocala_marion",
+      "kind": "boat_ramp",
+      "connects_to": "Silver River spring run"
+    },
+    {
+      "id": "lake_toho_marina",
+      "district_id": "kissimmee_osceola",
+      "kind": "marina",
+      "connects_to": "Lake Tohopekaliga"
+    },
+    {
+      "id": "tampa_port_marina",
+      "district_id": "tampa_hillsborough",
+      "kind": "marina",
+      "connects_to": "Tampa Bay"
+    },
+    {
+      "id": "pinellas_causeway_ramp",
+      "district_id": "st_pete_pinellas",
+      "kind": "boat_ramp",
+      "connects_to": "Boca Ciega Bay"
+    },
+    {
+      "id": "miami_biscayne_marina",
+      "district_id": "miami_dade",
+      "kind": "marina",
+      "connects_to": "Biscayne Bay"
+    },
+    {
+      "id": "fort_lauderdale_marina",
+      "district_id": "fort_lauderdale_broward",
+      "kind": "marina",
+      "connects_to": "Intracoastal Waterway"
+    },
+    {
+      "id": "keys_fishing_marina",
+      "district_id": "keys_monroe",
+      "kind": "marina",
+      "connects_to": "Ocean channels"
+    },
+    {
+      "id": "jacksonville_river_ramp",
+      "district_id": "jacksonville_duval",
+      "kind": "boat_ramp",
+      "connects_to": "St. Johns River"
+    },
+    {
+      "id": "okeechobee_public_ramp",
+      "district_id": "rural_heartland",
+      "kind": "boat_ramp",
+      "connects_to": "Lake Okeechobee"
+    }
+  ],
+  "streaming": {
+    "cell_size_m": 500,
+    "near_detail_radius_m": 350,
+    "mid_lod_radius_m": 1500,
+    "far_visual_only_radius_m": 4000,
+    "notes": "Initial tuning values only. Profile and adjust on supported iPhones; do not assume performance until tested on-device."
+  }
+}
