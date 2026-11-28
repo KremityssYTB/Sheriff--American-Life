@@ -2,6 +2,7 @@ extends Node3D
 
 const DeputyController = preload("res://scripts/player_controller.gd")
 const PatrolSUVController = preload("res://scripts/patrol_suv.gd")
+const DispatchManager = preload("res://scripts/dispatch_manager.gd")
 var player: CharacterBody3D
 var patrol_suv: VehicleBody3D
 var in_vehicle := false
@@ -11,6 +12,14 @@ var vehicle_controls: Array[Button] = []
 var enter_button: Button
 var lights_button: Button
 var vehicle_look_touch_id := -1
+var dispatch_manager: Node
+var dispatch_summary: Label
+var dispatch_state_label: Label
+var dispatch_distance_label: Label
+var dispatch_request_button: Button
+var dispatch_accept_button: Button
+var dispatch_clear_button: Button
+var dispatch_marker: Node3D
 
 func _ready() -> void:
 	# Supersample the desktop Forward+ path; keep iOS at native resolution.
@@ -20,6 +29,10 @@ func _ready() -> void:
 	_build_district()
 	_spawn_player()
 	_spawn_patrol_suv()
+	dispatch_manager = DispatchManager.new()
+	dispatch_manager.name = "DispatchManager"
+	dispatch_manager.state_changed.connect(_refresh_dispatch_ui)
+	add_child(dispatch_manager)
 	_build_touch_hud()
 
 func _setup_input() -> void:
@@ -68,6 +81,10 @@ func _process(_delta: float) -> void:
 	elif in_vehicle:
 		var speed := patrol_suv.linear_velocity.length() * 3.6
 		status_label.text = "IN PATROL SUV  •  %.0f km/h  •  WASD drive  •  SPACE brake  •  L lights" % speed
+	if is_instance_valid(dispatch_manager) and dispatch_manager.get_state_label() == "UNIT EN ROUTE":
+		var unit_position: Vector3 = patrol_suv.global_position if in_vehicle else player.global_position
+		var distance := unit_position.distance_to(dispatch_manager.get_destination())
+		dispatch_distance_label.text = "Destination: %.0f m away" % distance
 
 func _material(color: Color, roughness := 0.9) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
@@ -263,6 +280,7 @@ func _build_touch_hud() -> void:
 	lights_button.visible = false
 	lights_button.pressed.connect(func(): patrol_suv.toggle_lights())
 	layer.add_child(lights_button)
+	_build_dispatch_panel(layer)
 
 class TouchButton:
 	extends Button
@@ -272,3 +290,132 @@ class TouchButton:
 		add_theme_font_size_override("font_size", 16)
 		button_down.connect(func(): Input.action_press(action_name))
 		button_up.connect(func(): Input.action_release(action_name))
+
+func _build_dispatch_panel(layer: CanvasLayer) -> void:
+	var panel := PanelContainer.new()
+	panel.name = "DispatchPanel"
+	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	panel.offset_left = -352
+	panel.offset_right = -20
+	panel.offset_top = 18
+	panel.offset_bottom = 254
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.035, 0.065, 0.09, 0.94)
+	panel_style.border_color = Color(0.34, 0.48, 0.58, 0.9)
+	panel_style.set_border_width_all(1)
+	panel_style.set_corner_radius_all(12)
+	panel_style.content_margin_left = 14
+	panel_style.content_margin_right = 14
+	panel_style.content_margin_top = 12
+	panel_style.content_margin_bottom = 12
+	panel.add_theme_stylebox_override("panel", panel_style)
+	layer.add_child(panel)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 7)
+	panel.add_child(content)
+	var heading := Label.new()
+	heading.text = "MARION COUNTY  |  DISPATCH"
+	heading.add_theme_font_size_override("font_size", 15)
+	heading.add_theme_color_override("font_color", Color(0.78, 0.87, 0.94))
+	content.add_child(heading)
+	dispatch_state_label = Label.new()
+	dispatch_state_label.text = "AVAILABLE FOR CALLS"
+	dispatch_state_label.add_theme_font_size_override("font_size", 13)
+	dispatch_state_label.add_theme_color_override("font_color", Color(0.42, 0.83, 0.68))
+	content.add_child(dispatch_state_label)
+	dispatch_summary = Label.new()
+	dispatch_summary.text = "No active call. Request a dispatch assignment when ready."
+	dispatch_summary.custom_minimum_size = Vector2(290, 82)
+	dispatch_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dispatch_summary.add_theme_font_size_override("font_size", 12)
+	content.add_child(dispatch_summary)
+	dispatch_distance_label = Label.new()
+	dispatch_distance_label.text = "Unit status: Available"
+	dispatch_distance_label.add_theme_font_size_override("font_size", 12)
+	content.add_child(dispatch_distance_label)
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 6)
+	content.add_child(actions)
+	dispatch_request_button = _dispatch_button("REQUEST", _offer_dispatch_call)
+	dispatch_accept_button = _dispatch_button("ACCEPT", _accept_dispatch_call)
+	dispatch_clear_button = _dispatch_button("CLEAR", _complete_dispatch_call)
+	actions.add_child(dispatch_request_button)
+	actions.add_child(dispatch_accept_button)
+	actions.add_child(dispatch_clear_button)
+	_refresh_dispatch_ui()
+
+func _dispatch_button(caption: String, callback: Callable) -> Button:
+	var button := Button.new()
+	button.text = caption
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.custom_minimum_size = Vector2(0, 38)
+	button.add_theme_font_size_override("font_size", 12)
+	button.add_theme_color_override("font_color", Color(0.94, 0.97, 1.0))
+	button.pressed.connect(callback)
+	return button
+
+func _offer_dispatch_call() -> void:
+	if dispatch_manager.offer_call():
+		dispatch_distance_label.text = "Review the call and accept when ready."
+
+func _accept_dispatch_call() -> void:
+	if dispatch_manager.accept_call():
+		_create_dispatch_marker(dispatch_manager.get_destination())
+		_refresh_dispatch_ui()
+
+func _complete_dispatch_call() -> void:
+	var unit_position: Vector3 = patrol_suv.global_position if in_vehicle else player.global_position
+	if unit_position.distance_to(dispatch_manager.get_destination()) > 10.0:
+		dispatch_distance_label.text = "Move within 10 m of the call location to clear it."
+		return
+	if dispatch_manager.clear_call():
+		if is_instance_valid(dispatch_marker):
+			dispatch_marker.queue_free()
+		dispatch_marker = null
+		dispatch_distance_label.text = "Report complete. Unit available."
+		_refresh_dispatch_ui()
+
+func _create_dispatch_marker(destination: Vector3) -> void:
+	if is_instance_valid(dispatch_marker):
+		dispatch_marker.queue_free()
+	dispatch_marker = Node3D.new()
+	dispatch_marker.name = "DispatchDestinationMarker"
+	dispatch_marker.position = destination
+	add_child(dispatch_marker)
+	var marker_material := StandardMaterial3D.new()
+	marker_material.albedo_color = Color(1.0, 0.48, 0.08)
+	marker_material.emission_enabled = true
+	marker_material.emission = Color(1.0, 0.24, 0.025)
+	var pole := MeshInstance3D.new()
+	var pole_mesh := CylinderMesh.new()
+	pole_mesh.top_radius = 0.07
+	pole_mesh.bottom_radius = 0.07
+	pole_mesh.height = 3.2
+	pole.mesh = pole_mesh
+	pole.position.y = 1.6
+	pole.material_override = marker_material
+	dispatch_marker.add_child(pole)
+	var beacon := MeshInstance3D.new()
+	var beacon_mesh := SphereMesh.new()
+	beacon_mesh.radius = 0.42
+	beacon_mesh.height = 0.84
+	beacon.mesh = beacon_mesh
+	beacon.position.y = 3.35
+	beacon.material_override = marker_material
+	dispatch_marker.add_child(beacon)
+
+func _refresh_dispatch_ui() -> void:
+	if not is_instance_valid(dispatch_manager) or not is_instance_valid(dispatch_summary):
+		return
+	var state_text: String = dispatch_manager.get_state_label()
+	dispatch_state_label.text = state_text
+	dispatch_summary.text = dispatch_manager.get_call_summary()
+	dispatch_request_button.visible = state_text == "AVAILABLE FOR CALLS" or state_text == "CALL CLEARED"
+	dispatch_accept_button.visible = state_text == "CALL OFFERED"
+	dispatch_clear_button.visible = state_text == "UNIT EN ROUTE"
+	if state_text == "AVAILABLE FOR CALLS" or state_text == "CALL CLEARED":
+		dispatch_distance_label.text = "Unit status: Available"
+	elif state_text == "CALL OFFERED":
+		dispatch_distance_label.text = "Awaiting unit acknowledgement."
+	elif state_text == "UNIT EN ROUTE":
+		dispatch_distance_label.text = "Proceed to the marked location."
