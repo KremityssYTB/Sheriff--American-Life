@@ -173,7 +173,8 @@ namespace SheriffAmericanLife
             {
                 touchControls.SetHudState(dutyState != null && dutyState.IsOnDuty, inVehicle);
                 touchControls.SetCivilianContext(!inVehicle && focusedCivilian != null && interactions != null,
-                    focusedCivilian != null ? focusedCivilian.FullName : null);
+                    focusedCivilian != null ? focusedCivilian.FullName : null,
+                    escortedPrisoner == null);
                 bool trafficVisible = inVehicle && (activeTrafficStop != null ||
                     (nearbyTrafficVehicle != null && dutyState != null && dutyState.IsOnDuty));
                 string trafficHeader = activeTrafficStop != null
@@ -322,7 +323,11 @@ namespace SheriffAmericanLife
                 case "civilian_warn": if (interactions != null) interactions.IssueWarning(); break;
                 case "civilian_cite": if (interactions != null) interactions.IssueCitation(); break;
                 case "civilian_detain": if (interactions != null) interactions.Detain(); break;
-                case "civilian_arrest": if (interactions != null) interactions.Arrest(); break;
+                case "civilian_arrest":
+                    if (escortedPrisoner != null)
+                        Debug.LogWarning("Complete the current prisoner transport before arresting another civilian.");
+                    else if (interactions != null) interactions.Arrest();
+                    break;
                 case "civilian_release": if (interactions != null) interactions.Release(); break;
                 case "traffic_pull_over": BeginTrafficStop(); break;
                 case "traffic_calm": RespondToDriver(true); break;
