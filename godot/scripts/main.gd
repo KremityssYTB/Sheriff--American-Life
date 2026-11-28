@@ -1,14 +1,22 @@
 extends Node3D
 
 const DeputyController = preload("res://scripts/player_controller.gd")
+const PatrolSUVController = preload("res://scripts/patrol_suv.gd")
 var player: CharacterBody3D
+var patrol_suv: VehicleBody3D
+var in_vehicle := false
 var status_label: Label
+var foot_controls: Array[Button] = []
+var vehicle_controls: Array[Button] = []
+var enter_button: Button
+var lights_button: Button
 
 func _ready() -> void:
 	_setup_input()
 	_build_environment()
 	_build_district()
 	_spawn_player()
+	_spawn_patrol_suv()
 	_build_touch_hud()
 
 func _setup_input() -> void:
@@ -17,6 +25,13 @@ func _setup_input() -> void:
 	_add_key("move_left", KEY_A)
 	_add_key("move_right", KEY_D)
 	_add_key("sprint", KEY_SHIFT)
+	_add_key("drive_forward", KEY_W)
+	_add_key("drive_back", KEY_S)
+	_add_key("drive_left", KEY_A)
+	_add_key("drive_right", KEY_D)
+	_add_key("vehicle_brake", KEY_SPACE)
+	_add_key("interact", KEY_E)
+	_add_key("toggle_lights", KEY_L)
 
 func _add_key(action: String, key: Key) -> void:
 	if not InputMap.has_action(action):
@@ -25,6 +40,24 @@ func _add_key(action: String, key: Key) -> void:
 	event.physical_keycode = key
 	InputMap.action_add_event(action, event)
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		_toggle_vehicle()
+	elif event.is_action_pressed("toggle_lights") and in_vehicle:
+		patrol_suv.toggle_lights()
+
+func _process(_delta: float) -> void:
+	if not in_vehicle and is_instance_valid(player) and is_instance_valid(patrol_suv):
+		var near_vehicle := player.global_position.distance_to(patrol_suv.global_position) < 4.2
+		enter_button.visible = near_vehicle
+		if near_vehicle:
+			status_label.text = "ON FOOT  •  Patrol SUV nearby — press E / ENTER VEHICLE"
+		else:
+			status_label.text = "ON FOOT  •  WASD move  •  drag right side to look"
+	elif in_vehicle:
+		var speed := patrol_suv.linear_velocity.length() * 3.6
+		status_label.text = "IN PATROL SUV  •  %.0f km/h  •  WASD drive  •  SPACE brake  •  L lights" % speed
+
 func _material(color: Color, roughness := 0.9) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = color
@@ -32,11 +65,7 @@ func _material(color: Color, roughness := 0.9) -> StandardMaterial3D:
 	return mat
 
 func _add_box(parent: Node3D, name: String, pos: Vector3, size: Vector3, mat: Material, collision := false) -> void:
-	var body: Node3D
-	if collision:
-		body = StaticBody3D.new()
-	else:
-		body = Node3D.new()
+	var body: Node3D = StaticBody3D.new() if collision else Node3D.new()
 	body.name = name
 	body.position = pos
 	parent.add_child(body)
@@ -101,11 +130,9 @@ func _build_district() -> void:
 			_add_box(self, "FacadeGlass_%02d" % index, Vector3(side * 28, h*0.56, z-depth*0.501), Vector3(w*0.68,h*0.32,0.12), glass)
 			_add_box(self, "RoofCap_%02d" % index, Vector3(side * 28,h+0.18,z), Vector3(w+0.4,0.35,depth+0.4), concrete)
 			index += 1
-	# Recognizable first-playable civic anchor: sheriff office and marked sign.
 	_add_box(self, "MarionSheriffOffice", Vector3(-29,3.2,-18), Vector3(23,6.4,19), _material(Color(0.65,0.66,0.63)), true)
 	_add_box(self, "SheriffOfficeWindows", Vector3(-29,3.3,-27.58), Vector3(17,2.2,0.12), glass)
 	_add_box(self, "SheriffSign", Vector3(-29,5.4,-27.7), Vector3(8,0.65,0.18), _material(Color(0.08,0.12,0.16)))
-	# Palms are deliberately low-poly placeholders pending licensed art assets.
 	for i in range(18):
 		var x := -55.0 + float((i*17)%110)
 		var z := -90.0 + float((i*23)%180)
@@ -118,6 +145,46 @@ func _spawn_player() -> void:
 	player.position = Vector3(-4,0.2,12)
 	add_child(player)
 
+func _spawn_patrol_suv() -> void:
+	patrol_suv = PatrolSUVController.new()
+	patrol_suv.name = "MarionCountyPatrolSUV"
+	patrol_suv.position = Vector3(2.2,0.65,12)
+	patrol_suv.rotation.y = PI
+	add_child(patrol_suv)
+
+func _toggle_vehicle() -> void:
+	if not in_vehicle:
+		if player.global_position.distance_to(patrol_suv.global_position) > 4.2:
+			return
+		in_vehicle = true
+		player.hide()
+		player.set_physics_process(false)
+		player.camera.current = false
+		patrol_suv.vehicle_camera.current = true
+		for button in foot_controls:
+			button.hide()
+		for button in vehicle_controls:
+			button.show()
+		enter_button.text = "EXIT VEHICLE"
+		enter_button.show()
+	else:
+		if patrol_suv.linear_velocity.length() > 1.5:
+			status_label.text = "Slow down before exiting."
+			return
+		in_vehicle = false
+		player.global_position = patrol_suv.global_position + patrol_suv.global_transform.basis.x * 2.2 + Vector3.UP * 0.2
+		player.rotation.y = patrol_suv.rotation.y
+		patrol_suv.vehicle_camera.current = false
+		player.camera.current = true
+		player.show()
+		player.set_physics_process(true)
+		for button in foot_controls:
+			button.show()
+		for button in vehicle_controls:
+			button.hide()
+		enter_button.text = "ENTER VEHICLE"
+		enter_button.hide()
+
 func _build_touch_hud() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
@@ -127,23 +194,55 @@ func _build_touch_hud() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	layer.add_child(title)
 	status_label = Label.new()
-	status_label.text = "ON FOOT  •  W/A/S/D to move  •  drag right side to look"
+	status_label.text = "ON FOOT  •  WASD move  •  drag right side to look"
 	status_label.position = Vector2(24,52)
 	layer.add_child(status_label)
-	var controls := [
+	var foot := [
 		["UP","move_forward",Vector2(112,560)],
 		["DOWN","move_back",Vector2(112,660)],
 		["LEFT","move_left",Vector2(12,610)],
 		["RIGHT","move_right",Vector2(212,610)],
 		["RUN","sprint",Vector2(250,550)]
 	]
-	for item in controls:
+	for item in foot:
 		var button := TouchButton.new()
 		button.text = item[0]
 		button.position = item[2]
 		button.size = Vector2(88,76)
 		button.action_name = item[1]
 		layer.add_child(button)
+		foot_controls.append(button)
+	var drive := [
+		["GAS","drive_forward",Vector2(1080,560)],
+		["REVERSE","drive_back",Vector2(1080,660)],
+		["LEFT","drive_left",Vector2(880,610)],
+		["RIGHT","drive_right",Vector2(1280-180,610)],
+		["BRAKE","vehicle_brake",Vector2(1080,460)]
+	]
+	for item in drive:
+		var button := TouchButton.new()
+		button.text = item[0]
+		button.position = item[2]
+		button.size = Vector2(88,76)
+		button.action_name = item[1]
+		layer.add_child(button)
+		vehicle_controls.append(button)
+		button.hide()
+	enter_button = Button.new()
+	enter_button.text = "ENTER VEHICLE"
+	enter_button.position = Vector2(24,100)
+	enter_button.size = Vector2(210,64)
+	enter_button.visible = false
+	enter_button.pressed.connect(_toggle_vehicle)
+	layer.add_child(enter_button)
+	lights_button = Button.new()
+	lights_button.text = "LIGHTS / SIREN"
+	lights_button.position = Vector2(24,174)
+	lights_button.size = Vector2(210,58)
+	lights_button.visible = false
+	lights_button.pressed.connect(func(): patrol_suv.toggle_lights())
+	layer.add_child(lights_button)
+	enter_button.toggled.connect(func(_pressed): pass)
 
 class TouchButton:
 	extends Button
