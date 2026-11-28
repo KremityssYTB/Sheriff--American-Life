@@ -79,7 +79,7 @@ namespace SheriffAmericanLife
                     : null;
                 Record("Arrest", "Arrest", booking != null
                     ? "Arrest completed; booking " + booking.bookingId + " created"
-                    : "Arrest completed; booking ledger unavailable");
+                    : "Arrest completed; booking ledger unavailable", booking != null ? booking.caseId : null);
                 if (booking != null) ArrestCompleted?.Invoke(focusedCivilian);
             }
             else
@@ -109,13 +109,13 @@ namespace SheriffAmericanLife
             return false;
         }
 
-        private void Record(string category, string action, string outcome)
+        private void Record(string category, string action, string outcome, string caseId = null)
         {
             if (reportBook == null) return;
             reportBook.AddReport(category, focusedCivilian.FullName, action, outcome,
                 "Deputy interaction recorded for " + focusedCivilian.FullName +
                 ". Current disposition: " + focusedCivilian.Disposition +
-                ". Legal status: " + focusedCivilian.LegalState + ".");
+                ". Legal status: " + focusedCivilian.LegalState + ".", null, caseId);
         }
     }
 }
