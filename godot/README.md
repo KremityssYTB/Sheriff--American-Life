@@ -3,7 +3,9 @@
 This is the active Godot 4 development track. The original Unity source remains preserved unchanged on branch `main`.
 
 ## Current prototype source
-- Godot 4 project using the Mobile renderer.
+- Godot 4 project using Forward+ on desktop and the Mobile renderer on mobile/iOS.
+- Desktop high-quality environment enables SDFGI and Volumetric Fog; these are disabled on mobile to preserve compatibility and performance.
+- 3D render scale is set to 1.0 (native resolution; no internal 3D downscaling).
 - Procedural first-playable Ocala district blockout.
 - Third-person deputy controller with keyboard and on-screen touch controls.
 - Swipe-to-look camera control.
