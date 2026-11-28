@@ -99,9 +99,9 @@ func _build_camera() -> void:
 	vehicle_camera = Camera3D.new()
 	vehicle_camera.position = Vector3(0, 3.15, 7.3)
 	vehicle_camera.fov = 72.0
-	vehicle_camera.look_at(Vector3(0, 1.0, 0))
-	vehicle_camera.current = false
+	vehicle_camera.rotation.x = -0.25
 	add_child(vehicle_camera)
+	vehicle_camera.current = false
 
 func _build_lightbar() -> void:
 	_add_box("LightbarBase", Vector3(0, 1.92, -0.15), Vector3(1.35, 0.12, 0.32), _mat(Color(0.035,0.04,0.05),0.3))
