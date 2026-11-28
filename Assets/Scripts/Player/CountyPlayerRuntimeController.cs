@@ -226,6 +226,32 @@ namespace SheriffAmericanLife
                     trafficActions.Add("traffic_end");
                 }
                 touchControls.SetTrafficContext(trafficVisible, trafficHeader, trafficDetails, trafficActions.ToArray());
+                ArrestBookingRecord pendingTransport = null;
+                if (inVehicle && dutyState != null && dutyState.IsOnDuty &&
+                    arrestBookingBook != null && escortedPrisoner != null &&
+                    !string.IsNullOrEmpty(escortedBookingId))
+                {
+                    foreach (ArrestBookingRecord record in arrestBookingBook.Records)
+                    {
+                        if (record != null && record.bookingId == escortedBookingId &&
+                            record.status == BookingStatus.AwaitingTransport)
+                        {
+                            pendingTransport = record;
+                            break;
+                        }
+                    }
+                }
+                float intakeDistance = pendingTransport != null && patrolVehicle != null
+                    ? Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition)
+                    : float.MaxValue;
+                bool transportVisible = pendingTransport != null;
+                string transportDetails = transportVisible
+                    ? "PRISONER: " + pendingTransport.personName + "\\nINTAKE DISTANCE: " +
+                        intakeDistance.ToString("0") + "m" +
+                        (intakeDistance <= 18f ? "\\nWITHIN BOOKING RANGE" : "\\nAPPROACH JAIL INTAKE")
+                    : string.Empty;
+                touchControls.SetTransportContext(transportVisible, transportDetails,
+                    transportVisible && intakeDistance <= 18f);
             }
             if (walker && !inVehicle)
             {
@@ -310,6 +336,7 @@ namespace SheriffAmericanLife
                 case "traffic_warning": ResolveTrafficStop(false); break;
                 case "traffic_citation": ResolveTrafficStop(true); break;
                 case "traffic_end": EndTrafficStop(); break;
+                case "transport_book": CompletePrisonerTransport(FindPendingTransportBooking()); break;
             }
         }
 
@@ -567,41 +594,14 @@ namespace SheriffAmericanLife
             prisonerSeated = false;
         }
 
-        private void DrawPrisonerTransportHud(float scale, float padding)
+        private ArrestBookingRecord FindPendingTransportBooking()
         {
-            if (!inVehicle || arrestBookingBook == null || dutyState == null ||
-                !dutyState.IsOnDuty || escortedPrisoner == null ||
-                string.IsNullOrEmpty(escortedBookingId))
-                return;
-
-            ArrestBookingRecord pending = null;
+            if (arrestBookingBook == null || string.IsNullOrEmpty(escortedBookingId)) return null;
             foreach (ArrestBookingRecord record in arrestBookingBook.Records)
-            {
                 if (record != null && record.bookingId == escortedBookingId &&
                     record.status == BookingStatus.AwaitingTransport)
-                {
-                    pending = record;
-                    break;
-                }
-            }
-            if (pending == null) return;
-
-            float distance = Vector3.Distance(patrolVehicle.transform.position, jailIntakePosition);
-            // Use a compact center-bottom strip above the vehicle controls. This avoids
-            // the traffic-stop document column and the driver's contact/action column.
-            float panelWidth = Mathf.Min(Mathf.Max(180f, UiWidth * .72f), UiWidth - padding * 2f);
-            float panelHeight = 42f * scale;
-            float x = (UiWidth - panelWidth) * .5f;
-            float y = UiHeight - hForTransport(scale) - padding - panelHeight - 8f * scale;
-            float actionWidth = Mathf.Min(112f * scale, panelWidth * .42f);
-            bool atIntake = distance <= 18f;
-            string transportStatus = "INTAKE " + distance.ToString("0") + "m  •  " +
-                pending.personName;
-            GUI.Label(new Rect(x, y, panelWidth - actionWidth - 6f * scale, panelHeight),
-                transportStatus, statusStyle);
-            if (atIntake && GUI.Button(new Rect(x + panelWidth - actionWidth, y,
-                actionWidth, panelHeight), "BOOK INTAKE", buttonStyle))
-                CompletePrisonerTransport(pending);
+                    return record;
+            return null;
         }
 
         private void CompletePrisonerTransport(ArrestBookingRecord booking)
