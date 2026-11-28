@@ -175,9 +175,11 @@ namespace SheriffAmericanLife
             RefreshTrafficTarget();
             UpdatePrisonerEscort();
             if (touchControls != null)
+            {
                 touchControls.SetHudState(dutyState != null && dutyState.IsOnDuty, inVehicle);
                 touchControls.SetCivilianContext(!inVehicle && focusedCivilian != null && interactions != null,
                     focusedCivilian != null ? focusedCivilian.FullName : null);
+            }
             if (walker && !inVehicle)
             {
                 walker.SetMoveInput(moveInput);
