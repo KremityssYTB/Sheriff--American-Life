@@ -49,7 +49,7 @@ namespace SheriffAmericanLife
             if (person == null || string.IsNullOrWhiteSpace(reason)) return null;
             var record = new ArrestBookingRecord {
                 bookingId = "MCB-" + nextSequence.ToString("000000"),
-                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : null,
+                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : "CASE-MCB-" + nextSequence.ToString("000000"),
                 personName = person.FullName,
                 identificationNumber = person.IdentificationNumber,
                 arrestReason = reason,
