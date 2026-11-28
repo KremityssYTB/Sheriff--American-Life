@@ -1,0 +1,19 @@
+; SHERIFF: AMERICAN LIFE — Godot 4 mobile-first prototype
+config_version=5
+
+[application]
+config/name="SHERIFF: AMERICAN LIFE"
+run/main_scene="res://scenes/main.tscn"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+
+[physics]
+3d/default_gravity=9.8
+
+[rendering]
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+environment/defaults/default_clear_color=Color(0.42, 0.62, 0.78, 1)
