@@ -11,7 +11,7 @@ namespace SheriffAmericanLife
     /// <summary>Runtime-generated held touch controls for deputy movement and patrol driving.</summary>
     public sealed class MobileTouchControls : MonoBehaviour
     {
-        private readonly Dictionary<string, MobileHoldButton> buttons = new Dictionary<string, HoldButton>();
+        private readonly Dictionary<string, MobileHoldButton> buttons = new Dictionary<string, MobileHoldButton>();
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
