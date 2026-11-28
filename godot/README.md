@@ -137,3 +137,8 @@ The `scripts/florida_region_catalog.gd` loader validates the county count, area 
 ### Florida navigation graph milestone
 
 The regional catalog now includes twelve authored district anchor points within the 15 km × 15 km metric envelope, plus a first-pass connected road graph and separate marine-route graph. Road edges describe interregional highways, county roads, urban arterials and causeways; marine edges describe bay channels, intracoastal routes, rivers, lakes and canals. These are compressed-world design connections, not verified real-world route geometry, and are not yet rendered or used for live GPS/dispatch pathfinding. The catalog loader validates graph node and edge references at startup. The next engineering pass should turn this shared data into route queries and streamed terrain cells, then replace authored placeholder geometry with appropriately licensed Florida GIS layers.
+
+
+### Shared route query milestone
+
+The Florida catalog now exposes a shortest-path query for the authored road graph and the separate marine graph. It returns an ordered district-node path and an estimated route length based on compressed anchor coordinates and basic road-class multipliers. Startup performs a small road-route and water-route connectivity smoke check. This is an early navigation foundation: route lengths are design estimates, not real drive/boat times, and the graph does not yet contain street-level intersections, turn restrictions, one-way roads, bridges with clearance, tides, hazards or live traffic. Those are required before production GPS, dispatch routing or realistic marine navigation.
