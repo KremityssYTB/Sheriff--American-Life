@@ -15,6 +15,7 @@ namespace SheriffAmericanLife
         public string narrative;
         public string recordedAt;
         public string relatedIncidentId;
+        public string caseId;
     }
 
     /// <summary>Persistent local incident report ledger for fictional gameplay records.</summary>
@@ -41,7 +42,7 @@ namespace SheriffAmericanLife
             Load();
         }
 
-        public IncidentReport AddReport(string category, string subject, string action, string outcome, string narrative, string relatedIncidentId = null)
+        public IncidentReport AddReport(string category, string subject, string action, string outcome, string narrative, string relatedIncidentId = null, string caseId = null)
         {
             var report = new IncidentReport {
                 incidentNumber = "OC-" + nextSequence.ToString("000000"),
@@ -51,7 +52,8 @@ namespace SheriffAmericanLife
                 outcome = outcome,
                 narrative = narrative,
                 recordedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                relatedIncidentId = relatedIncidentId
+                relatedIncidentId = relatedIncidentId,
+                caseId = !string.IsNullOrWhiteSpace(caseId) ? caseId.Trim() : relatedIncidentId
             };
             nextSequence++;
             reports.Insert(0, report);
@@ -72,6 +74,8 @@ namespace SheriffAmericanLife
             }
             reports.Clear();
             reports.AddRange(data.reports.FindAll(item => item != null));
+            foreach (IncidentReport item in reports)
+                if (string.IsNullOrWhiteSpace(item.caseId)) item.caseId = item.relatedIncidentId;
             if (reports.Count > MaximumRecords) reports.RemoveRange(MaximumRecords, reports.Count - MaximumRecords);
             nextSequence = Math.Max(1, data.nextSequence);
             foreach (IncidentReport item in reports)
