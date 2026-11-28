@@ -140,40 +140,77 @@ func _build_environment() -> void:
 
 func _build_district() -> void:
 	var grass := _material(Color(0.20, 0.31, 0.17))
-	var asphalt := _material(Color(0.12, 0.13, 0.14))
+	var asphalt := _material(Color(0.105, 0.115, 0.12))
 	var concrete := _material(Color(0.48, 0.49, 0.46))
-	var white := _material(Color(0.86, 0.86, 0.79))
+	var lane_paint := _material(Color(0.88, 0.84, 0.66))
+	var white_paint := _material(Color(0.88, 0.89, 0.86))
 	var glass := _material(Color(0.12, 0.23, 0.29), 0.22)
-	var facade_colors := [Color(0.67,0.61,0.51), Color(0.73,0.72,0.66), Color(0.55,0.59,0.57), Color(0.75,0.68,0.56)]
-	_add_box(self, "Ground", Vector3(0,-0.35,0), Vector3(240,0.6,240), grass, true)
-	_add_box(self, "MainRoad", Vector3(0,0,0), Vector3(16,0.12,220), asphalt)
-	_add_box(self, "CrossRoad", Vector3(0,0,0), Vector3(220,0.13,14), asphalt)
-	for z in range(-100, 101, 12):
-		_add_box(self, "CenterLine", Vector3(0,0.075,z), Vector3(0.22,0.025,5), white)
-	for x in range(-96, 97, 12):
-		_add_box(self, "CrossCenterLine", Vector3(x,0.08,0), Vector3(5,0.025,0.2), white)
-	for side in [-1, 1]:
-		_add_box(self, "Sidewalk", Vector3(side*10,0.12,0), Vector3(3,0.3,220), concrete)
-		_add_box(self, "Sidewalk", Vector3(0,0.12,side*9), Vector3(220,0.3,3), concrete)
+	var curb := _material(Color(0.56, 0.57, 0.54))
+	var facade_colors := [
+		Color(0.67, 0.61, 0.51), Color(0.73, 0.72, 0.66),
+		Color(0.55, 0.59, 0.57), Color(0.75, 0.68, 0.56)
+	]
+	_add_box(self, "CountyTerrain", Vector3(0, -0.4, 0), Vector3(240, 0.7, 240), grass, true)
+
+	# A connected, legible street grid replaces the single-crossroad test block.
+	# Major north/south corridor and four east/west neighborhood streets.
+	var road_centers := [-80.0, -40.0, 0.0, 40.0, 80.0]
+	for x in road_centers:
+		var width := 14.0 if is_zero_approx(x) else 10.0
+		_add_box(self, "NorthSouthRoad_%s" % str(x), Vector3(x, 0.0, 0), Vector3(width, 0.14, 210), asphalt)
+		_add_box(self, "RoadEdgeWest_%s" % str(x), Vector3(x - width * 0.5 - 0.65, 0.10, 0), Vector3(0.35, 0.20, 210), curb)
+		_add_box(self, "RoadEdgeEast_%s" % str(x), Vector3(x + width * 0.5 + 0.65, 0.10, 0), Vector3(0.35, 0.20, 210), curb)
+		for z in range(-96, 97, 16):
+			_add_box(self, "CenterDashNS_%s" % str(x), Vector3(x, 0.085, z), Vector3(0.16, 0.025, 5.5), lane_paint)
+	for z in road_centers:
+		_add_box(self, "EastWestRoad_%s" % str(z), Vector3(0, 0.015, z), Vector3(210, 0.14, 10), asphalt)
+		_add_box(self, "RoadEdgeNorth_%s" % str(z), Vector3(0, 0.10, z - 5.65), Vector3(210, 0.20, 0.35), curb)
+		_add_box(self, "RoadEdgeSouth_%s" % str(z), Vector3(0, 0.10, z + 5.65), Vector3(210, 0.20, 0.35), curb)
+		for x in range(-96, 97, 16):
+			_add_box(self, "CenterDashEW_%s" % str(z), Vector3(x, 0.09, z), Vector3(5.5, 0.025, 0.16), lane_paint)
+
+	# Sidewalks, pedestrian crossings and curb ramps at the central civic junction.
+	for side in [-1.0, 1.0]:
+		_add_box(self, "CivicSidewalkNS", Vector3(side * 8.8, 0.18, 0), Vector3(2.2, 0.36, 210), concrete)
+		_add_box(self, "CivicSidewalkEW", Vector3(0, 0.18, side * 8.8), Vector3(210, 0.36, 2.2), concrete)
+	for stripe in range(7):
+		_add_box(self, "CrosswalkNorth_%02d" % stripe, Vector3(-4.0 + stripe * 1.3, 0.10, -8.1), Vector3(0.72, 0.035, 2.0), white_paint)
+		_add_box(self, "CrosswalkSouth_%02d" % stripe, Vector3(-4.0 + stripe * 1.3, 0.10, 8.1), Vector3(0.72, 0.035, 2.0), white_paint)
+
+	# Commercial and residential blocks with varied building footprints and facade heights.
 	var index := 0
-	for z in range(-84, 85, 28):
-		for side in [-1, 1]:
-			var h := 8.0 + float((index * 7) % 15)
-			var w := 13.0 + float((index * 3) % 8)
-			var depth := 15.0
-			var color: Color = facade_colors[index % facade_colors.size()]
-			_add_box(self, "OcalaBuilding_%02d" % index, Vector3(side * 28, h/2.0, z), Vector3(w,h,depth), _material(color), true)
-			_add_box(self, "FacadeGlass_%02d" % index, Vector3(side * 28, h*0.56, z-depth*0.501), Vector3(w*0.68,h*0.32,0.12), glass)
-			_add_box(self, "RoofCap_%02d" % index, Vector3(side * 28,h+0.18,z), Vector3(w+0.4,0.35,depth+0.4), concrete)
-			index += 1
-	_add_box(self, "MarionSheriffOffice", Vector3(-29,3.2,-18), Vector3(23,6.4,19), _material(Color(0.65,0.66,0.63)), true)
-	_add_box(self, "SheriffOfficeWindows", Vector3(-29,3.3,-27.58), Vector3(17,2.2,0.12), glass)
-	_add_box(self, "SheriffSign", Vector3(-29,5.4,-27.7), Vector3(8,0.65,0.18), _material(Color(0.08,0.12,0.16)))
-	for i in range(18):
-		var x := -55.0 + float((i*17)%110)
-		var z := -90.0 + float((i*23)%180)
-		_add_box(self, "PalmTrunk", Vector3(x,3,z), Vector3(0.45,6,0.45), _material(Color(0.34,0.23,0.13)))
-		_add_box(self, "PalmCanopy", Vector3(x,6.3,z), Vector3(4.2,0.35,2.1), _material(Color(0.13,0.29,0.12)))
+	for block_x in [-60.0, -20.0, 20.0, 60.0]:
+		for block_z in [-60.0, -20.0, 20.0, 60.0]:
+			for slot in range(2):
+				var x := block_x + (-7.0 if slot == 0 else 7.0)
+				var z := block_z + (5.0 if slot == 0 else -5.0)
+				if absf(x + 29.0) < 14.0 and absf(z + 18.0) < 13.0:
+					continue
+				var height := 5.5 + float((index * 7) % 13)
+				var width := 10.0 + float((index * 3) % 5)
+				var depth := 11.0 + float((index * 5) % 5)
+				var facade: Color = facade_colors[index % facade_colors.size()]
+				_add_box(self, "CountyBuilding_%02d" % index, Vector3(x, height * 0.5, z), Vector3(width, height, depth), _material(facade), true)
+				_add_box(self, "StorefrontGlass_%02d" % index, Vector3(x, 1.9, z - depth * 0.501), Vector3(width * 0.62, 2.1, 0.12), glass)
+				_add_box(self, "RoofParapet_%02d" % index, Vector3(x, height + 0.16, z), Vector3(width + 0.35, 0.32, depth + 0.35), concrete)
+				index += 1
+
+	# Marion County Sheriff Office civic campus and marked patrol parking.
+	_add_box(self, "MarionSheriffOffice", Vector3(-29, 3.2, -18), Vector3(23, 6.4, 19), _material(Color(0.65, 0.66, 0.63)), true)
+	_add_box(self, "SheriffOfficeWindows", Vector3(-29, 3.3, -27.58), Vector3(17, 2.2, 0.12), glass)
+	_add_box(self, "SheriffSign", Vector3(-29, 5.4, -27.7), Vector3(8, 0.65, 0.18), _material(Color(0.08, 0.12, 0.16)))
+	_add_box(self, "SheriffParkingLot", Vector3(-29, 0.035, -40), Vector3(28, 0.12, 15), asphalt)
+	for bay in range(7):
+		_add_box(self, "SheriffParkingBay_%02d" % bay, Vector3(-40.5 + bay * 3.8, 0.11, -40), Vector3(0.12, 0.025, 11), white_paint)
+
+	# Palm rows and low-detail street furniture establish Florida streetscape scale.
+	for i in range(28):
+		var x := -96.0 + float((i * 37) % 192)
+		var z := -96.0 + float((i * 61) % 192)
+		if absf(fposmod(x, 40.0)) < 7.0 or absf(fposmod(z, 40.0)) < 7.0:
+			continue
+		_add_box(self, "PalmTrunk_%02d" % i, Vector3(x, 3.0, z), Vector3(0.38, 6.0, 0.38), _material(Color(0.34, 0.23, 0.13)))
+		_add_box(self, "PalmCanopy_%02d" % i, Vector3(x, 6.3, z), Vector3(4.2, 0.35, 2.1), _material(Color(0.13, 0.29, 0.12)))
 
 func _spawn_player() -> void:
 	player = DeputyController.new()
