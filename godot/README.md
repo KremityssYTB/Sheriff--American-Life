@@ -49,3 +49,32 @@ The unsigned-IPA workflow is still under active repair. Godot validation has pas
 5. Replace the first district blockout with sourced, properly licensed Marion County/Ocala road and building data.
 6. Add high-quality licensed vehicle/building/character assets and interiors.
 7. Profile on target hardware; 30/60 FPS are targets and 120 FPS is aspirational, not guaranteed.
+
+## Product direction: open-world law-enforcement roleplay
+
+The design target is a grounded, persistent-feeling police and civilian roleplay experience inspired by the systemic depth of LSPDFR and the player-led roleplay structure of FiveM. It is not intended to be a small arcade driving game.
+
+### Experience pillars
+- **Believable county world:** build a connected Marion County/Ocala region with recognizable road hierarchy, neighborhoods, commercial strips, rural roads, public buildings, parking lots, interiors and navigable landmarks. Use appropriately licensed GIS/map references and original game-ready assets; do not present the current blockout as an accurate real-world map.
+- **Authentic police workflow:** duty selection, unit/callsign identity, radio channels, dispatch calls, traffic stops, citations, arrests, prisoner transport, reports, evidence and an in-game MDT/CAD workflow.
+- **Civilian roleplay:** civilian identities, jobs, vehicles, homes, stores, interactions, lawful and unlawful activities, and persistent character progression. Multiplayer/server authority is a later architecture milestone, not implemented in this prototype.
+- **Professional interface:** restrained county-agency visual language, readable CAD/MDT panels, clear unit state, radio and dispatch information, consistent button states, and touch layouts that adapt to phone/tablet dimensions.
+- **Simulation-first presentation:** credible vehicle proportions and handling, human-scale architecture, road markings, traffic behavior, lighting, weather, ambient sound and day/night transitions. Realistic appearance requires production assets and on-device iteration; procedural geometry remains temporary.
+
+### Latest interface milestone
+- Replaced the plain prototype title/status text with a county/unit/radio header.
+- Added compact dark CAD-style touch controls with normal, hover and pressed visual states.
+- Repositioned the dispatch panel below the unit header on narrow phone screens to prevent the two panels from occupying the same area.
+- Reflowed on-screen movement and vehicle controls using the current viewport size, including a resize callback.
+- This is a source implementation milestone only. Godot headless validation and physical-device layout checks are still required.
+
+### Next production sequence
+1. Validate the revised mobile HUD in Godot and on an iPhone/iPad aspect ratio; fix any input capture or overlap defects.
+2. Replace the single cross-shaped blockout with a road-network-driven county layout and named districts/landmarks.
+3. Add a minimap/GPS route layer tied to the same road graph used by traffic and dispatch.
+4. Build a proper MDT/CAD screen with unit login, callsign, radio, call queue, call history and incident report workflow.
+5. Add traffic-stop interaction, civilian AI responses and evidence/report linkage.
+6. Establish an asset pipeline for original/licensed characters, vehicles, buildings, interiors, road props, audio and animations.
+7. Design the civilian roleplay and multiplayer authority model before attempting online persistence.
+
+The current Godot scene is still an early procedural prototype. It does not yet contain a real Marion County map, photoreal assets, multiplayer, a complete civilian roleplay loop, production animation or verified iOS runtime performance.
