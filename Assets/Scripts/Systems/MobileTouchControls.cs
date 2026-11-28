@@ -11,33 +11,7 @@ namespace SheriffAmericanLife
     /// <summary>Runtime-generated held touch controls for deputy movement and patrol driving.</summary>
     public sealed class MobileTouchControls : MonoBehaviour
     {
-        private sealed class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
-        {
-            public string controlId;
-            public Action<string, bool> changed;
-            private bool held;
-
-            public void OnPointerDown(PointerEventData eventData)
-            {
-                if (held) return;
-                held = true;
-                changed?.Invoke(controlId, true);
-            }
-
-            public void OnPointerUp(PointerEventData eventData) { Release(); }
-            public void OnPointerExit(PointerEventData eventData) { Release(); }
-
-            private void OnDisable() { Release(); }
-
-            public void Release()
-            {
-                if (!held) return;
-                held = false;
-                changed?.Invoke(controlId, false);
-            }
-        }
-
-        private readonly Dictionary<string, HoldButton> buttons = new Dictionary<string, HoldButton>();
+        private readonly Dictionary<string, MobileHoldButton> buttons = new Dictionary<string, HoldButton>();
         private Canvas canvas;
         private RectTransform safeRoot;
         private Rect lastSafeArea;
@@ -72,7 +46,7 @@ namespace SheriffAmericanLife
         {
             vehicleMode = enabled;
             ReleaseAll();
-            foreach (KeyValuePair<string, HoldButton> pair in buttons)
+            foreach (KeyValuePair<string, MobileHoldButton> pair in buttons)
                 pair.Value.gameObject.SetActive(IsVehicleControl(pair.Key) == vehicleMode);
         }
 
@@ -85,7 +59,7 @@ namespace SheriffAmericanLife
 
         public void ReleaseAll()
         {
-            foreach (HoldButton button in buttons.Values)
+            foreach (MobileHoldButton button in buttons.Values)
                 if (button != null) button.Release();
         }
 
@@ -140,7 +114,7 @@ namespace SheriffAmericanLife
         private void AddButton(string id, string label, Vector2 anchorMin, Vector2 anchorMax)
         {
             GameObject buttonObject = new GameObject("Touch " + id, typeof(RectTransform),
-                typeof(Image), typeof(HoldButton));
+                typeof(Image), typeof(MobileHoldButton));
             buttonObject.transform.SetParent(safeRoot, false);
             RectTransform rect = buttonObject.GetComponent<RectTransform>();
             rect.anchorMin = anchorMin;
@@ -167,7 +141,7 @@ namespace SheriffAmericanLife
             text.color = Color.white;
             text.raycastTarget = false;
 
-            HoldButton hold = buttonObject.GetComponent<HoldButton>();
+            MobileHoldButton hold = buttonObject.GetComponent<MobileHoldButton>();
             hold.controlId = id;
             hold.changed = (control, pressed) => ControlChanged?.Invoke(control, pressed);
             buttons.Add(id, hold);
@@ -183,6 +157,31 @@ namespace SheriffAmericanLife
             safeRoot.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
             safeRoot.offsetMin = Vector2.zero;
             safeRoot.offsetMax = Vector2.zero;
+        }
+    }
+
+    public sealed class MobileHoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+    {
+        public string controlId;
+        public Action<string, bool> changed;
+        private bool held;
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (held) return;
+            held = true;
+            changed?.Invoke(controlId, true);
+        }
+
+        public void OnPointerUp(PointerEventData eventData) { Release(); }
+        public void OnPointerExit(PointerEventData eventData) { Release(); }
+        private void OnDisable() { Release(); }
+
+        public void Release()
+        {
+            if (!held) return;
+            held = false;
+            changed?.Invoke(controlId, false);
         }
     }
 }
