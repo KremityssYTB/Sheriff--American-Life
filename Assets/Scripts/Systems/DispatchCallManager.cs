@@ -27,6 +27,7 @@ namespace SheriffAmericanLife
     {
         public string callId;
         public string sourceIncidentId;
+        public string caseId;
         public WorldIncidentType incidentType;
         public DispatchPriority priority;
         public DispatchCallStatus status;
@@ -88,6 +89,7 @@ namespace SheriffAmericanLife
             {
                 callId = "CAD-" + nextSequence.ToString("000000"),
                 sourceIncidentId = incident.incidentId,
+                caseId = incident.incidentId,
                 incidentType = incident.type,
                 priority = GetPriority(incident.type),
                 status = DispatchCallStatus.Available,
@@ -136,7 +138,7 @@ namespace SheriffAmericanLife
             if (reportBook != null)
                 reportBook.AddReport("Dispatch resolution", call.title, "Responded to call", call.disposition,
                     "Call " + call.callId + " resolved by " + call.assignedUnit + ". " + call.description,
-                    call.sourceIncidentId);
+                    call.sourceIncidentId, call.caseId);
             Save();
             CallUpdated?.Invoke(call);
             return true;
@@ -186,6 +188,8 @@ namespace SheriffAmericanLife
             calls.Clear();
             callsByIncident.Clear();
             calls.AddRange(data.calls.FindAll(item => item != null && !string.IsNullOrEmpty(item.callId)));
+            foreach (DispatchCall item in calls)
+                if (string.IsNullOrWhiteSpace(item.caseId)) item.caseId = item.sourceIncidentId;
             if (calls.Count > MaximumCalls) calls.RemoveRange(0, calls.Count - MaximumCalls);
             nextSequence = Math.Max(1, data.nextSequence);
             foreach (DispatchCall item in calls)
